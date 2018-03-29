@@ -1,0 +1,76 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<html>
+<body>
+	<h1>Please Register</h1>
+<br>
+<form class="form-permisconstruct" role="form" method="post" action="">
+  {{ form.csrf_token }}
+  <p>
+  {{ form.zone_municipale(placeholder="zone_municipale") }}
+    <span class="error">
+      {% if form.zone_municipale.errors %}
+        {% for error in form.zone_municipale.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.address(placeholder="address") }}
+    <span class="error">
+      {% if form.address.errors %}
+        {% for error in form.address.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.description(placeholder="description") }}
+    <span class="error">
+      {% if form.description.errors %}
+        {% for error in form.description.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.date_attribution(placeholder="date_attribution") }}
+    <span class="error">
+      {% if form.date_attribution.errors %}
+      	<h5>must be like yyyy/mm/dd</h5>
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.date_expiration(placeholder="date_expiration") }}
+    <span class="error">
+      {% if form.date_expiration.errors %}
+        <h5>must be like yyyy/mm/dd</h5>
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.longitude(placeholder="longitude") }}
+    <span class="error">
+      {% if form.longitude.errors %}
+          <h5>must be like 9.632698</h5>
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.latitude(placeholder="latitude") }}
+    <span class="error">
+      {% if form.latitude.errors %}
+          <h5>must be like 36.35698</h5>
+      {% endif %}
+    </span>
+  </p>
+  <button class="btn btn-success" type="submit">Save</button>
+ </form>
+</body>
+</html>
+{% endblock %}

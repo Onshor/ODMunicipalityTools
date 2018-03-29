@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>   
+<head>
+      <!-- meta -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Municipalit tools for open data">
+      <meta name="keywords" content="Responsive, HTML5, Municipality, Tunisia, Opendata">
+      <title>Municipal app</title>
+      <meta name="author" content="med dahas">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <!-- styles -->
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-forms.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/entypo.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-core.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-rtl.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-rtl-core.css' ) }}">     
+   </head>
+<body class="login-page">
+  <div class="login-pag-inner">
+    <div class="animatedParent animateOnce z-index-50">
+      <div class="login-container animated growIn slower">
+        <div class="login-content">
+          <div class="login-branding">
+            <a href="http://onshor.org/"><img src="http://onshor.org/wp-content/uploads/2017/10/150x68.png" alt="Onshor" title="Onshor"></a>
+          </div>
+          <h2><strong>مرحباً </strong>,  الرجاء تسجيل الدخول</h2>
+          <form class="form-login" role="form" method="post" action="">
+            {{ form.csrf_token }}
+            <div class="form-group">
+              {{ form.email(type="Email", placeholder="البريد الإلكتروني", class="form-control") }}
+              {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                  {{ error }}
+               {% endfor %}
+             {% endif %}
+            </div>
+            <div class="form-group">
+              {{ form.password(type="password", placeholder="كلمة المرور", class="form-control") }}
+              {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    {{ error }}
+                {% endfor %}
+              {% endif %}
+            </div>
+          <!--
+          <div class="form-group">
+            <div class="checkbox checkbox-replace">
+                <input type="checkbox" id="remeber">
+                <label for="remeber">Remeber me</label>
+                </div>
+          </div>
+        -->
+            <div class="form-group">
+              <button class="btn btn-primary btn-block" type="submit">تسجيل الدخول</button>
+            </div>
+            <div class="form-group">
+              <p> <a href="/register">إحداث حساب</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- scripts -->
+  <script src="{{url_for('static', filename='js/plugins/css3-animate-it-plugin/css3-animate-it.js')}}"></script>
+  <!--Load JQuery-->
+  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
+  <!-- Load CSS3 Animate It Plugin JS -->
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
+</body>
+</html>

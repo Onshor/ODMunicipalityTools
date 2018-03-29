@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>   
+<head>
+      <!-- meta -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Municipalit tools for open data">
+      <meta name="keywords" content="Responsive, HTML5, Municipality, Tunisia, Opendata">
+      <title>Municipal app</title>
+      <meta name="author" content="med dahas">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <!-- styles -->
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-forms.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/entypo.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-core.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-rtl.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-rtl-core.css' ) }}">     
+   </head>
+{% block content %}
+<body class="login-page">
+  <div class="login-pag-inner">
+    <div class="animatedParent animateOnce z-index-50">
+      <div class="login-container animated growIn slower">
+        <div class="login-content">
+          <div class="login-branding">
+            <a href="http://onshor.org/"><img src="http://onshor.org/wp-content/uploads/2017/10/150x68.png" alt="Onshor" title="Onshor"></a>
+          </div>
+          <h2>إنشاء حساب</h2>
+          <form class="form-signin" role="form" method="post" action="">
+            {{ form.csrf_token }}                      
+            <div class="form-group">
+              {{ form.name(type="text", placeholder="الاسم", class="form-control") }}
+                {% if form.name.errors %}
+                  {% for error in form.name.errors %}
+                    {{ error }}
+                  {% endfor %}
+                {% endif %}
+            </div>   
+            <div class="form-group">
+              {{ form.last_name(type="text" ,placeholder="اللقب", class="form-control") }}
+                {% if form.last_name.errors %}
+                  {% for error in form.last_name.errors %}
+                    {{ error }}
+                  {% endfor %}
+                {% endif %}
+            </div>                     
+            <div class="form-group">
+              {{ form.email(type="text" ,placeholder="البريد الإلكتروني", class="form-control") }}
+                {% if form.email.errors %}
+                  {% for error in form.email.errors %}
+                    {{ error }}
+                  {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+              {{ form.municipal_id(type="text" ,placeholder="municipal_id", class="form-control",  style='height: 39px') }}
+                {% if form.municipal_id.errors %}
+                  {% for error in form.municipal_id.errors %}
+                    {{ error }}
+                  {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+              {{ form.password(type="text" ,placeholder="كلمة المرور", class="form-control") }}
+                {% if form.password.errors %}
+                  {% for error in form.password.errors %}
+                    {{ error }}
+                  {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+              {{ form.confirm(type="text" ,placeholder="تأكيد كلمة المرور", class="form-control") }}
+                {% if form.confirm.errors %}
+                  {% for error in form.confirm.errors %}
+                    {{ error }}
+                  {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group form-action">
+              <button class="btn btn-primary btn-block" type="submit">تسجيل</button>
+            </div>
+            <div class="form-group">
+              <p> لديك حساب<a href="/login">تسجيل الدخول</a></p>
+            </div>                        
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+<!--Load JQuery-->
+<script src="js/jquery.min.js"></script>
+<!-- Load CSS3 Animate It Plugin JS -->
+<script src="js/plugins/css3-animate-it-plugin/css3-animate-it.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</body>
+
