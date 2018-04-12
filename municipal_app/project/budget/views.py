@@ -59,7 +59,7 @@ def upload_file():
                         dpy = confirm_url + depecence_link_per_year
                         return render_template('budget/budget.html', rcs=rcs, dps=dps, rcy=rcy, dpy=dpy, parsed_annuel=True)
                     else:
-                        flash(u'ملف من بلدية أخرى الرجاء التثبت', 'warning')
+                        flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
                         return redirect(request.url)
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( AREPLFTMUN أو AREPMLFMUN)', 'danger')
@@ -76,7 +76,7 @@ def upload_file():
                         flash(u'تم حفظها في قاعدة البيانات', 'success')
                         return render_template('budget/budget.html', dpm=dpm, parsed_dep=True)
                     else:
-                        flash(u'ملف من بلدية أخرى الرجاء التثبت', 'warning')
+                        flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
                         return redirect(request.url)
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSITMNS )', 'danger')
@@ -93,7 +93,7 @@ def upload_file():
                         flash(u'تم حفظها في قاعدة البيانات', 'success')
                         return render_template('budget/budget.html', rcm=rcm, parsed_rect=True)
                     else:
-                        flash(u'ملف من بلدية أخرى الرجاء التثبت', 'warning')
+                        flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
                         return redirect(request.url)
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')

@@ -2,218 +2,218 @@
 
 {% block content %}
 
-	<h1 class="page-title"> الميزانية </h1>
-  <div class="row">
-        <div class="col-lg-12 animatedParent animateOnce z-index-50">
-          <div class="panel panel-default animated fadeInUp go">
-            <div class="panel-heading clearfix">
-              <h3 class="panel-title">الميزانية السنوية</h3>
-              <ul class="panel-tool-options"> 
-                <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
-                <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
-                <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
-              </ul>
+<h1 class="page-title"> الميزانية </h1>
+<div class="row">
+  <div class="col-lg-12 animatedParent animateOnce z-index-50">
+    <div class="panel panel-default animated fadeInUp go">
+      <div class="panel-heading clearfix">
+        <h3 class="panel-title">الميزانية السنوية</h3>
+        <ul class="panel-tool-options"> 
+          <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+          <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+          <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+        </ul>
+      </div>
+      <div class="panel-body">
+        <div class="col-6 col-md-4">
+          <div class="dropzone-previews">
+            <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
+              <input type="hidden" name="file_type" value='annuel'/>
+              <div class="input-group" >
+                <input type="text"  readonly/>
+                <label class="btn btn btn-primary">
+                  اختر ملف<input type="file" name = "file" style="display: none;">
+                </label>                      
+              </div>
+              <input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
+            </form> 
+          </div>
+        </div>
+        <div class="col-12 col-md-8">
+          {% if parsed_annuel %}
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-1">
+                <label class="control-label"><strong class="text-success">النفقات</strong></label>
+              </div>
+              <div class="col-lg-8 has-success">
+                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ rcs }}", readonly/>
+                <p id ="rcs" style="display: none;">{{ rcs }}</p>
+              </div>
+              <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#rcs')"/></div>
             </div>
-              <div class="panel-body">
-                <div class="col-6 col-md-4">
-                <div class="dropzone-previews">
-                  <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
-                    <input type="hidden" name="file_type" value='annuel'/>
-                    <div class="input-group" >
-                      <input type="text"  readonly/>
-                      <label class="btn btn btn-primary">
-                          اختر ملف<input type="file" name = "file" style="display: none;">
-                      </label>                      
-                    </div>
-                      <input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
-                    </form> 
-                  </div>
-                </div>
-                <div class="col-12 col-md-8">
-                  {% if parsed_annuel %}
-                  <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-lg-2">
-                        <label class="control-label"><strong class="text-success">النفقات</strong></label>
-                      </div>
-                      <div class="col-lg-8 has-success">
-                          <input type="text" class=" panel-title form-control has-success blockquote-reverse" placeholder="{{ rcs }}", readonly/>
-                          <p id ="rcs" style="display: none;">{{ rcs }}</p>
-                      </div>
-                      <div class="col-lg-2"><button class="btn btn-primary btn-outline btn-block" type="button"  onclick="copyToClipboard('#rcs')">نسخ الرابط </button></div>
-                    </div>
-                    <div class="line-dashed"></div>
-                    <div class="row">
-                      <div class="col-lg-2">
-                        <label class="control-label"><strong class="text-success">الموارد</strong></label>
-                      </div>
-                      <div class="col-lg-8 has-success">
-                          <input type="text" class=" panel-title form-control has-success blockquote-reverse" placeholder="{{ dps }}", readonly/>
-                          <p id ="dps" style="display: none;">{{ dps }}</p>
-                      </div>
-                      <div class="col-lg-2"><button class="btn btn-primary btn-outline btn-block" type="button" onclick="copyToClipboard('#dps')">نسخ الرابط </button></div>
-                    </div>
-                    <div class="line-dashed"></div>
-                    <div class="row">
-                      <div class="col-lg-2">
-                        <label class="control-label"><strong class="text-success">النفقات حسب السنة</strong></label>
-                      </div>
-                      <div class="col-lg-8 has-success">
-                          <input type="text" class=" panel-title form-control has-success blockquote-reverse" placeholder="{{ rcy }}", readonly/>
-                          <p id ="rcy" style="display: none;">{{ rcy }}</p>
-                      </div>
-                      <div class="col-lg-2">
-                        <button class="btn btn-primary btn-outline btn-block" onclick="copyToClipboard('#rcy')" type="button" >نسخ الرابط </button></div>
-                    </div>
-                    <div class="line-dashed"></div>
-                    <div class="row">
-                      <div class="col-lg-2">
-                        <label class="control-label"><strong class="text-success">الموارد حسب السنة</strong></label>
-                      </div>
-                      <div class="col-lg-8 has-success">
-                          <input type="text" class=" panel-title form-control has-success blockquote-reverse" placeholder="{{ dpy }}", readonly/>
-                          <p id ="dpy" style="display: none;">{{ dpy }}</p>
-                      </div>
-                      <div class="col-lg-2"><button class="btn btn-primary btn-outline btn-block" type="button" onclick="copyToClipboard('#dpy')">نسخ الرابط </button></div>
-                    </div>
-                    <div class="line-dashed"></div>
-                  </div>
-                  {% endif %}
-                </div>
+            <div class="line-dashed"></div>
+            <div class="row">
+              <div class="col-lg-1">
+                <label class="control-label"><strong class="text-success">الموارد</strong></label>
+              </div>
+              <div class="col-lg-8 has-success">
+                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ dps }}", readonly/>
+                <p id ="dps" style="display: none;">{{ dps }}</p>
+              </div>
+              <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" value='نسخ الرابط' type="button" onclick="copyToClipboard('#dps')"></div>
             </div>
+            <div class="line-dashed"></div>
+            <div class="row">
+              <div class="col-lg-1">
+                <label class="control-label"><strong class="text-success">النفقات حسب السنة</strong></label>
+              </div>
+              <div class="col-lg-8 has-success">
+                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ rcy }}", readonly/>
+                <p id ="rcy" style="display: none;">{{ rcy }}</p>
+              </div>
+              <div class="col-lg-3">
+                <input class="btn btn-primary btn-outline btn-block" onclick="copyToClipboard('#rcy')" value='نسخ الرابط' type="button" ></div>
+              </div>
+              <div class="line-dashed"></div>
+              <div class="row">
+                <div class="col-lg-1">
+                  <label class="control-label"><strong class="text-success">الموارد حسب السنة</strong></label>
+                </div>
+                <div class="col-lg-8 has-success">
+                  <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ dpy }}", readonly/>
+                  <p id ="dpy" style="display: none;">{{ dpy }}</p>
+                </div>
+                <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#dpy')"/></div>
+              </div>
+              <div class="line-dashed"></div>
+            </div>
+            {% endif %}
           </div>
         </div>
       </div>
+    </div>
+  </div>
   <div class="row">
-        <div class="col-lg-12 animatedParent animateOnce z-index-50">
-          <div class="panel panel-default animated fadeInUp go">
-            <div class="panel-heading clearfix">
-              <h3 class="panel-title">النفقات الشهرية </h3>
-              <ul class="panel-tool-options"> 
-                <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
-                <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
-                <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
-              </ul>
-            </div>
-            <div class="panel-body">
-              <div class="col-6 col-md-4">
-                <div class="dropzone-previews">
-                  <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
-                    <input type="hidden" name="file_type" value='dep_month'/>
-                    <div class="input-group" >
-                      <input type="text"  readonly/>
-                      <label class="btn btn btn-primary">
-                          اختر ملف<input type="file" name = "file" style="display: none;">
-                      </label>                      
-                    </div>
-                      <input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
-                    </form> 
-                  </div>
+    <div class="col-lg-12 animatedParent animateOnce z-index-50">
+      <div class="panel panel-default animated fadeInUp go">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title">النفقات الشهرية </h3>
+          <ul class="panel-tool-options"> 
+            <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+            <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+            <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <div class="col-6 col-md-4">
+            <div class="dropzone-previews">
+              <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
+                <input type="hidden" name="file_type" value='dep_month'/>
+                <div class="input-group" >
+                  <input type="text"  readonly/>
+                  <label class="btn btn btn-primary">
+                    اختر ملف<input type="file" name = "file" style="display: none;">
+                  </label>                      
                 </div>
-                <div class="col-12 col-md-8">
-                  {% if parsed_dep %}
-                  <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-lg-2">
-                        <label class="control-label"><strong class="text-success">النفقات الشهرية للسنة الحالية</strong></label>
-                      </div>
-                      <div class="col-lg-8 has-success">
-                          <input type="text" class=" panel-title form-control has-success blockquote-reverse" placeholder="{{ dpm }}", readonly/>
-                          <p id ="dpm" style="display: none;">{{ dpm }}</p>
-                      </div>
-                      <div class="col-lg-2"><button class="btn btn-primary btn-outline btn-block" type="button"  onclick="copyToClipboard('#dpm')">نسخ الرابط </button></div>
-                    </div>
-                    <div class="line-dashed"></div>
-                  </div>
-                  {% endif %}
-                </div>
+                <input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
+              </form> 
             </div>
+          </div>
+          <div class="col-12 col-md-8">
+            {% if parsed_dep %}
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-1">
+                  <label class="control-label"><strong class="text-success">النفقات الشهرية للسنة الحالية</strong></label>
+                </div>
+                <div class="col-lg-8 has-success">
+                  <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ dpm }}", readonly/>
+                  <p id ="dpm" style="display: none;">{{ dpm }}</p>
+                </div>
+                <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#dpm')"/></div>
+              </div>
+              <div class="line-dashed"></div>
+            </div>
+            {% endif %}
           </div>
         </div>
       </div>
+    </div>
+  </div>
   <div class="row">
-        <div class="col-lg-12 animatedParent animateOnce z-index-50">
-          <div class="panel panel-default animated fadeInUp go">
-            <div class="panel-heading clearfix">
-              <h3 class="panel-title">الموارد الشهرية</h3>
-              <ul class="panel-tool-options"> 
-                <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
-                <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
-                <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
-              </ul>
-            </div>
-            <div class="panel-body">
-              <div class="col-6 col-md-4">
-                <div class="dropzone-previews">
-                  <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
-                    <input type="hidden" name="file_type" value='rec_month'/>
-                    <div class="input-group" >
-                      <input type="text"  readonly/>
-                      <label class="btn btn btn-primary">
-                          اختر ملف<input type="file" name = "file" style="display: none;">
-                      </label>                      
-                    </div>
-                      <input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
-                    </form> 
-                  </div>
+    <div class="col-lg-12 animatedParent animateOnce z-index-50">
+      <div class="panel panel-default animated fadeInUp go">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title">الموارد الشهرية</h3>
+          <ul class="panel-tool-options"> 
+            <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+            <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+            <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <div class="col-6 col-md-4">
+            <div class="dropzone-previews">
+              <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
+                <input type="hidden" name="file_type" value='rec_month'/>
+                <div class="input-group" >
+                  <input type="text"  readonly/>
+                  <label class="btn btn btn-primary">
+                    اختر ملف<input type="file" name = "file" style="display: none;">
+                  </label>                      
                 </div>
-                <div class="col-12 col-md-8">
-                  {% if parsed_rect %}
-                  <div class="container-fluid">
-                    <div class="row">
-                      <div class="col-lg-2">
-                        <label class="control-label"><strong class="text-success">النفقات الشهرية للسنة الحالية</strong></label>
-                      </div>
-                      <div class="col-lg-8 has-success">
-                          <input type="text" class=" panel-title form-control has-success blockquote-reverse" placeholder="{{ rcm }}", readonly/>
-                          <p id ="rcm" style="display: none;">{{ rcm }}</p>
-                      </div>
-                      <div class="col-lg-2"><button class="btn btn-primary btn-outline btn-block" type="button"  onclick="copyToClipboard('#rcm')">نسخ الرابط </button></div>
-                    </div>
-                    <div class="line-dashed"></div>
-                  </div>
-                  {% endif %}
-                </div>
+                <input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
+              </form> 
             </div>
+          </div>
+          <div class="col-12 col-md-8">
+            {% if parsed_rect %}
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-1">
+                  <label class="control-label"><strong class="text-success">النفقات الشهرية للسنة الحالية</strong></label>
+                </div>
+                <div class="col-lg-8 has-success">
+                  <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ rcm }}", readonly/>
+                  <p id ="rcm" style="display: none;">{{ rcm }}</p>
+                </div>
+                <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#rcm')"/></div>
+              </div>
+              <div class="line-dashed"></div>
+            </div>
+            {% endif %}
           </div>
         </div>
       </div>
-{% block js %}
-<script>
-$(function() {
+    </div>
+  </div>
+  {% block js %}
+  <script>
+  $(function() {
 
   // We can attach the `fileselect` event to all file inputs on the page
   $(document).on('change', ':file', function() {
     var input = $(this),
-        numFiles = input.get(0).files ? input.get(0).files.length : 1,
-        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
     input.trigger('fileselect', [numFiles, label]);
   });
 
   // We can watch for our custom `fileselect` event like this
   $(document).ready( function() {
-      $(':file').on('fileselect', function(event, numFiles, label) {
+    $(':file').on('fileselect', function(event, numFiles, label) {
 
-          var input = $(this).parents('.input-group').find(':text'),
-              log = numFiles > 1 ? numFiles + ' files selected' : label;
+      var input = $(this).parents('.input-group').find(':text'),
+      log = numFiles > 1 ? numFiles + ' files selected' : label;
 
-          if( input.length ) {
-              input.val(log);
-          } else {
-              if( log ) alert(log);
-          }
+      if( input.length ) {
+        input.val(log);
+      } else {
+        if( log ) alert(log);
+      }
 
-      });
+    });
   });
   
 });
-function copyToClipboard(element) {
-  var $temp = $("<input>");
-  $("body").append($temp);
-  $temp.val($(element).text()).select();
-  document.execCommand("copy");
-  $temp.remove();
-}
-</script>
-{% endblock %}
-{% endblock %}
+  function copyToClipboard(element) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val($(element).text()).select();
+    document.execCommand("copy");
+    $temp.remove();
+  }
+  </script>
+  {% endblock %}
+  {% endblock %}

@@ -1,0 +1,412 @@
+{% extends "_base.html" %}
+{% block content %}
+<h1 class="page-title">تراخيص البناء</h1>
+<div class="panel panel-default animated fadeInUp go">
+  <div class="panel-heading clearfix">
+    {% if update %}
+    <h3 class="panel-title"> تحيين الرخص {{ name }}</h3>
+    {% else %}
+    <h3 class="panel-title">إضافة ترخيص جديد</h3>
+    {% endif %}
+    <ul class="panel-tool-options"> 
+      <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+      <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+    </ul>
+  </div>
+  {% if update %}
+  <div class="panel-body">
+    <form action="/accept_permisconst" method="POST">
+      <input class="btn btn-success btn-outline btn-block" name='button' type="submit" value= 'قبول الرخصة'>
+      <input type="hidden" name="type" value={{permis_id}}>
+      <input type="hidden" name="name" value={{name}}>
+    </form>
+    <form action="/refuse_permisconst" method="POST">
+      <input class="btn btn-red btn-outline btn-block" type='submit' name='button' value='رفض الرخصة'>
+      <input type="hidden" name="type" value={{permis_id}}>
+      <input type="hidden" name="name" value={{name}}>
+    </form>
+    {% if check %}
+    {% if accept %}
+    <form class="form-horizontal" role="form" method="post" action="">
+      {{ form.csrf_token }}
+      <div class="form-group">
+        <label class="col-sm-3 control-label">عدد قرار رخصة البناء *</label> 
+        <div class="col-sm-5">
+          {{ form.num_permis( class="form-control",type="number") }}
+          {% if form.num_permis.errors %}
+          {% for error in form.num_permis.errors %}
+          <h5>هذه الخانة مطلوبه</h5>
+          {% endfor %}
+          {% endif %}
+        </div> 
+      </div>
+      <div class="line-dashed"></div>
+      <div class="form-group"> 
+        <label class="col-sm-3 control-label">تاريخ اسناد الرخصة *</label> 
+        <div class="col-sm-5">
+          {{ form.date_attribution( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd') }}
+          {% if form.date_attribution.errors %}
+          {% for error in form.date_attribution.errors %}
+          <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
+          {% endfor %}
+          {% endif %}
+        </div> 
+      </div>
+      <div class="line-dashed"></div>
+      <div class="form-group"> 
+        <label class="col-sm-3 control-label">تاريخ انتهاء الصلوحيّة *</label> 
+        <div class="col-sm-5">
+          {{ form.date_expiration( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd') }}
+          {% if form.date_expiration.errors %}
+          {% for error in form.date_expiration.errors %}
+          <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
+          {% endfor %}
+          {% endif %}
+        </div> 
+      </div>
+      <div class="line-dashed"></div>
+      <div class="form-group"> 
+        <label class="col-sm-3 control-label">معلوم قار</label> 
+        <div class="col-sm-5">
+          {{ form.mont_charge_fix( class="form-control", type="number", placeholder='', value='0') }}
+          {% if form.mont_charge_fix.errors %}
+          {% for error in form.mont_charge_fix.errors %}
+          {{ error }}
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="line-dashed"></div>
+      <div class="form-group"> 
+        <label class="col-sm-3 control-label">قرار الترخيص</label> 
+        <div class="col-sm-5">
+          {{ form.mont_decision( class="form-control", type="number", placeholder='', value='0') }}
+          {% if form.mont_decision.errors %}
+          {% for error in form.mont_decision.errors %}
+          {{ error }}
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="line-dashed"></div>
+      <div class="form-group"> 
+        <label class="col-sm-3 control-label">سياج</label> 
+        <div class="col-sm-5">
+          {{ form.mont_cloture( class="form-control", type="number", placeholder='', value='0') }}
+          {% if form.mont_cloture.errors %}
+          {% for error in form.mont_cloture.errors %}
+          {{ error }}
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="line-dashed"></div>
+      <div class="form-group"> 
+        <label class="col-sm-3 control-label">معلوم تصاعدي</label> 
+        <div class="col-sm-5">
+          {{ form.mont_charge_ascend( class="form-control", type="number",  placeholder='', value='0') }}
+          {% if form.mont_charge_ascend.errors %}
+          {% for error in form.mont_charge_ascend.errors %}
+          {{ error }}
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+      <div class="form-group" id='save'>
+       <div class="col-sm-6">
+         <button class="btn btn-primary btn-block" type="submit">حفظ</button>
+         <input type="hidden" name="type" value={{permis_id}}>
+       </div>
+       <div class="col-sm-6">
+         <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
+       </div>
+     </div>
+   </form>
+   {% else %}
+   <form class="form-horizontal" role="form" method="post" action="">
+    {{ form.csrf_token }}
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">تاريخ الإعلام بالرفض *</label> 
+      <div class="col-sm-5">
+       {{ form.date_refuse( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd', ) }}
+       {% if form.date_refuse.errors %}
+       {% for error in form.date_refuse.errors %}
+       <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
+       {% endfor %}
+       {% endif %}
+     </div> 
+   </div>
+   <div class="form-group" id='save'>
+     <div class="col-sm-6">
+       <button class="btn btn-primary btn-block" type="submit">حفظ</button>
+       <input type="hidden" name="type" value={{permis_id}}>
+     </div>
+     <div class="col-sm-6">
+       <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
+     </div>
+   </div>
+ </form>  
+ {% endif %}
+ {% endif %}
+</div>
+{% else %}
+<div class="panel-body">
+  <form class="form-horizontal" role="form" method="post" action="">
+    {{ form.csrf_token }}
+    <div class="form-group">
+      <label class="col-sm-3 control-label">رقم المطلب</label> 
+      <div class="col-sm-5">
+        {{ form.num_demande( class="form-control",type="number") }}
+        {% if form.num_demande.errors %}
+        {% for error in form.num_demande.errors %}
+        <h5>هذه الخانة مطلوبه</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">تاريخ إيداع المطلب *</label> 
+      <div class="col-sm-5">
+        {{ form.date_depot( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd') }}
+        {% if form.date_depot.errors %}
+        {% for error in form.date_depot.errors %}
+        <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">إسم و لقب  صاحب الرخصة *</label> 
+      <div class="col-sm-5">
+        {{ form.nom_titulaire( class="form-control",type="text") }}
+        {% if form.nom_titulaire.errors %}
+        {% for error in form.nom_titulaire.errors %}
+        <h5>هذه الخانة مطلوبه</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">رقم بطاقة التعريف أو بطاقة الاقامة للاجانب *</label> 
+      <div class="col-sm-5"> 
+        {{ form.num_cin( class="form-control",type="text") }}
+        {% if form.num_cin.errors %}
+        {% for error in form.num_cin.errors %}
+        <h5>هذه الخانة مطلوبه</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">العنوان *</label> 
+      <div class="col-sm-5"> 
+        {{ form.address( class="form-control",type="text") }}
+        {% if form.address.errors %}
+        {% for error in form.address.errors %}
+        <h5>هذه الخانة مطلوبه</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">نوع البناء *</label> 
+      <div class="col-sm-5"> 
+        {{ form.type_construct( class="form-control",type="text") }}
+        {% if form.type_construct.errors %}
+        {% for error in form.type_construct.errors %}
+        <h5>هذه الخانة مطلوبه</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">وصف الأشغال</label> 
+      <div class="col-sm-5"> 
+        {{ form.desc_construct( class="form-control",type="text") }}
+        {% if form.desc_construct.errors %}
+        {% for error in form.desc_construct.errors %}
+        <h5>هذه الخانة مطلوبه</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+                <!--
+                <div class="line-dashed"></div>
+                <div class="form-group"> 
+                  <label class="col-sm-3 control-label">المنطقة البلدية</label> 
+                  <div class="col-sm-5">
+                    {{ form.zone_municipale( class="form-control",type="text") }}
+                    {% if form.zone_municipale.errors %}
+                      {% for error in form.zone_municipale.errors %}
+                          <h5>هذه الخانة مطلوبه</h5>
+                      {% endfor %}
+                    {% endif %}
+                  </div> 
+                </div>
+              -->
+              <div class="line-dashed"></div>
+              <div class="form-group"> 
+                <label class="col-sm-3 control-label">longitude *</label> 
+                <div class="col-sm-5"> 
+                  {{ form.longitude( class="form-control",type="text", placeholder="صيغة 36.02654") }}
+                  {% if form.longitude.errors %}
+                  {% for error in form.longitude.errors %}
+                  <h5>36.0356 هذه الخانة مطلوبه و صيغة</h5>
+                  {% endfor %}
+                  {% endif %}
+                </div> 
+              </div>
+              <div class="line-dashed"></div>
+              <div class="form-group"> 
+                <label class="col-sm-3 control-label">latitude *</label> 
+                <div class="col-sm-5"> 
+                  {{ form.latitude( class="form-control",type="text", placeholder='صيغة 9.02654') }}
+                  {% if form.latitude.errors %}
+                  {% for error in form.latitude.errors %}
+                  <h5>9.0356 هذه الخانة مطلوبه و صيغة</h5>
+                  {% endfor %}
+                  {% endif %}
+                </div> 
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary btn-block" type="submit">حفظ</button>
+                
+              </div>
+            </form>
+          </div>
+          {% endif %}
+        </div>  
+        
+
+        {% block js %}
+
+        <script>
+        function show_accept()
+        {
+          document.getElementById('accept').style.display="block"
+          document.getElementById('refuse').style.display="none"
+          document.getElementById('date_refuse').value = null; 
+        }
+        function show_refus()
+        {
+          document.getElementById('refuse').style.display="block" 
+          document.getElementById('accept').style.display="none";
+        }
+        $(document).ready(function () {
+          $('#datepicker').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            todayHighlight: true
+          });
+
+          $('#date-popup').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            todayHighlight: true
+          });
+
+          $('#year-view').datepicker({
+            startView: 2,
+            keyboardNavigation: false,
+            forceParse: false,
+            format: "yyyy/mm/dd"
+          });
+
+          var dragFixed = document.getElementById('drag-fixed');
+          noUiSlider.create(dragFixed, {
+            start: [40, 60],
+            behaviour: 'drag-fixed',
+            connect: true,
+            range: {
+              'min': 20,
+              'max': 80
+            }
+          });
+
+          var basicSlider = document.getElementById('basic-slider');
+          noUiSlider.create(basicSlider, {
+            start: 40,
+            behaviour: 'tap',
+            connect: 'upper',
+            range: {
+              'min': 20,
+              'max': 80
+            }
+          });
+
+          var rangeSlider = document.getElementById('range-slider');
+          noUiSlider.create(rangeSlider, {
+            start: [40, 60],
+            behaviour: 'drag',
+            connect: true,
+            range: {
+              'min': 20,
+              'max': 80
+            }
+          });
+
+          $(".select2").select2();
+          $(".select2-placeholer").select2({
+            allowClear: true
+          });
+
+    //$('.colorpicker').colorpicker();
+
+    // Colorpicker
+    if ($.isFunction($.fn.colorpicker))
+    {
+      $(".colorpicker").each(function (i, el)
+      {
+        var $this = $(el);
+        var  opts = {
+              //format: attrDefault($this, 'format', false)
+            };
+            var $nextEle = $this.next();
+            var $prevEle = $this.prev();
+            var $colorPreview = $this.siblings('.input-group-addon').find('.icon-color-preview');
+
+            $this.colorpicker(opts);
+
+            if ($nextEle.is('.input-group-addon') && $nextEle.has('span'))
+            {
+              $nextEle.on('click', function (ev)
+              {
+                ev.preventDefault();
+                $this.colorpicker('show');
+              });
+            }
+
+            if ($prevEle.is('.input-group-addon') && $prevEle.has('span'))
+            {
+              $prevEle.on('click', function (ev)
+              {
+                ev.preventDefault();
+                $this.colorpicker('show');
+              });
+            }
+
+            if ($colorPreview.length)
+            {
+              $this.on('changeColor', function (ev) {
+
+                $colorPreview.css('background-color', ev.color.toHex());
+              });
+
+              if ($this.val())
+              {
+                $colorPreview.css('background-color', $this.val());
+              }
+            }
+          });
+}
+});
+</script>
+{% endblock %}
+
+{% endblock %}

@@ -149,12 +149,11 @@ class Permisconstruct(db.Model):
     longitude = db.Column(db.Float, nullable=True)
     laltitude = db.Column(db.Float, nullable=True)
     permis_status = db.Column(db.String, nullable=True)
-    mont_charge_fix = db.Column(db.Integer, nullable=True, default=0)
-    mont_charge_ascend = db.Column(db.Integer, nullable=True, default=0)
-    mont_cloture = db.Column(db.Integer, nullable=True, default=0)
-    mont_decision = db.Column(db.Integer, nullable=True, default=0)
-    mont_total = db.Column(db.Integer, nullable=True, default=0)
-
+    mont_charge_fix = db.Column(db.Integer, nullable=True)
+    mont_charge_ascend = db.Column(db.Integer, nullable=True)
+    mont_cloture = db.Column(db.Integer, nullable=True)
+    mont_decision = db.Column(db.Integer, nullable=True)
+    mont_total = db.Column(db.Integer, nullable=True)
 
 
     def __init__(self, municipal_id, user_id, num_demande, date_depot, nom_titulaire, num_cin, type_construct, permis_status,
