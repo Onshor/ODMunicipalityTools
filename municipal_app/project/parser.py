@@ -5,7 +5,6 @@ import xml.etree.ElementTree as et
 import datetime
 import csv
 from list_municipality import decode_month
-from pprint import pprint as pp
 
 
 def decode_unicode(v):
@@ -138,7 +137,6 @@ def parse_recette_file(xml_file):
     parser = et.XMLParser(encoding="Windows-1256")
     tree = et.parse(xml_file, parser=parser)
     soup = tree.getroot()
-    pp(soup.find('CF_DATE').text)
     year = soup.find('CF_DATE').text.split('/')[0]
     month = soup.find('CF_DATE').text.split('/')[1].split('/')[-1]
     for list_g in soup.findall('LIST_G_1'):
@@ -195,7 +193,6 @@ def parse_depence_file(xml_file):
 def get_csv_file_per_year(data, ref, year_list):
     _ = ['Titre', 'Article', 'Paragraphe', 'Sous_paragraphe', 'Imputation']
     fieldnames = _ + year_list
-    pp(fieldnames)
     filepath = 'project/static/files/' + ref + '.csv'
     with open(filepath, 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)

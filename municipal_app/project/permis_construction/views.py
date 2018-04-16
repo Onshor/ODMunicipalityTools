@@ -11,6 +11,8 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask.ext.login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
 from project import db
+from pprint import pprint as pp
+import datetime
 import csv
 
 ################
@@ -74,7 +76,32 @@ def consult_permisconst():
 def update_permisconst():
     permis_id = request.values['type']
     name = request.values['name']
-    return render_template('permis_construction/form_permis_construction.html', update=True, check=False, permis_id=permis_id, name=name)
+    save = True
+    if len(request.values) > 3:
+        if not check_date(request.values['date_depot']):
+            flash(u'الرجاء التثبت في صيغة تاريخ التسجيل yyyy/mm/dd', 'warning')
+            save = False
+        if not check_float(request.values['longitude']):
+            flash(u'longitude verified format', 'warning')
+            save = False
+        if not check_float(request.values['laltitude']):
+            flash(u'laltitude verified format', 'warning')
+            save = False
+        if save:
+            permis = Permisconstruct.query.get(int(permis_id))
+            permis.nom_titulaire = request.values['nom_titulaire']
+            permis.latitude = float(request.values['laltitude'])
+            permis.num_demande = request.values['num_demande']
+            permis.longitude = float(request.values['longitude'])
+            permis.date_depot = request.values['date_depot']
+            permis.address = request.values['address']
+            permis.desc_construct = request.values['desc_construct']
+            db.session.commit()
+            flash(u'تم تحيين الرخصة', 'success')
+            return redirect(url_for('permis_construction.consult_permisconst'))
+    permis_data = Permisconstruct.query.filter_by(id=permis_id).first()
+    permis_data = reforme(permis_data.__dict__)
+    return render_template('permis_construction/form_permis_construction.html', update=True, check=False, permis_id=permis_id, name=name, permis_data=permis_data)
 
 
 @permisconst_blueprint.route('/refuse_permisconst', methods=['GET', 'POST'])
@@ -83,6 +110,7 @@ def update_permisconst():
 def refuse_permisconst():
     permis_id = request.values['type']
     name = request.values['name']
+    permis_data = Permisconstruct.query.filter_by(id=permis_id).first()
     form = PermisrefuseForm()
     if form.validate_on_submit():
         permis = Permisconstruct.query.get(int(permis_id))
@@ -93,7 +121,7 @@ def refuse_permisconst():
         return redirect(url_for('permis_construction.consult_permisconst'))
     else:
         flash(u'الرجاء التثبت فالإستمارة ', 'warning')
-    return render_template('permis_construction/form_permis_construction.html', form=form, update=True, accept=False, check=True, permis_id=permis_id, name=name)
+    return render_template('permis_construction/form_permis_construction.html', form=form, update=True, accept=False, check=True, permis_id=permis_id, name=name, permis_data=reforme(permis_data.__dict__))
 
 
 @permisconst_blueprint.route('/accept_permisconst', methods=['GET', 'POST'])
@@ -102,6 +130,7 @@ def refuse_permisconst():
 def accept_permisconst():
     permis_id = request.values['type']
     name = request.values['name']
+    permis_data = Permisconstruct.query.filter_by(id=permis_id).first()
     form = PermisupdateForm()
     if form.validate_on_submit():
         permis = Permisconstruct.query.get(int(permis_id))
@@ -119,7 +148,7 @@ def accept_permisconst():
         return redirect(url_for('permis_construction.consult_permisconst'))
     else:
         flash(u'الرجاء التثبت فالإستمارة ', 'warning')
-    return render_template('permis_construction/form_permis_construction.html', form=form, update=True, accept=True, check=True, permis_id=permis_id, name=name)
+    return render_template('permis_construction/form_permis_construction.html', form=form, update=True, accept=True, check=True, permis_id=permis_id, name=name, permis_data=reforme(permis_data.__dict__))
 
 
 @permisconst_blueprint.route('/get_files', methods=['GET', 'POST'])
@@ -186,3 +215,29 @@ def decode_unicode(v):
         return v.encode('utf-8')
     except:
         return v
+
+
+def check_date(date):
+    try:
+        datetime.datetime.strptime(date, "%Y/%m/%d")
+        return True
+    except:
+        return False
+
+
+def reforme(p_dict):
+    new_dict = {}
+    for k, v in p_dict.iteritems():
+        if k in ['date_depot', 'date_refuse', 'date_expiration', 'date_attribution'] and v:
+            new_dict[k] = v.strftime("%Y/%m/%d")
+        else:
+            new_dict[k] = v
+    return new_dict
+
+
+def check_float(value):
+    try:
+        x = float(value)
+        return True
+    except:
+        return False

@@ -182,6 +182,38 @@ class Permisconstruct(db.Model):
         self.mont_decision = mont_decision
         self.mont_total = mont_total
 
+    def get_id(self):
+        return self.id
+
+
+class Proprietemunicipal(db.Model):
+    __tablename__ = "propriete_municipal"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    Titre_Foncier = db.Column(db.String, nullable=True)
+    Type_Usage = db.Column(db.String, nullable=True)
+    Type_du_Bien = db.Column(db.String, nullable=True)
+    Adresse_Localisation = db.Column(db.String, nullable=True)
+    Mode_Octroi = db.Column(db.String, nullable=True)
+    Surface = db.Column(db.Float, nullable=True)
+    Longitude = db.Column(db.Float, nullable=True)
+    Laltitude = db.Column(db.Float, nullable=True)
+    Type_Proprety = db.Column(db.String, nullable=True)
+
+    def __init__(self, municipal_id, user_id, Titre_Foncier, Type_du_Bien, Adresse_Localisation, Mode_Octroi,
+                 Surface, Longitude, Laltitude, Type_Proprety, Type_Usage):
+        self.municipal_id = municipal_id
+        self.user_id = user_id
+        self.Titre_Foncier = Titre_Foncier
+        self.Type_du_Bien = Type_du_Bien
+        self.Adresse_Localisation = Adresse_Localisation
+        self.Mode_Octroi = Mode_Octroi
+        self.Surface = Surface
+        self.Longitude = Longitude
+        self.Laltitude = Laltitude
+        self.Type_Proprety = Type_Proprety
+        self.Type_Usage = Type_Usage
 
     def get_id(self):
         return self.id

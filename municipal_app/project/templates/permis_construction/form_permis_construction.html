@@ -15,139 +15,176 @@
   </div>
   {% if update %}
   <div class="panel-body">
-    <form action="/accept_permisconst" method="POST">
-      <input class="btn btn-success btn-outline btn-block" name='button' type="submit" value= 'قبول الرخصة'>
-      <input type="hidden" name="type" value={{permis_id}}>
-      <input type="hidden" name="name" value={{name}}>
-    </form>
-    <form action="/refuse_permisconst" method="POST">
-      <input class="btn btn-red btn-outline btn-block" type='submit' name='button' value='رفض الرخصة'>
-      <input type="hidden" name="type" value={{permis_id}}>
-      <input type="hidden" name="name" value={{name}}>
-    </form>
-    {% if check %}
-    {% if accept %}
-    <form class="form-horizontal" role="form" method="post" action="">
-      {{ form.csrf_token }}
+    <form action="/update_permisconst" method="POST">
       <div class="form-group">
-        <label class="col-sm-3 control-label">عدد قرار رخصة البناء *</label> 
-        <div class="col-sm-5">
-          {{ form.num_permis( class="form-control",type="number") }}
-          {% if form.num_permis.errors %}
-          {% for error in form.num_permis.errors %}
-          <h5>هذه الخانة مطلوبه</h5>
-          {% endfor %}
-          {% endif %}
-        </div> 
-      </div>
-      <div class="line-dashed"></div>
-      <div class="form-group"> 
-        <label class="col-sm-3 control-label">تاريخ اسناد الرخصة *</label> 
-        <div class="col-sm-5">
-          {{ form.date_attribution( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd') }}
-          {% if form.date_attribution.errors %}
-          {% for error in form.date_attribution.errors %}
-          <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
-          {% endfor %}
-          {% endif %}
-        </div> 
-      </div>
-      <div class="line-dashed"></div>
-      <div class="form-group"> 
-        <label class="col-sm-3 control-label">تاريخ انتهاء الصلوحيّة *</label> 
-        <div class="col-sm-5">
-          {{ form.date_expiration( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd') }}
-          {% if form.date_expiration.errors %}
-          {% for error in form.date_expiration.errors %}
-          <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
-          {% endfor %}
-          {% endif %}
-        </div> 
-      </div>
-      <div class="line-dashed"></div>
-      <div class="form-group"> 
-        <label class="col-sm-3 control-label">معلوم قار</label> 
-        <div class="col-sm-5">
-          {{ form.mont_charge_fix( class="form-control", type="number", placeholder='', value='0') }}
-          {% if form.mont_charge_fix.errors %}
-          {% for error in form.mont_charge_fix.errors %}
-          {{ error }}
-          {% endfor %}
-          {% endif %}
+        <div class="row">
+          <div class="col-md-4">إسم و لقب صاحب الرخصة<div class="form-group-inner"><input type="text" class="form-control"  placeholder="" name='nom_titulaire' value='{{permis_data.nom_titulaire}}' id ="maj" readonly></div></div>
+          <div class="col-md-4">رقم المطلب<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='num_demande' value='{{permis_data.num_demande}}' id ="maj" readonly></div></div>
+          <div class="col-md-4">رقم بطاقة التعريف أو بطاقة الاقامة للاجانب<div class="form-group-inner"><input type="text" class="form-control" placeholder="" id ="maj" value='{{permis_data.num_cin}}' readonly></div></div>
+        </div>                    
+        <div class="row">
+          <div class="col-md-4">العنوان<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='address' value='{{permis_data.address}}' id ="maj" readonly></div></div>
+          <div class="col-md-4">وصف الأشغال<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='desc_construct' value='{{permis_data.desc_construct}}' id ="maj" readonly></div></div>
+          <div class="col-md-4">نوع البناء<div class="form-group-inner"><input type="text" class="form-control" placeholder="" value='{{permis_data.type_construct}}' id ="maj" readonly></div></div>
         </div>
-      </div>
-      <div class="line-dashed"></div>
-      <div class="form-group"> 
-        <label class="col-sm-3 control-label">قرار الترخيص</label> 
-        <div class="col-sm-5">
-          {{ form.mont_decision( class="form-control", type="number", placeholder='', value='0') }}
-          {% if form.mont_decision.errors %}
-          {% for error in form.mont_decision.errors %}
-          {{ error }}
-          {% endfor %}
-          {% endif %}
+        <div class="row">
+          <div class="col-md-4">تاريخ إيداع المطلب<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='date_depot' value='{{permis_data.date_depot}}' id ="maj" readonly></div></div>
+          <div class="col-md-4">longitude<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='longitude' value='{{permis_data.longitude}}' id ="maj" readonly></div></div>
+          <div class="col-md-4">laltitude<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='laltitude' value='{{permis_data.laltitude}}' id ="maj" readonly></div></div>
+          <div class="col-md-4"></div>
         </div>
-      </div>
-      <div class="line-dashed"></div>
-      <div class="form-group"> 
-        <label class="col-sm-3 control-label">سياج</label> 
-        <div class="col-sm-5">
-          {{ form.mont_cloture( class="form-control", type="number", placeholder='', value='0') }}
-          {% if form.mont_cloture.errors %}
-          {% for error in form.mont_cloture.errors %}
-          {{ error }}
-          {% endfor %}
-          {% endif %}
-        </div>
-      </div>
-      <div class="line-dashed"></div>
-      <div class="form-group"> 
-        <label class="col-sm-3 control-label">معلوم تصاعدي</label> 
-        <div class="col-sm-5">
-          {{ form.mont_charge_ascend( class="form-control", type="number",  placeholder='', value='0') }}
-          {% if form.mont_charge_ascend.errors %}
-          {% for error in form.mont_charge_ascend.errors %}
-          {{ error }}
-          {% endfor %}
-          {% endif %}
-        </div>
-      </div>
-      <div class="form-group" id='save'>
-       <div class="col-sm-6">
-         <button class="btn btn-primary btn-block" type="submit">حفظ</button>
-         <input type="hidden" name="type" value={{permis_id}}>
+        
+        <div class="form-group" id='save_encours' style="display:none">
+         <div class="col-sm-6">
+           <button class="btn btn-primary btn-block" type="submit">حفظ</button>
+           <input type="hidden" name="type" value={{permis_id}}>
+           <input type="hidden" name="name" value="{{name}}">
+         </div>
+         <div class="col-sm-6">
+           <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
+         </div>
        </div>
-       <div class="col-sm-6">
-         <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
-       </div>
+
      </div>
    </form>
-   {% else %}
-   <form class="form-horizontal" role="form" method="post" action="">
-    {{ form.csrf_token }}
-    <div class="form-group"> 
-      <label class="col-sm-3 control-label">تاريخ الإعلام بالرفض *</label> 
-      <div class="col-sm-5">
-       {{ form.date_refuse( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd', ) }}
-       {% if form.date_refuse.errors %}
-       {% for error in form.date_refuse.errors %}
-       <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
-       {% endfor %}
-       {% endif %}
-     </div> 
+ </div>
+ <input class="btn btn-info btn-outline btn-block" name='button' id="btnEdit" type="submit" value= 'تحيين الرخصة'>
+ <div class="line-dashed"></div>
+ <form action="/accept_permisconst" method="POST">
+  <input id='accept_buttom' class="btn btn-success btn-outline btn-block" name='button' type="submit" value= 'قبول الرخصة'>
+  <input type="hidden" name="type" value={{permis_id}}>
+  <input type="hidden" name="name" value="{{name}}">
+</form>
+<form action="/refuse_permisconst" method="POST">
+  <input id='refuse_buttom' class="btn btn-red btn-outline btn-block" type='submit' name='button' value='رفض الرخصة'>
+  <input type="hidden" name="type" value={{permis_id}}>
+  <input type="hidden" name="name" value="{{name}}">
+</form>
+{% if check %}
+{% if accept %}
+<form class="form-horizontal" role="form" method="post" action="">
+  {{ form.csrf_token }}
+  <div class="form-group">
+    <label class="col-sm-3 control-label">عدد قرار رخصة البناء *</label> 
+    <div class="col-sm-5">
+      {{ form.num_permis( class="form-control",type="number") }}
+      {% if form.num_permis.errors %}
+      {% for error in form.num_permis.errors %}
+      <h5>هذه الخانة مطلوبه</h5>
+      {% endfor %}
+      {% endif %}
+    </div> 
+  </div>
+  <div class="line-dashed"></div>
+  <div class="form-group"> 
+    <label class="col-sm-3 control-label">تاريخ اسناد الرخصة *</label> 
+    <div class="col-sm-5">
+      {{ form.date_attribution( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd') }}
+      {% if form.date_attribution.errors %}
+      {% for error in form.date_attribution.errors %}
+      <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
+      {% endfor %}
+      {% endif %}
+    </div> 
+  </div>
+  <div class="line-dashed"></div>
+  <div class="form-group"> 
+    <label class="col-sm-3 control-label">تاريخ انتهاء الصلوحيّة *</label> 
+    <div class="col-sm-5">
+      {{ form.date_expiration( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd') }}
+      {% if form.date_expiration.errors %}
+      {% for error in form.date_expiration.errors %}
+      <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
+      {% endfor %}
+      {% endif %}
+    </div> 
+  </div>
+  <div class="line-dashed"></div>
+  <div class="form-group"> 
+    <label class="col-sm-3 control-label">معلوم قار</label> 
+    <div class="col-sm-5">
+      {{ form.mont_charge_fix( class="form-control", type="number", placeholder='', value='0') }}
+      {% if form.mont_charge_fix.errors %}
+      {% for error in form.mont_charge_fix.errors %}
+      {{ error }}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="line-dashed"></div>
+  <div class="form-group"> 
+    <label class="col-sm-3 control-label">قرار الترخيص</label> 
+    <div class="col-sm-5">
+      {{ form.mont_decision( class="form-control", type="number", placeholder='', value='0') }}
+      {% if form.mont_decision.errors %}
+      {% for error in form.mont_decision.errors %}
+      {{ error }}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="line-dashed"></div>
+  <div class="form-group"> 
+    <label class="col-sm-3 control-label">سياج</label> 
+    <div class="col-sm-5">
+      {{ form.mont_cloture( class="form-control", type="number", placeholder='', value='0') }}
+      {% if form.mont_cloture.errors %}
+      {% for error in form.mont_cloture.errors %}
+      {{ error }}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="line-dashed"></div>
+  <div class="form-group"> 
+    <label class="col-sm-3 control-label">معلوم تصاعدي</label> 
+    <div class="col-sm-5">
+      {{ form.mont_charge_ascend( class="form-control", type="number",  placeholder='', value='0') }}
+      {% if form.mont_charge_ascend.errors %}
+      {% for error in form.mont_charge_ascend.errors %}
+      {{ error }}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="form-group" id='save'>
+   <div class="col-sm-6">
+     <button class="btn btn-primary btn-block" type="submit">حفظ</button>
+     <input type="hidden" name="type" value={{permis_id}}>
+     <input type="hidden" name="name" value="{{name}}">
    </div>
-   <div class="form-group" id='save'>
-     <div class="col-sm-6">
-       <button class="btn btn-primary btn-block" type="submit">حفظ</button>
-       <input type="hidden" name="type" value={{permis_id}}>
-     </div>
-     <div class="col-sm-6">
-       <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
-     </div>
+   <div class="col-sm-6">
+     <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
    </div>
- </form>  
- {% endif %}
- {% endif %}
+ </div>
+</form>
+{% else %}
+<form class="form-horizontal" role="form" method="post" action="">
+  {{ form.csrf_token }}
+  <div class="form-group"> 
+    <label class="col-sm-3 control-label">تاريخ الإعلام بالرفض *</label> 
+    <div class="col-sm-5">
+     {{ form.date_refuse( class="form-control", type="text", placeholder='صيغة yyyy/mm/dd', ) }}
+     {% if form.date_refuse.errors %}
+     {% for error in form.date_refuse.errors %}
+     <h5>هذه الخانة مطلوبه و صيغة yyyy/mm/dd</h5>
+     {% endfor %}
+     {% endif %}
+   </div> 
+ </div>
+ <div class="form-group" id='save'>
+   <div class="col-sm-6">
+     <button class="btn btn-primary btn-block" type="submit">حفظ</button>
+     <input type="hidden" name="type" value={{permis_id}}>
+     <input type="hidden" name="name" value="{{name}}">
+   </div>
+   <div class="col-sm-6">
+     <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
+   </div>
+ </div>
+</form>  
+{% endif %}
+{% endif %}
 </div>
 {% else %}
 <div class="panel-body">
@@ -236,125 +273,134 @@
         {% endif %}
       </div> 
     </div>
-                <!--
-                <div class="line-dashed"></div>
-                <div class="form-group"> 
-                  <label class="col-sm-3 control-label">المنطقة البلدية</label> 
-                  <div class="col-sm-5">
-                    {{ form.zone_municipale( class="form-control",type="text") }}
-                    {% if form.zone_municipale.errors %}
-                      {% for error in form.zone_municipale.errors %}
-                          <h5>هذه الخانة مطلوبه</h5>
-                      {% endfor %}
-                    {% endif %}
-                  </div> 
-                </div>
-              -->
-              <div class="line-dashed"></div>
-              <div class="form-group"> 
-                <label class="col-sm-3 control-label">longitude *</label> 
-                <div class="col-sm-5"> 
-                  {{ form.longitude( class="form-control",type="text", placeholder="صيغة 36.02654") }}
-                  {% if form.longitude.errors %}
-                  {% for error in form.longitude.errors %}
-                  <h5>36.0356 هذه الخانة مطلوبه و صيغة</h5>
-                  {% endfor %}
-                  {% endif %}
-                </div> 
-              </div>
-              <div class="line-dashed"></div>
-              <div class="form-group"> 
-                <label class="col-sm-3 control-label">latitude *</label> 
-                <div class="col-sm-5"> 
-                  {{ form.latitude( class="form-control",type="text", placeholder='صيغة 9.02654') }}
-                  {% if form.latitude.errors %}
-                  {% for error in form.latitude.errors %}
-                  <h5>9.0356 هذه الخانة مطلوبه و صيغة</h5>
-                  {% endfor %}
-                  {% endif %}
-                </div> 
-              </div>
-              <div class="form-group">
-                <button class="btn btn-primary btn-block" type="submit">حفظ</button>
-                
-              </div>
-            </form>
-          </div>
-          {% endif %}
-        </div>  
-        
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">longitude *</label> 
+      <div class="col-sm-5"> 
+        {{ form.longitude( class="form-control",type="text", placeholder="صيغة 36.02654") }}
+        {% if form.longitude.errors %}
+        {% for error in form.longitude.errors %}
+        <h5>36.0356 هذه الخانة مطلوبه و صيغة</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
+      <label class="col-sm-3 control-label">latitude *</label> 
+      <div class="col-sm-5"> 
+        {{ form.latitude( class="form-control",type="text", placeholder='صيغة 9.02654') }}
+        {% if form.latitude.errors %}
+        {% for error in form.latitude.errors %}
+        <h5>9.0356 هذه الخانة مطلوبه و صيغة</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="form-group">
+        <div class="col-sm-6">
+          <button class="btn btn-primary btn-block" type="submit">حفظ</button>
+        </div>
+        <div class="col-sm-6">
+          <a href='/consult_permisconst' class="btn btn-red btn-block" type="submit">إلغاء</a>
+        </div>
+      </div>
 
-        {% block js %}
+    </div>
+  </form>
+</div>
+{% endif %}
+</div>  
 
-        <script>
-        function show_accept()
-        {
-          document.getElementById('accept').style.display="block"
-          document.getElementById('refuse').style.display="none"
-          document.getElementById('date_refuse').value = null; 
-        }
-        function show_refus()
-        {
-          document.getElementById('refuse').style.display="block" 
-          document.getElementById('accept').style.display="none";
-        }
-        $(document).ready(function () {
-          $('#datepicker').datepicker({
-            keyboardNavigation: false,
-            forceParse: false,
-            todayHighlight: true
-          });
 
-          $('#date-popup').datepicker({
-            keyboardNavigation: false,
-            forceParse: false,
-            todayHighlight: true
-          });
+{% block js %}
 
-          $('#year-view').datepicker({
-            startView: 2,
-            keyboardNavigation: false,
-            forceParse: false,
-            format: "yyyy/mm/dd"
-          });
+<script>
+$(document).ready(function()
+{
+ $('#btnEdit').click(function()
+ {
+   $("input[id='maj']").removeAttr("readonly")
+   $("div[id=save_encours]").removeAttr('style')
+   $('#accept_buttom').css({
+        'display': 'none',
+    })
+   $('#refuse_buttom').css({
+        'display': 'none',
+    });  
+ });
 
-          var dragFixed = document.getElementById('drag-fixed');
-          noUiSlider.create(dragFixed, {
-            start: [40, 60],
-            behaviour: 'drag-fixed',
-            connect: true,
-            range: {
-              'min': 20,
-              'max': 80
-            }
-          });
+});
+$(document).ready(function()
+{
+ $('#accept_buttom').click(function()
+ {
+   $('#btnEdit').css({
+        'display': 'none',
+    })
+   $('#refuse_buttom').css({
+        'display': 'none',
+    });  
+ });
 
-          var basicSlider = document.getElementById('basic-slider');
-          noUiSlider.create(basicSlider, {
-            start: 40,
-            behaviour: 'tap',
-            connect: 'upper',
-            range: {
-              'min': 20,
-              'max': 80
-            }
-          });
+});
+$(document).ready(function () {
+  $('#datepicker').datepicker({
+    keyboardNavigation: false,
+    forceParse: false,
+    todayHighlight: true
+  });
 
-          var rangeSlider = document.getElementById('range-slider');
-          noUiSlider.create(rangeSlider, {
-            start: [40, 60],
-            behaviour: 'drag',
-            connect: true,
-            range: {
-              'min': 20,
-              'max': 80
-            }
-          });
+  $('#date-popup').datepicker({
+    keyboardNavigation: false,
+    forceParse: false,
+    todayHighlight: true
+  });
 
-          $(".select2").select2();
-          $(".select2-placeholer").select2({
-            allowClear: true
-          });
+  $('#year-view').datepicker({
+    startView: 2,
+    keyboardNavigation: false,
+    forceParse: false,
+    format: "yyyy/mm/dd"
+  });
+
+  var dragFixed = document.getElementById('drag-fixed');
+  noUiSlider.create(dragFixed, {
+    start: [40, 60],
+    behaviour: 'drag-fixed',
+    connect: true,
+    range: {
+      'min': 20,
+      'max': 80
+    }
+  });
+
+  var basicSlider = document.getElementById('basic-slider');
+  noUiSlider.create(basicSlider, {
+    start: 40,
+    behaviour: 'tap',
+    connect: 'upper',
+    range: {
+      'min': 20,
+      'max': 80
+    }
+  });
+
+  var rangeSlider = document.getElementById('range-slider');
+  noUiSlider.create(rangeSlider, {
+    start: [40, 60],
+    behaviour: 'drag',
+    connect: true,
+    range: {
+      'min': 20,
+      'max': 80
+    }
+  });
+
+  $(".select2").select2();
+  $(".select2-placeholer").select2({
+    allowClear: true
+  });
 
     //$('.colorpicker').colorpicker();
 

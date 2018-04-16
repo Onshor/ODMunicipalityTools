@@ -1,0 +1,198 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<h1 class="page-title">الملك البلدي </h1>
+<div class="panel panel-default animated fadeInUp go">
+	<div class="panel-heading clearfix">
+		{% if update %}
+		<h3 class="panel-title"> تحيين الرخص {{ name }}</h3>
+		{% else %}
+		<h3 class="panel-title">إضافة ملك بلدي جديد</h3>
+		{% endif %}
+		<ul class="panel-tool-options"> 
+			<li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+			<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+		</ul>
+	</div>
+	<div class="panel-body">
+		{% if update %}
+		<form action="/update_municipal_property" method="POST">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-md-4">Type_Proprety<div class="form-group-inner"><select type="text" class="form-control"  placeholder="" name='Type_Proprety' value='{{property_data.Type_Proprety}}' id ="maj" readonly>
+						<option value="{{property_data.Type_Proprety}}">{{property_data.Type_Proprety}}</option>
+						{% if property_data.Type_Proprety == 'خاص' %}
+							<option value="عمومي">عمومي</option>
+						{% else %}
+							<option value="خاص">خاص</option>
+						{% endif %}
+					</select>
+					</div></div>
+					<div class="col-md-4">Titre_Foncier<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Titre_Foncier' value='{{property_data.Titre_Foncier}}' id ="maj" readonly></div></div>
+					<div class="col-md-4">Type_du_Bien<div class="form-group-inner"><input type="text" class="form-control" placeholder="" id ="maj" name='Type_du_Bien' value='{{property_data.Type_du_Bien}}' readonly></div></div>
+				</div>                    
+				<div class="row">
+					<div class="col-md-4">Type_Usage<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Type_Usage' value='{{property_data.Type_Usage}}' id ="maj" readonly></div></div>
+					<div class="col-md-4">Adresse_Localisation<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Adresse_Localisation' value='{{property_data.Adresse_Localisation}}' id ="maj" readonly></div></div>
+					<div class="col-md-4">Mode_Octroi<div class="form-group-inner"><input type="text" class="form-control" name='Mode_Octroi' placeholder="" value='{{property_data.Mode_Octroi}}' id ="maj" readonly></div></div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">Surface<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Surface' value='{{property_data.Surface}}' id ="maj" readonly></div></div>
+					<div class="col-md-4">Longitude<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Longitude' value='{{property_data.Longitude}}' id ="maj" readonly></div></div>
+					<div class="col-md-4">Laltitude<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Laltitude' value='{{property_data.Laltitude}}' id ="maj" readonly></div></div>
+					<div class="col-md-4"></div>
+				</div>
+				<div class="form-group animated fadeInUp go" id='save_encours' style="display:none">
+					<div class="col-sm-6">
+						<button class="btn btn-primary btn-block" type="submit">حفظ</button>
+					</div>
+					<div class="col-sm-6">
+						<a href='/consult_municipal_property' class="btn btn-red btn-block" type="submit">إلغاء</a>
+						<input type="hidden" name="type" value="{{property_data.id}}">
+					</div>
+				</div>
+				
+
+			</div>
+		</form>
+		<input class="btn btn-info btn-outline btn-block" name='button' id="btnEdit" type="submit" value= 'تحيين الملك البلدي' style="display:block">
+		{% else %}
+		<form class="form-horizontal" role="form" method="post" action="">
+			{{ form.csrf_token }}
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Type_Proprety *</label> 
+				<div class="col-sm-5">
+					{{ form.Type_Proprety( class="form-control") }}
+					{% if form.Type_Proprety.errors %}
+					{% for error in form.Type_Proprety.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Titre_Foncier *</label> 
+				<div class="col-sm-5">
+					{{ form.Titre_Foncier( class="form-control",type="text") }}
+					{% if form.Titre_Foncier.errors %}
+					{% for error in form.Titre_Foncier.errors %}
+					{{ error }}
+					{% endfor %}	
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Type_du_Bien *</label> 
+				<div class="col-sm-5">
+					{{ form.Type_du_Bien( class="form-control", type="text") }}
+					{% if form.Type_du_Bien.errors %}
+					{% for error in form.Type_du_Bien.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Type_Usage *</label> 
+				<div class="col-sm-5">
+					{{ form.Type_Usage( class="form-control", type="text") }}
+					{% if form.Type_Usage.errors %}
+					{% for error in form.Type_Usage.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Adresse_Localisation *</label> 
+				<div class="col-sm-5">
+					{{ form.Adresse_Localisation( class="form-control", type="text") }}
+					{% if form.Adresse_Localisation.errors %}
+					{% for error in form.Adresse_Localisation.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Mode_Octroi *</label> 
+				<div class="col-sm-5">
+					{{ form.Mode_Octroi( class="form-control", type="text") }}
+					{% if form.Mode_Octroi.errors %}
+					{% for error in form.Mode_Octroi.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Surface *</label> 
+				<div class="col-sm-5">
+					{{ form.Surface( class="form-control") }}
+					{% if form.Surface.errors %}
+					{% for error in form.Surface.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Longitude *</label> 
+				<div class="col-sm-5">
+					{{ form.Longitude( class="form-control") }}
+					{% if form.Longitude.errors %}
+					{% for error in form.Longitude.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">Laltitude *</label> 
+				<div class="col-sm-5">
+					{{ form.Laltitude( class="form-control") }}
+					{% if form.Laltitude.errors %}
+					{% for error in form.Laltitude.errors %}
+					{{ error }}
+					{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-6">
+					<button class="btn btn-primary btn-block" type="submit">حفظ</button>
+				</div>
+				<div class="col-sm-6">
+					<a href='/consult_municipal_property' class="btn btn-red btn-block" type="submit">إلغاء</a>
+				</div>
+			</div>
+		</form>
+		{% endif %}
+	</div>
+</div>
+{% block js %}
+
+<script>
+$(document).ready(function()
+{
+	$('#btnEdit').click(function()
+	{
+		$("input[id='maj']").removeAttr("readonly")
+		$("div[id=save_encours]").removeAttr('style')
+		$('#btnEdit').css({
+			'display': 'none',
+		});  
+	});
+
+});
+</script>
+{% endblock %}
+{% endblock %}
