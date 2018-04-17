@@ -6,7 +6,7 @@
 #################
 
 from project.decorators import check_confirmed
-from project.models import Permisconstruct
+from project.models import Permisconstruct, Municipality
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask.ext.login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
@@ -30,6 +30,7 @@ permisconst_blueprint = Blueprint('permis_construction', __name__,)
 @login_required
 @check_confirmed
 def permisconst():
+    mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     form = PermisencourForm(request.form)
     if form.validate_on_submit():
         permis = Permisconstruct(municipal_id=current_user.municipal_id,
@@ -59,7 +60,7 @@ def permisconst():
         db.session.commit()
         flash(u'تم حفظها في قاعدة البيانات', 'success')
         return redirect(url_for('permis_construction.consult_permisconst'))
-    return render_template('permis_construction/form_permis_construction.html', form=form, update=False, permis_id=None)
+    return render_template('permis_construction/form_permis_construction.html', form=form, update=False, permis_id=None, mun_name=mun_name)
 
 
 @permisconst_blueprint.route('/consult_permisconst', methods=['GET', 'POST'])

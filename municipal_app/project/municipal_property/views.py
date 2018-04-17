@@ -6,7 +6,7 @@
 #################
 
 from project.decorators import check_confirmed
-from project.models import Proprietemunicipal
+from project.models import Proprietemunicipal, Municipality
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask.ext.login import login_required, current_user
 from .forms import ProprietyForm
@@ -31,6 +31,7 @@ municipal_property_blueprint = Blueprint('municipal_property', __name__,)
 @check_confirmed
 def add_municipal_property():
     form = ProprietyForm(request.form)
+    mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     if form.validate_on_submit():
         mun_property = Proprietemunicipal(
             user_id=current_user.id,
@@ -49,7 +50,7 @@ def add_municipal_property():
         db.session.commit()
         flash(u'تم حفظها في قاعدة البيانات', 'success')
         return redirect(url_for('municipal_property.consult_municipal_property'))
-    return render_template('municipal_property/forms_municipal_property.html', form=form, update=False)
+    return render_template('municipal_property/forms_municipal_property.html', form=form, update=False, mun_name=mun_name)
 
 
 @municipal_property_blueprint.route('/consult_municipal_property', methods=['GET', 'POST'])

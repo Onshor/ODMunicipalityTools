@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, Length
 
 
 class ProprietyForm(Form):
-    choices = [(u'خاص', u'خاص'), (u'عمومي', u'عمومي')]
+    choices = [(None, ''), (u'خاص', u'خاص'), (u'عمومي', u'عمومي')]
     Titre_Foncier = TextField(u'Titre_Foncier', validators=[DataRequired(), Length(max=80)])
     Type_du_Bien = TextField(u'Type_du_Bien', validators=[DataRequired(), Length(max=80)])
     Adresse_Localisation = TextField(u'Adresse_Localisation', validators=[DataRequired(), Length(max=250)])
