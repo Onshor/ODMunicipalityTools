@@ -217,3 +217,70 @@ class Proprietemunicipal(db.Model):
 
     def get_id(self):
         return self.id
+
+
+class Fourrier(db.Model):
+    __tablename__ = "fourrier"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    Address_Fourrier = db.Column(db.String, nullable=True)
+    Name_Fourrier = db.Column(db.String, nullable=True)
+    Longitude = db.Column(db.Float, nullable=True)
+    Laltitude = db.Column(db.Float, nullable=True)
+
+    def __init__(self, municipal_id, user_id, Longitude, Laltitude, Address_Fourrier, Name_Fourrier):
+        self.municipal_id = municipal_id
+        self.user_id = user_id
+        self.Address_Fourrier = Address_Fourrier
+        self.Name_Fourrier = Name_Fourrier
+        self.Longitude = Longitude
+        self.Laltitude = Laltitude
+
+    def get_id(self):
+        return self.id
+
+
+class Detention(db.Model):
+    __tablename__ = "detention"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    fourrier_id = db.Column(db.Integer, db.ForeignKey('fourrier.id'))
+    Date_Detention = db.Column(db.DateTime, nullable=True)
+    Cause_Detention = db.Column(db.String, nullable=True)
+    Name_Owner = db.Column(db.String, nullable=True)
+    Descr_Detention = db.Column(db.String, nullable=True)
+    Authority_Detention = db.Column(db.String, nullable=True)
+    Name_Fourrier = db.Column(db.String, nullable=True)
+    Type_Detention = db.Column(db.String, nullable=True)
+    Status_Detention = db.Column(db.String, nullable=True)
+    Registration_Detention = db.Column(db.String, nullable=True)
+    Date_Release = db.Column(db.String, nullable=True)
+    Note = db.Column(db.String, nullable=True)
+    Num_Bon = db.Column(db.String, nullable=True)
+
+
+
+    def __init__(self, municipal_id, fourrier_id, user_id, Descr_Detention, Date_Detention, Cause_Detention,
+                 Name_Owner, Authority_Detention, Name_Fourrier, Type_Detention, Registration_Detention,
+                 Status_Detention, Date_Release,
+                 Num_Bon, Note):
+        self.municipal_id = municipal_id
+        self.user_id = user_id
+        self.fourrier_id = fourrier_id
+        self.Date_Detention = Date_Detention
+        self.Cause_Detention = Cause_Detention
+        self.Descr_Detention = Descr_Detention
+        self.Type_Detention = Type_Detention
+        self.Name_Owner = Name_Owner
+        self.Authority_Detention = Authority_Detention
+        self.Name_Fourrier = Name_Fourrier
+        self.Registration_Detention = Registration_Detention
+        self.Status_Detention = Status_Detention
+        self.Date_Release = Date_Release
+        self.Num_Bon = Num_Bon
+        self.Note = Note
+
+    def get_id(self):
+        return self.id

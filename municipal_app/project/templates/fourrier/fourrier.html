@@ -1,8 +1,157 @@
 {% extends "_base.html" %}
 
 {% block content %}
-<html>
-<body>
-</body>
-</html>
+<h1 class="page-title">مستودع الحجز</h1>
+<div class="panel panel-default animated fadeInUp go">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">مراجعة و تحيين</h3>
+		<ul class="panel-tool-options"> 
+			<li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+			<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+		</ul>
+		<br><br>
+		<ul class="nav nav-tabs" style="float: left;"> 
+			<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">قائمة  محجوز</a></li> 
+			<li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">قائمة المستودعات</a></li> 
+		</ul>
+	</div>
+	<div class="panel-body"> 
+		<div class="tab-content">
+			
+			<div id="tab-1" class="tab-pane active">
+				<div>
+					<form method="get" action="/add_detention">
+						<button class="btn btn-blue btn-outline" type="submit">إضافة محجوز جديد</button>
+					</form>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered table-hover dataTables-example" id="myTable">
+						<thead>
+							<tr>
+								<th>رقم تسلسلي</th>
+								<th>تاريخ الحجز</th>
+								<th>أسباب الحجز</th>
+								<th>اسم واللقب صاحب المحجوز</th>
+								<th>الجهة التي صدر منها الاذن بالحجز</th>
+								<th>نوع المحجوز</th>
+								<th>الترقيم المنجمي</th>
+								<th>مستودع الحجز</th>
+								<th>حالة المحجوز</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for d in detention_data %}
+							<tr class="gradeA">
+								<td>{{d['id']}}</td>
+								<td>{{d['Date_Detention']}}</td>
+								<td>{{d['Cause_Detention']}}</td>
+								<td>{{d['Name_Owner']}}</td>
+								<td>{{d['Authority_Detention']}}</td>
+								<td>{{d['Type_Detention']}}</td>
+								<td>{{d['Registration_Detention']}}</td>
+								<td>{{d['Name_Fourrier']}}</td>
+								<td>{{d['Status_Detention']}}</td>
+								<form action="/update_detention" method="POST">
+									<td>
+										<input class="btn btn-link btn-outline btn-block"type="submit" name='shit' value='تحيين'/>
+										<input type="hidden" name="d_id" value="{{d['id']}}">
+									</td>
+								</form>
+							</tr>
+							{% endfor %}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>رقم تسلسلي</th>
+								<th>تاريخ الحجز</th>
+								<th>أسباب الحجز</th>
+								<th>اسم واللقب صاحب المحجوز</th>
+								<th>الجهة التي صدر منها الاذن بالحجز</th>
+								<th>نوع المحجوز</th>
+								<th>الترقيم المنجمي</th>
+								<th>مستودع الحجز</th>
+								<th>حالة المحجوز</th>
+								<th></th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+			<div id="tab-2" class="tab-pane">
+				<div>
+					<form method="get" action="/add_fourrier">
+						<button class="btn btn-blue btn-outline" type="submit">إضافة مستودع جديد</button>
+					</form>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered table-hover dataTables-example" id="myTable">
+						<thead>
+							<tr>
+								<th>إسم مستودع الحجز </th>
+								<th>عنوان  مستودع الحجز</th>
+								<th>Longitude</th>
+								<th>Laltitude</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for d in fourrier_data %}
+							<tr class="gradeA">
+								<td>{{d['Name_Fourrier']}}</td>
+								<td>{{d['Address_Fourrier']}}</td>
+								<td>{{d['Longitude']}}</td>
+								<td>{{d['Laltitude']}}</td>
+								<form action="/update_fourrier" method="POST">
+									<td>
+										<input class="btn btn-link btn-outline btn-block"type="submit" name='shit' value='تحيين'/>
+										<input type="hidden" name="f_id" value="{{d['id']}}">
+									</td>
+								</form>
+							</tr>
+							{% endfor %}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>إسم مستودع الحجز </th>
+								<th>عنوان  مستودع الحجز</th>
+								<th>Longitude</th>
+								<th>Laltitude</th>
+								<th></th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% block js %}
+<script>
+function myFunction() {
+	var input, filter, table, tr, td, i;
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[3];
+		if (td) {
+			if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = "";
+			} else {
+				tr[i].style.display = "none";
+			}
+		}       
+	}
+}
+function copyToClipboard(element) {
+	var $temp = $("<input>");
+	$("body").append($temp);
+	$temp.val($(element).text()).select();
+	document.execCommand("copy");
+	$temp.remove();
+}
+</script>
+{% endblock %}
 {% endblock %}

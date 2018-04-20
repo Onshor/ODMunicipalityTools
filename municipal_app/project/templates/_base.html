@@ -1,468 +1,354 @@
 <!DOCTYPE html>
 <html>
-  	<head>
-    	<!-- meta -->
-    	<meta charset="utf-8">
-    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-    	<meta name="description" content="Municipalit tools for open data">
-    	<meta name="keywords" content="Responsive, HTML5, Municipality, Tunisia, Opendata">
-    	<title>Municipal app</title>
-    	<meta name="author" content="med dahas">
-    	<meta name="viewport" content="width=device-width,initial-scale=1">
-    	<!-- styles -->
-    	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
-   		integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
-   	crossorigin=""/>
-   	<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
-   integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
-   crossorigin=""></script>
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/datepicker/bootstrap-datepicker.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/entypo.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/colorpicker/bootstrap-colorpicker.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/nouislider/nouislider.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/select2/select2.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-forms.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-core.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-rtl.min.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-rtl-core.css' ) }}">
-    	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/css3-animate-it-plugin/animations.css' ) }}">
-   </head>
+<head>
+	<!-- meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Municipalit tools for open data">
+	<link rel="shortcut icon" type="image/x-icon" href="http://onshor.org/wp-content/uploads/2017/10/icon.png">
+	<meta name="keywords" content="Responsive, HTML5, Municipality, Tunisia, Opendata">
+	<title>Municipal app</title>
+	<meta name="author" content="med dahas">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<!-- styles -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+	integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+	crossorigin=""/>
+	<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+	integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+	crossorigin=""></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/datepicker/bootstrap-datepicker.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/entypo.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/colorpicker/bootstrap-colorpicker.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/nouislider/nouislider.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/select2/select2.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/dataInspector.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-forms.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-core.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-rtl.min.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-rtl-core.css' ) }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/css3-animate-it-plugin/animations.css' ) }}">
+</head>
 <body>
 	<!-- Page container -->
 
-<div class="page-container">
-{% if current_user.is_authenticated() %}
-	<!-- Page Sidebar -->
-	
-	<div class="page-sidebar">
-	
-		<!-- Site header  -->
-		<header class="site-header">
-		  <div class="site-logo"><a href="http://onshor.org/"><img src="http://onshor.org/wp-content/uploads/2017/10/150x68.png" alt="Onshor" title="Onshor"></a></div>
-		  <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i class="icon-menu"></i></a></div>
-		  <div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse" class="mobile-menu-icon" href="#"><i class="icon-menu"></i></a></div>
-		</header>
-		<!-- /site header -->
-		
-		<!-- Main navigation -->
-		<ul id="side-nav" class="main-menu navbar-collapse collapse">
-			<li><a href="/budget"><i class="fa fa-money"></i><span class="title">الميزانية</span></a>
-			</li>
-			<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">تراخيص البناء</span></a>
-			
-				<ul class="nav collapse">
-					<li><a href="/permisconst"><span class="title">إضافة ترخيص جديد</span></a></li>
-					<li><a href="/consult_permisconst"><span class="title">مراجعة و تحيين الرخص</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">الملك البلدي </span></a>
-			
-				<ul class="nav collapse">
-					<li><a href="/add_municipal_property"><span class="title">إضافة ملك بلدي جديد</span></a></li>
-					<li><a href="/consult_municipal_property"><span class="title">مراجعة و تحيين الملك البلدي</span></a></li>
-				</ul>
-			</li>
-			<li><a href="#"><i class="icon-users"></i><span class="title">التنظيم الهيكلي</span></a>
-			</li>
-			<li class="has-sub"><a href="#"><i class="fa fa-car"></i><span class="title">مستودع الحجز</span></a>
-			
-				<ul class="nav collapse">
-					<li><a href="#"><span class="title">إضافة محجوز جديد</span></a></li>
-					<li><a href="#"><span class="title">مراجعة و تحيين المحجوز</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">صفقات عمومية</span></a>
-			
-				<ul class="nav collapse">
-					<li><a href="#"><span class="title">ajouter un nv</span></a></li>
-					<li><a href="#"><span class="title">consulter et mis à jour</span></a></li>
-				</ul>
-			</li>
-			<!--
-			<li class="has-sub"><a href="panels.html"><i class="icon-newspaper"></i><span class="title">UI Elements</span></a>
-				<ul class="nav collapse">
-					<li><a href="panels.html"><span class="title">Panels</span></a></li>
-					<li><a href="buttons.html"><span class="title">Buttons</span></a></li>
-					<li><a href="typography.html"><span class="title">Typography</span></a></li>
-					<li><a href="tabs-accordions.html"><span class="title">Tabs &amp; Accordions</span></a></li>
-					<li><a href="tooltips-popovers.html"><span class="title">Tooltips &amp; Popovers</span></a></li>
-					<li><a href="navbars.html"><span class="title">Navbars</span></a></li>
-					<li><a href="breadcrumbs.html"><span class="title">Breadcrumbs</span></a></li>
-					<li><a href="badges-label.html"><span class="title">Badges &amp; Labels</span></a></li>
-					<li><a href="progress-bars.html"><span class="title">Progress Bars</span></a></li>
-					<li><a href="modals.html"><span class="title">Modals</span></a></li>
-					<li><a href="alerts.html"><span class="title">Alerts</span></a></li>
-					<li><a href="pagination.html"><span class="title">Pagination</span></a></li>
-					<li><a href="video.html"><span class="title">Video</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="basic-tables.html"><i class="icon-window"></i><span class="title">Tables</span></a>
-				<ul class="nav collapse">
-					<li><a href="basic-tables.html"><span class="title">Basic Tables</span></a></li>
-					<li><a href="data-tables.html"><span class="title">Data Tables</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="form-basic.html"><i class="icon-doc-text"></i><span class="title">Forms</span></a>
-				<ul class="nav collapse">
-					<li><a href="form-basic.html"><span class="title">Basic Form</span></a></li>
-					<li><a href="form-advanced.html"><span class="title">Advanced Plugins</span></a></li>
-					<li><a href="form-wizard.html"><span class="title">Form Wizard</span></a></li>
-					<li><a href="file-upload.html"><span class="title">File upload</span></a></li>
-					<li><a href="editors.html"><span class="title">Editors</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="graph-flot.html"><i class="icon-chart-bar"></i><span class="title">Graphs</span></a>
-				<ul class="nav collapse">
-					<li><a href="graph-flot.html"><span class="title">Flot Charts</span></a></li>
-					<li><a href="graph-morris.html"><span class="title">Morris Charts</span></a></li>
-					<li><a href="graph-peity.html"><span class="title">Peity Charts</span></a></li>
-					<li><a href="graph-sparkline.html"><span class="title">Sparkline Charts</span></a></li>
-					<li><a href="graph-chartjs.html"><span class="title">ChartsJs</span></a></li>
-					<li><a href="graph-chartist.html"><span class="title">Chartist</span></a></li>
-					<li><a href="graph-c3.html"><span class="title">C3 Charts</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="mail-inbox.html"><i class="icon-mail"></i><span class="title">Mailbox</span></a>
-				<ul class="nav collapse">
-					<li><a href="mail-inbox.html"><span class="title">Inbox</span></a></li>
-					<li><a href="mail-compose.html"><span class="title">Compose Mail</span></a></li>
-					<li><a href="mail-read.html"><span class="title">View Mail</span></a></li>
-				</ul>
-			</li>
-			<li><a href="maps-vector.html"><i class="icon-location"></i><span class="title">Vector Map</span> <span class="label label-secondary pull-right">NEW</span></a></li>
-			<li class="has-sub"><a href="login.html"><i class="icon-google-circles"></i><span class="title">Various Screens</span></a>
-				<ul class="nav collapse">
-					<li><a href="login.html"><span class="title">Login</span></a></li>
-					<li><a href="register.html"><span class="title">Register</span></a></li>
-					<li><a href="forgot-password.html"><span class="title">Forgot password</span></a></li>
-					<li><a href="lockscreen.html"><span class="title">Lockscreen</span></a></li>
-					<li><a href="error-404.html"><span class="title">404 Page</span></a></li>
-					<li><a href="blank-page.html"><span class="title">Blank Page</span></a></li>
-					<li><a href="comments.html"><span class="title">Comments</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="blog.html"><i class="icon-docs"></i><span class="title">Extra Pages</span></a>
-				<ul class="nav">
-					<li><a href="blog.html"><span class="title">Blog</span></a></li>
-					<li><a href="blog-detail.html"><span class="title">Blog Detail</span></a></li>
-					<li><a href="timeline.html"><span class="title">Timeline</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="icons-entypo.html"><i class="icon-thumbs-up"></i><span class="title">Icons</span></a>
-				<ul class="nav collapse">
-					<li><a href="icons-entypo.html"><span class="title">Entypo</span></a></li>
-					<li><a href="icons-fontawesome.html"><span class="title">Font Awesome</span></a></li>
-					<li><a href="icons-glyphicons.html"><span class="title">Glyph Icons</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="simple-view.html"><i class="icon-list"></i><span class="title">List Views</span></a>
-				<ul class="nav collapse">
-					<li><a href="simple-view.html"><span class="title">Simple View</span></a></li>
-					<li><a href="cards-view.html"><span class="title">Cards View</span></a></li>
-					<li><a href="strip-view.html"><span class="title">Strip View</span></a></li>
-					<li><a href="table-view.html"><span class="title">Table View</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"><a href="short-view.html"><i class="icon-popup"></i><span class="title">Grid Views</span></a>
-				<ul class="nav collapse">
-					<li><a href="short-view.html"><span class="title">Short View</span></a></li>
-					<li><a href="detailed-view.html"><span class="title">Detailed View</span></a></li>
-					<li><a href="detailed-view-2.html"><span class="title">Detailed Action View</span></a></li>
-				</ul>
-			</li>
-			<li class="has-sub"> 
-				<a href="#/"><i class="icon-flow-tree"></i><span class="title">Menu Levels</span></a> 
-				<ul class="nav collapse"> 
-					<li><a href="#/"><span class="title">Menu Level 1.1</span></a></li> 
-					<li><a href="#/"><span class="title">Menu Level 1.2</span></a></li> 
-					<li class="has-sub">
-						<a href="#/"><span class="title">Menu Level 1.3</span></a> 
-						<ul class="nav collapse"> 
-							<li><a href="#/"><span class="title">Menu Level 2.1</span></a></li> 
-							<li class="has-sub">
-								<a href="#/"><span class="title">Menu Level 2.2</span></a>
-								<ul class="nav collapse"> 
-									<li class="has-sub"> 
-										<a href="#/"><span class="title">Menu Level 3.1</span></a> 
-										<ul class="nav collapse"> 
-											<li><a href="#/"><span class="title">Menu Level 4.1</span></a></li> 
-										</ul> 
-									</li> 
-									<li><a href="#/"><span class="title">Menu Level 3.2</span></a></li> 
-								</ul>
-							</li> 
-							<li><a href="#/"><span class="title">Menu Level 2.3</span></a></li> 
-						</ul> 
-					</li> 
-				</ul> 
-			</li>
-			-->
-		</ul>
-		<!-- /main navigation -->		
-  </div>
+	<div class="page-container">
+		{% if current_user.is_authenticated() %}
+		<!-- Page Sidebar -->
 
-  <!-- /page sidebar -->
-  
-  <!-- Main container -->
-  <div class="main-container gray-bg">
-  
-		<!-- Main header -->
-		<div class="main-header row">
-		  <div class="col-sm-6 col-xs-7">
-		  
+		<div class="page-sidebar">
+
+			<!-- Site header  -->
+			<header class="site-header">
+				<div class="site-logo"><a href="#"><img src="http://onshor.org/wp-content/uploads/2017/10/150x68.png" alt="Onshor" title="Onshor"></a></div>
+				<div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i class="icon-menu"></i></a></div>
+				<div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse" class="mobile-menu-icon" href="#"><i class="icon-menu"></i></a></div>
+			</header>
+			<!-- /site header -->
+
+			<!-- Main navigation -->
+			<ul id="side-nav" class="main-menu navbar-collapse collapse">
+				<li><a href="/budget"><i class="fa fa-money"></i><span class="title">الميزانية</span></a>
+				</li>
+				<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">تراخيص البناء</span></a>
+
+					<ul class="nav collapse">
+						<li><a href="/permisconst"><span class="title">إضافة ترخيص جديد</span></a></li>
+						<li><a href="/consult_permisconst"><span class="title">مراجعة و تحيين الرخص</span></a></li>
+					</ul>
+				</li>
+				<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">الملك البلدي </span></a>
+
+					<ul class="nav collapse">
+						<li><a href="/add_municipal_property"><span class="title">إضافة ملك بلدي جديد</span></a></li>
+						<li><a href="/consult_municipal_property"><span class="title">مراجعة و تحيين الملك البلدي</span></a></li>
+					</ul>
+				</li>
+				<li><a href="/organigramme"><i class="icon-users"></i><span class="title">التنظيم الهيكلي</span></a>
+				</li>
+				<li class="has-sub"><a href="#"><i class="fa fa-car"></i><span class="title">مستودع الحجز</span></a>
+
+					<ul class="nav collapse">
+						<li><a href="/add_fourrier"><span class="title">إضافة مستودع</span></a></li>
+						<li><a href="/add_detention"><span class="title">إضافة محجوز جديد</span></a></li>
+						<li><a href="/fourrier"><span class="title">مراجعة و تحيين المحجوز</span></a></li>
+					</ul>
+				</li>
+				<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">صفقات عمومية</span></a>
+
+					<ul class="nav collapse">
+						<li><a href="#"><span class="title">ajouter un nv</span></a></li>
+						<li><a href="#"><span class="title">consulter et mis à jour</span></a></li>
+					</ul>
+				</li>
+	</ul>
+	<!-- /main navigation -->		
+</div>
+
+<!-- /page sidebar -->
+
+<!-- Main container -->
+<div class="main-container gray-bg">
+
+	<!-- Main header -->
+	<div class="main-header row">
+		<div class="col-sm-6 col-xs-7">
+
 			<!-- User info -->
 			<ul class="user-info pull-left">          
-			  <li class="profile-info dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> <img width="44" class="img-circle avatar" alt="" src="images/man-3.jpg">{{ current_user.name }}  {{ current_user.last_name }}<span class="caret"></span></a>
-			  
-				<!-- User action menu -->
-				<ul class="dropdown-menu">
-				  
-				  <li><a href="/profile"><i class="icon-user"></i>ملفي الشخصي</a></li>
-				  <li><a href="#/"><i class="icon-mail"></i>Messages</a></li>
-				  <li><a href="#"><i class="icon-clipboard"></i>Tasks</a></li>
-				  <li class="divider"></li>
-				  <li><a href="#"><i class="icon-cog"></i>Account settings</a></li>
-				  <li><a href="/logout"><i class="icon-logout"></i>الخروج</a></li>
-				</ul>
-				<!-- /user action menu -->
-				
-			  </li>
+				<li class="profile-info dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> <img width="44" class="img-circle avatar" alt="" src="images/man-3.jpg">{{ current_user.name }}  {{ current_user.last_name }}<span class="caret"></span></a>
+
+					<!-- User action menu -->
+					<ul class="dropdown-menu">
+
+						<li><a href="/profile"><i class="icon-user"></i>ملفي الشخصي</a></li>
+						<li><a href="#/"><i class="icon-mail"></i>Messages</a></li>
+						<li><a href="#"><i class="icon-clipboard"></i>Tasks</a></li>
+						<li class="divider"></li>
+						<li><a href="#"><i class="icon-cog"></i>Account settings</a></li>
+						<li><a href="/logout"><i class="icon-logout"></i>الخروج</a></li>
+					</ul>
+					<!-- /user action menu -->
+
+				</li>
 			</ul>
 			<!-- /user info -->
 			
-		  </div>
-		  
-		  <div class="col-sm-6 col-xs-5">
+		</div>
+
+		<div class="col-sm-6 col-xs-5">
 			<div class="pull-right">
 				<!-- User alerts -->
 				<!-- /user alerts -->
 				
 			</div>
-		  </div>
 		</div>
-		<!-- /main header -->
-		{% with messages = get_flashed_messages(with_categories=true) %}
-              {% if messages %}
-              <div class="row">
-                  <div class="col-md-12">
-                  {% for category, message in messages %}
-                  <div class="alert alert-{{ category }}">
-                  <a class="close" title="Close" href="#" data-dismiss="alert">&times;</a>
-                  {{message}}
-              </div>
-              {% endfor %}
-            </div>
-            </div>
-            {% endif %}
-            {% endwith %}
-		<!-- Main content -->
-		<div class="main-content">
-			{% block content %}
-			{% endblock %}
-			<!-- Footer -->
-			<footer class="animatedParent animateOnce z-index-10"> 
-				<div class="footer-main animated fadeInUp slow">&copy; 2016 <strong>Mouldifi</strong> Admin Theme by <a target="_blank" href="#/">G-axon</a> </div>
-			</footer>	
-			<!-- /footer -->
+	</div>
+	<!-- /main header -->
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	{% if messages %}
+	<div class="row">
+		<div class="col-md-12">
+			{% for category, message in messages %}
+			<div class="alert alert-{{ category }}">
+				<a class="close" title="Close" href="#" data-dismiss="alert">&times;</a>
+				{{message}}
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	{% endif %}
+	{% endwith %}
+	<!-- Main content -->
+	<div class="main-content">
+		{% block content %}
+		{% endblock %}
+		<!-- Footer -->
+		<footer class="animatedParent animateOnce z-index-10"> 
+			<div class="footer-main animated fadeInUp slow">&copy; 2018 <a target="_blank" href="http://onshor.org/"><strong>Onshor</strong></a> </div>
+		</footer>	
+		<!-- /footer -->
 		
-	  </div>
-	  <!-- /main content -->
-	  
-  </div>
+	</div>
+	<!-- /main content -->
 
-  <!-- /main container -->
+</div>
+
+<!-- /main container -->
 {%endif%}
 </div>
 
 
 <!-- /page container -->
 
-	<!-- scripts -->
-	<script src="{{ url_for('static', filename='js/plugins/datepicker/bootstrap-datepicker.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/select2/select2.full.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/nouislider/nouislider.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/jasny/jasny-bootstrap.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/colorpicker/bootstrap-colorpicker.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/datepicker/bootstrap-datepicker.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/select2/select2.full.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/nouislider/nouislider.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/jasny/jasny-bootstrap.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/colorpicker/bootstrap-colorpicker.min.js' ) }}"></script>
-	<script src="{{url_for('static', filename='js/plugins/css3-animate-it-plugin/css3-animate-it.js')}}" type="text/javascript"></script>
-	<!--Load JQuery-->
-	<script src="{{ url_for('static', filename='js/plugins/dropzone/dropzone.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
-	<!-- Load CSS3 Animate It Plugin JS -->
-	<script src="{{ url_for('static', filename='css3-animate-it-plugin/css3-animate-it.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/metismenu/jquery.metisMenu.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery-ui.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery.blockUI.js' ) }}"></script>
-	<!--Float Charts-->
-	<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.tooltip.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.resize.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.selection.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.pie.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.time.min.js' ) }}"></script>
-	<script src="{{ url_for('static', filename='js/functions.js' ) }}"></script>
+<!-- scripts -->
+<script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/metismenu/jquery.metisMenu.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/datepicker/bootstrap-datepicker.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/select2/select2.full.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/nouislider/nouislider.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/jasny/jasny-bootstrap.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/colorpicker/bootstrap-colorpicker.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/datepicker/bootstrap-datepicker.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/select2/select2.full.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/nouislider/nouislider.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/jasny/jasny-bootstrap.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/colorpicker/bootstrap-colorpicker.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/css3-animate-it-plugin/css3-animate-it.js')}}" type="text/javascript"></script>
+<!--Load JQuery-->
+<script src="{{ url_for('static', filename='js/plugins/dropzone/dropzone.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/go.js' ) }}"></script>
 
-	<!--ChartJs-->
-	<script src="{{ url_for('static', filename='js/plugins/chartjs/Chart.min.js' ) }}"></script>
-	{% block js %}
-	<script>
-    $(document).ready(function () {
-        var $checkbox = $('.todo-list .checkbox input[type=checkbox]');
+<script src="{{ url_for('static', filename='js/dataInspector.js' ) }}"></script>
+<!-- Load CSS3 Animate It Plugin JS -->
+<script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery-ui.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery.blockUI.js' ) }}"></script>
+<!--Float Charts-->
+<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.tooltip.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.resize.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.selection.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.pie.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.time.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/functions.js' ) }}"></script>
 
-        $checkbox.change(function () {
-            if ($(this).is(':checked')) {
-                $(this).parent().addClass('checked');
-            } else {
-                $(this).parent().removeClass('checked');
-            }
-        });
+<!--ChartJs-->
+<script src="{{ url_for('static', filename='js/plugins/chartjs/Chart.min.js' ) }}"></script>
+{% block js %}
+<script>
+$(document).ready(function () {
+	var $checkbox = $('.todo-list .checkbox input[type=checkbox]');
 
-        $checkbox.each(function (index) {
-            if ($(this).is(':checked')) {
-                $(this).parent().addClass('checked');
-            } else {
-                $(this).parent().removeClass('checked');
-            }
-        });
+	$checkbox.change(function () {
+		if ($(this).is(':checked')) {
+			$(this).parent().addClass('checked');
+		} else {
+			$(this).parent().removeClass('checked');
+		}
+	});
+
+	$checkbox.each(function (index) {
+		if ($(this).is(':checked')) {
+			$(this).parent().addClass('checked');
+		} else {
+			$(this).parent().removeClass('checked');
+		}
+	});
 
         // charts
         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         var previousPoint = null;
         $('#graph-bars, #graph-lines').bind('plothover', function (event, pos, item) {
-            if (item) {
-                if (previousPoint != item.dataIndex) {
-                    previousPoint = item.dataIndex;
-                    $('#flotTip').remove();
-                    var x = item.datapoint[0],
-                            y = item.datapoint[1];
+        	if (item) {
+        		if (previousPoint != item.dataIndex) {
+        			previousPoint = item.dataIndex;
+        			$('#flotTip').remove();
+        			var x = item.datapoint[0],
+        			y = item.datapoint[1];
 
-                    var color = item.series.color;
-                    var day = new Date(x).getDate();
-                    var month = monthNames[new Date(x).getMonth()];
-                    var year = new Date(x).getFullYear();
-                    showTooltip(item.pageX,
-                            item.pageY,
-                            day + ' ' + month + ',' + year
-                            + " : <strong>" + y +
-                            " visitors</strong>");
+        			var color = item.series.color;
+        			var day = new Date(x).getDate();
+        			var month = monthNames[new Date(x).getMonth()];
+        			var year = new Date(x).getFullYear();
+        			showTooltip(item.pageX,
+        				item.pageY,
+        				day + ' ' + month + ',' + year
+        				+ " : <strong>" + y +
+        				" visitors</strong>");
 
                     /*content = item.series.label + ' = ' + item.datapoint[1];
                      showTooltip(item.pageX, item.pageY, content);
                      showTooltip(item.pageX, item.pageY, y + ' visitors at ' + x + '.00h');*/
 
-                }
-            } else {
-                $('#flotTip').remove();
-                previousPoint = null;
-            }
-        });
+                 }
+             } else {
+             	$('#flotTip').remove();
+             	previousPoint = null;
+             }
+         });
 
-        var graphData = [{
+var graphData = [{
                 // Visits
                 data: [[1196463600000, 45], [1196550000000, 30], [1196636400000, 98], [1196722800000, 37], [1196809200000, 95], [1196895600000, 45], [1196982000000, 65],
-                    [1197068400000, 120], [1197154800000, 90], [1197241200000, 65], [1197327600000, 50]],
+                [1197068400000, 120], [1197154800000, 90], [1197241200000, 65], [1197327600000, 50]],
                 color: '#ff7575'
             }, {
                 // Returning Visits
                 data: [[1196463600000, 100], [1196550000000, 170], [1196636400000, 260], [1196722800000, 127], [1196809200000, 240], [1196895600000, 180], [1196982000000, 160],
-                    [1197068400000, 210], [1197154800000, 270], [1197241200000, 120], [1197327600000, 85]],
+                [1197068400000, 210], [1197154800000, 270], [1197241200000, 120], [1197327600000, 85]],
                 color: '#77b7c5',
             }
-        ];
+            ];
 
 
         // Lines
         $.plot($('#graph-lines'), graphData, {
-            series: {
-                points: {
-                    show: true,
-                    radius: 3.5
-                },
-                lines: {
-                    show: true,
-                    fill: true
-                },
-                shadowSize: 0
-            },
-            grid: {
-                color: '#646464',
-                borderColor: 'transparent',
-                borderWidth: 20,
-                hoverable: true
-            },
-            xaxis: {
-                mode: "time",
-                tickColor: 'transparent',
-                tickDecimals: 2
-            },
-            yaxis: {
-                tickSize: 100
-            }
+        	series: {
+        		points: {
+        			show: true,
+        			radius: 3.5
+        		},
+        		lines: {
+        			show: true,
+        			fill: true
+        		},
+        		shadowSize: 0
+        	},
+        	grid: {
+        		color: '#646464',
+        		borderColor: 'transparent',
+        		borderWidth: 20,
+        		hoverable: true
+        	},
+        	xaxis: {
+        		mode: "time",
+        		tickColor: 'transparent',
+        		tickDecimals: 2
+        	},
+        	yaxis: {
+        		tickSize: 100
+        	}
         });
 
         // Bars
         $.plot($('#graph-bars'), graphData, {
-            series: {
-                points: {
-                    show: true,
-                    radius: 3.5,
-                },
-                lines: {
-                    show: true,
-                    fill: false
-                },
-                bars: {
-                    show: false,
-                    lineWidth: 5,
-                    align: 'center'
-                },
-                shadowSize: 0,
-                hoverable: true
-            },
-            grid: {
-                color: '#646464',
-                borderColor: 'transparent',
-                borderWidth: 20,
-                hoverable: true
-            },
-            xaxis: {
-                mode: "time",
-                tickColor: 'transparent',
-                tickDecimals: 2
-            },
-            yaxis: {
-                tickSize: 100
-            }
+        	series: {
+        		points: {
+        			show: true,
+        			radius: 3.5,
+        		},
+        		lines: {
+        			show: true,
+        			fill: false
+        		},
+        		bars: {
+        			show: false,
+        			lineWidth: 5,
+        			align: 'center'
+        		},
+        		shadowSize: 0,
+        		hoverable: true
+        	},
+        	grid: {
+        		color: '#646464',
+        		borderColor: 'transparent',
+        		borderWidth: 20,
+        		hoverable: true
+        	},
+        	xaxis: {
+        		mode: "time",
+        		tickColor: 'transparent',
+        		tickDecimals: 2
+        	},
+        	yaxis: {
+        		tickSize: 100
+        	}
         });
 
         var $graphBar = $('#graph-bars'), $graphLine = $('#graph-lines'), $linkLine = $('#lines'), $linkBar = $('#bars');
         $graphBar.hide();
         $linkLine.on('click', function (e) {
-            e.preventDefault();
+        	e.preventDefault();
 
-            $linkBar.removeClass('active');
-            $graphBar.fadeOut(function () {
-                $(this).addClass('active');
-                $graphLine.fadeIn();
-            });
+        	$linkBar.removeClass('active');
+        	$graphBar.fadeOut(function () {
+        		$(this).addClass('active');
+        		$graphLine.fadeIn();
+        	});
         });
         $linkBar.on('click', function (e) {
-            e.preventDefault();
+        	e.preventDefault();
 
-            $linkLine.removeClass('active');
-            $graphLine.fadeOut(function () {
-                $(this).addClass('active');
-                $graphBar.fadeIn();
-            });
+        	$linkLine.removeClass('active');
+        	$graphLine.fadeOut(function () {
+        		$(this).addClass('active');
+        		$graphBar.fadeIn();
+        	});
         });
 
         var revenueData = [{
@@ -474,15 +360,15 @@
                 label: 'Revenue($)',
                 dashes: {show: true}
             }
-        ];
+            ];
 
-        $('#placeholder_overview, #Revenue-lines').bind('plothover', function (event, pos, item) {
-            if (item) {
-                if (previousPoint != item.dataIndex) {
-                    previousPoint = item.dataIndex;
-                    $('#flotTip').remove();
-                    var x = item.datapoint[0],
-                            y = item.datapoint[1];
+            $('#placeholder_overview, #Revenue-lines').bind('plothover', function (event, pos, item) {
+            	if (item) {
+            		if (previousPoint != item.dataIndex) {
+            			previousPoint = item.dataIndex;
+            			$('#flotTip').remove();
+            			var x = item.datapoint[0],
+            			y = item.datapoint[1];
                     //showTooltip(item.pageX, item.pageY, y + ' visitors at ' + x + '.00h');
 
                     var color = item.series.color;
@@ -490,71 +376,71 @@
                     var month = monthNames[new Date(x).getMonth()];
                     var year = new Date(x).getFullYear();
                     showTooltip(item.pageX,
-                            item.pageY,
-                            day + ' ' + month + ',' + year
-                            + " : <strong>" + y +
-                            "($)</strong>");
+                    	item.pageY,
+                    	day + ' ' + month + ',' + year
+                    	+ " : <strong>" + y +
+                    	"($)</strong>");
                 }
             } else {
-                $('#flotTip').remove();
-                previousPoint = null;
+            	$('#flotTip').remove();
+            	previousPoint = null;
             }
         });
 
-        var options = {
-            series: {
-                points: {
-                    show: true,
-                    radius: 3.5,
-                    fillColor: "rgba(0,0,0,0.35)",
-                },
-                lines: {
-                    show: true,
-                    lineWidth: 2,
-                    fill: true
-                },
-                bars: {
-                    show: false,
-                    lineWidth: 2
-                },
-                shadowSize: 10,
+            var options = {
+            	series: {
+            		points: {
+            			show: true,
+            			radius: 3.5,
+            			fillColor: "rgba(0,0,0,0.35)",
+            		},
+            		lines: {
+            			show: true,
+            			lineWidth: 2,
+            			fill: true
+            		},
+            		bars: {
+            			show: false,
+            			lineWidth: 2
+            		},
+            		shadowSize: 10,
                 //highlightColor: '#fff',
                 hoverable: true,
                 clickable: true,
             },
             grid: {
-                color: '#646464',
-                borderColor: 'transparent',
-                borderWidth: 20,
-                hoverable: true,
-                tickColor: "rgba(255,255,255,0.05)",
-                markingsColor: "rgba(255,255,255,0.05)",
-                markingsLineWidth: 5,
+            	color: '#646464',
+            	borderColor: 'transparent',
+            	borderWidth: 20,
+            	hoverable: true,
+            	tickColor: "rgba(255,255,255,0.05)",
+            	markingsColor: "rgba(255,255,255,0.05)",
+            	markingsLineWidth: 5,
                 /*backgroundColor: {
                     colors: ["rgba(54,58,60,0.05)", "rgba(0,0,0,0.2)"]
                 }*/
             },
             legend: {
-                show: true
+            	show: true
             },
             xaxis: {
-                mode: 'time',
-                font: {
-                    weight: "bold"
-                },
-                color: "#D6D8DB",
-                tickColor: 'transparent',
-                tickDecimals: 2
+            	mode: 'time',
+            	font: {
+            		weight: "bold"
+            	},
+            	color: "#D6D8DB",
+            	tickColor: 'transparent',
+            	tickDecimals: 2
             },
             selection: {
-                mode: "x"
+            	mode: "x"
             },
             yaxis: {
-                font: {
-                    weight: "bold"
-                },
-                color: "#D6D8DB",
-                tickSize: 500
+            	font: {
+            		weight: "bold"
+            	},
+            	color: "#D6D8DB",
+            	tickSize: 500
             }
         };
 
@@ -563,37 +449,37 @@
 
         // Bars
         var overview = $.plot($("#placeholder_overview"), revenueData, {
-            colors: ["#edc240", "#5eb95e"],
-            series: {
-                bars: {
-                    show: true,
-                    lineWidth: 5,
-                    fillColor: "#5eb95e"
-                },
-                shadowSize: 2,
-                grow: {
-                    active: false
-                }
-            },
-            legend: {
-                show: false
-            },
-            xaxis: {
-                ticks: [],
-                mode: "time"
-            },
-            yaxis: {
-                ticks: [],
-                min: 0,
-                autoscaleMargin: 0.1
-            },
-            selection: {
-                mode: "x"
-            },
-            grid: {
-                color: "#D6D8DB",
-                borderColor: 'transparent',
-                markingsColor: "rgba(255,255,255,0.05)",
+        	colors: ["#edc240", "#5eb95e"],
+        	series: {
+        		bars: {
+        			show: true,
+        			lineWidth: 5,
+        			fillColor: "#5eb95e"
+        		},
+        		shadowSize: 2,
+        		grow: {
+        			active: false
+        		}
+        	},
+        	legend: {
+        		show: false
+        	},
+        	xaxis: {
+        		ticks: [],
+        		mode: "time"
+        	},
+        	yaxis: {
+        		ticks: [],
+        		min: 0,
+        		autoscaleMargin: 0.1
+        	},
+        	selection: {
+        		mode: "x"
+        	},
+        	grid: {
+        		color: "#D6D8DB",
+        		borderColor: 'transparent',
+        		markingsColor: "rgba(255,255,255,0.05)",
                 /*backgroundColor: {
                     colors: ["rgba(54,58,60,0.05)", "rgba(0,0,0,0.2)"]
                 }*/
@@ -603,53 +489,53 @@
         $("#Revenue-lines").bind("plotselected", function (event, ranges) {
             // do the zooming
             plot = $.plot($("#Revenue-lines"), revenueData,
-                    $.extend(true, {}, options, {
-                        xaxis: {
-                            min: ranges.xaxis.from,
-                            max: ranges.xaxis.to
-                        }
-                    }));
+            	$.extend(true, {}, options, {
+            		xaxis: {
+            			min: ranges.xaxis.from,
+            			max: ranges.xaxis.to
+            		}
+            	}));
 
             // don't fire event on the overview to prevent eternal loop
             overview.setSelection(ranges, true);
         });
 
         $("#placeholder_overview").bind("plotselected", function (event, ranges) {
-            plot.setSelection(ranges);
+        	plot.setSelection(ranges);
         });
 
         $("#Revenuelines").click(function (event) {
-            event.preventDefault();
-            overview.clearSelection();
-            $.plot($("#Revenue-lines"), revenueData, options);
+        	event.preventDefault();
+        	overview.clearSelection();
+        	$.plot($("#Revenue-lines"), revenueData, options);
         });
 
         // pie graph
         var doughnutData = [
-            {
-                value: 5742,
-                color: "#2bbfba",
-                highlight: "#1fb3ae",
-                label: "Only Visited"
-            },
-            {
-                value: 2496,
-                color: "#00b8ce",
-                highlight: "#00acc2",
-                label: "Purchased"
-            },
-            {
-                value: 1762,
-                color: "#e5e8eb",
-                highlight: "#d9dcdf",
-                label: "Bounced"
-            }
+        {
+        	value: 5742,
+        	color: "#2bbfba",
+        	highlight: "#1fb3ae",
+        	label: "Only Visited"
+        },
+        {
+        	value: 2496,
+        	color: "#00b8ce",
+        	highlight: "#00acc2",
+        	label: "Purchased"
+        },
+        {
+        	value: 1762,
+        	color: "#e5e8eb",
+        	highlight: "#d9dcdf",
+        	label: "Bounced"
+        }
         ];
 
         var doughnutOptions = {
-            segmentShowStroke: true,
-            segmentStrokeColor: "#fff",
-            segmentStrokeWidth: 4,
+        	segmentShowStroke: true,
+        	segmentStrokeColor: "#fff",
+        	segmentStrokeWidth: 4,
             percentageInnerCutout: 60, // This is 0 for Pie charts
             animationSteps: 100,
             animationEasing: "easeOutBounce",
@@ -666,20 +552,20 @@
         var legendHolder = document.createElement('div');
         legendHolder.innerHTML = moduleDoughnut.generateLegend();
         helpers.each(legendHolder.firstChild.childNodes, function (legendNode, index) {
-            helpers.addEvent(legendNode, 'mouseover', function () {
-                var activeSegment = moduleDoughnut.segments[index];
-                activeSegment.save();
-                activeSegment.fillColor = activeSegment.highlightColor;
-                moduleDoughnut.showTooltip([activeSegment]);
-                activeSegment.restore();
-            });
+        	helpers.addEvent(legendNode, 'mouseover', function () {
+        		var activeSegment = moduleDoughnut.segments[index];
+        		activeSegment.save();
+        		activeSegment.fillColor = activeSegment.highlightColor;
+        		moduleDoughnut.showTooltip([activeSegment]);
+        		activeSegment.restore();
+        	});
         });
         helpers.addEvent(legendHolder.firstChild, 'mouseout', function () {
-            moduleDoughnut.draw();
+        	moduleDoughnut.draw();
         });
         canvas.parentNode.parentNode.appendChild(legendHolder.firstChild);
     });
-	</script>
-	{% endblock %}
+</script>
+{% endblock %}
 </body>
 </html>
