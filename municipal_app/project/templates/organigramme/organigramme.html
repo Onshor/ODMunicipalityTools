@@ -110,7 +110,7 @@
       if (clicked !== null) {
         var thisemp = clicked.data;
         myDiagram.startTransaction("add employee");
-        var newemp = { key: getNextKey(), name: "(new person)", title: "", parent: thisemp.key };
+        var newemp = { key: getNextKey(), name: "(الاسم و اللقب)", title: "", parent: thisemp.key };
         myDiagram.model.addNodeData(newemp);
         myDiagram.commitTransaction("add employee");
       }
@@ -127,13 +127,7 @@
     // This function provides a common style for most of the TextBlocks.
     // Some of these values may be overridden in a particular TextBlock.
     function textStyle() {
-      return { font: "9pt  Segoe UI,sans-serif", stroke: "white" };
-    }
-
-    // This converter is used by the Picture.
-    function findHeadShot(key) {
-      if (key < 0 || key > 16) return "images/HSnopic.png"; // There are only 16 images on the server
-      return "images/HS" + key + ".png"
+      return { font: "10pt  Segoe UI,sans-serif", stroke: "white" };
     }
 
     // define the Node template
@@ -183,17 +177,10 @@
             portId: "", fromLinkable: true, toLinkable: true, cursor: "pointer"
           }),
         $(go.Panel, "Horizontal",
-          $(go.Picture,
-            {
-              name: "Picture",
-              desiredSize: new go.Size(39, 50),
-              margin: new go.Margin(6, 8, 6, 10),
-            },
-            new go.Binding("source", "key", findHeadShot)),
           // define the panel where the text will appear
           $(go.Panel, "Table",
             {
-              maxSize: new go.Size(150, 999),
+              maxSize: new go.Size(1150, 9999),
               margin: new go.Margin(6, 10, 0, 3),
               defaultAlignment: go.Spot.Left
             },
@@ -201,36 +188,56 @@
             $(go.TextBlock, textStyle(),  // the name
               {
                 row: 0, column: 0, columnSpan: 5,
-                font: "12pt Segoe UI,sans-serif",
+                font: "18pt Segoe UI,sans-serif",
+                alignment: go.Spot.Center,
                 editable: true, isMultiline: false,
                 minSize: new go.Size(10, 16)
               },
               new go.Binding("text", "name").makeTwoWay()),
-            $(go.TextBlock, "Title: ", textStyle(),
-              { row: 1, column: 0 }),
+           	$(go.TextBlock, textStyle(),
+              { row: 1, column: 1 }),
+            $(go.TextBlock, " الصفه: ", textStyle(), // title
+              { row: 2, column: 1 }),
             $(go.TextBlock, textStyle(),
               {
-                row: 1, column: 1, columnSpan: 4,
+                row: 2, column: 0, 
                 editable: true, isMultiline: false,
                 minSize: new go.Size(10, 14),
                 margin: new go.Margin(0, 0, 0, 3)
               },
               new go.Binding("text", "title").makeTwoWay()),
             $(go.TextBlock, textStyle(),
-              { row: 2, column: 0 },
-              new go.Binding("text", "key", function(v) {return "ID: " + v;})),
+              { row: 3, column: 1 }),
+            $(go.TextBlock, " الهاتف المحمول : ", textStyle(),
+              { row: 4, column: 1 }),
             $(go.TextBlock, textStyle(),
-              { name: "boss", row: 2, column: 3, }, // we include a name so we can access this TextBlock when deleting Nodes/Links
-              new go.Binding("text", "parent", function(v) {return "Boss: " + v;})),
-            $(go.TextBlock, textStyle(),  // the comments
               {
-                row: 3, column: 0, columnSpan: 5,
-                font: "italic 9pt sans-serif",
-                wrap: go.TextBlock.WrapFit,
-                editable: true,  // by default newlines are allowed
-                minSize: new go.Size(10, 14)
+                row: 4, column: 0, 
+                editable: true, isMultiline: false,
+                minSize: new go.Size(10, 14),
+                margin: new go.Margin(0, 0, 0, 3)
               },
-              new go.Binding("text", "comments").makeTwoWay())
+              new go.Binding("text", "tel").makeTwoWay()), 
+            $(go.TextBlock, textStyle(),
+              { row: 5, column: 1 }),
+            $(go.TextBlock, " الهاتف القار: ", textStyle(),
+              { row: 6, column: 1 }),
+            $(go.TextBlock, textStyle(),
+              {
+                row: 6, column: 0, 
+                editable: true, isMultiline: false,
+                minSize: new go.Size(10, 14),
+                margin: new go.Margin(0, 0, 0, 3)
+              },
+              new go.Binding("text", "tel_fixe").makeTwoWay()),
+            $(go.TextBlock, textStyle(),
+              { row: 7, column: 1 }),
+            $(go.TextBlock, "البريد الالكتروني:" , textStyle(),
+              { row: 8, column: 1 }), //email
+            $(go.TextBlock, textStyle(),
+              { row: 8, column: 0 },
+              new go.Binding("text", "email").makeTwoWay()), //email
+            
           )  // end Table Panel
         ) // end Horizontal Panel
       );  // end Node
@@ -250,7 +257,7 @@
                 // update the key, name, and comments
                 myDiagram.model.setKeyForNodeData(thisemp, getNextKey());
                 myDiagram.model.setDataProperty(thisemp, "name", "(Vacant)");
-                myDiagram.model.setDataProperty(thisemp, "comments", "");
+                
                 myDiagram.commitTransaction("vacate");
               }
             }
@@ -308,7 +315,9 @@
       {
         properties: {
           "key": { readOnly: true },
-          "comments": {}
+          "tel": { type: 'number' },
+          "email": { type: 'email'},
+          "tel_fixe": { type: 'number'}
         }
       });
   }
@@ -326,7 +335,7 @@
 </head>
 <body onload="init()">
 <div id="sample">
-  <div id="myDiagramDiv" style="background-color: #696969; border: solid 1px black; height: 500px"></div>
+  <div id="myDiagramDiv" style="background-color: #e6f7ff; border: solid 1px blue; height: 850px"></div>
   <div>
     <div id="myInspector">
 
@@ -340,8 +349,9 @@
     <textarea id="mySavedModel" style="width:100%;height:250px">
 { "class": "go.TreeModel",
   "nodeDataArray": [
-{"key":1, "name":"Stella Payne Diaz", "title":"CEO", "email":"med@gmail.com"},
-{"key":2, "name":"Luke Warm", "title":"VP Marketing/Sales", "parent":1, "email":"med@gmail.com"}
+{"key":1, "name":"ali", "title":"CEO", "email":"med0@gmail.com", "tel":"98569832", "tel_fixe":"72569832"},
+{"key":2, "name":"sawssen", "title":"VP Marketing/Sales", "parent":1, "email":"med1@gmail.com", "tel":"23569848", "tel_fixe":"72569832"},
+{"key":3, "name":"amin", "title":"VP Marketing/Sales", "parent":2, "email":"med2@gmail.com","tel":"55256489", "tel_fixe":"72569832"}
  ]
 }
     </textarea>
