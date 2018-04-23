@@ -326,6 +326,9 @@
   function save() {
     document.getElementById("mySavedModel").value = myDiagram.model.toJson();
     myDiagram.isModified = false;
+    $.post( "/organigramme", {
+    javascript_data: myDiagram.model.toJson() 
+        });
   }
   function load() {
     myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
@@ -335,26 +338,26 @@
 </head>
 <body onload="init()">
 <div id="sample">
-  <div id="myDiagramDiv" style="background-color: #e6f7ff; border: solid 1px blue; height: 850px"></div>
+  <div id="myDiagramDiv" style="background-color: #e6f7ff; border: solid 1px blue; height: 600px"></div>
   <div>
     <div id="myInspector">
 
     </div>
   </div>
   <div>
-     <div>
-      <button id="SaveButton" onclick="save()">Save</button>
-      <button onclick="load()">Load</button>
-    </div>
-    <textarea id="mySavedModel" style="width:100%;height:250px">
-{ "class": "go.TreeModel",
-  "nodeDataArray": [
-{"key":1, "name":"ali", "title":"CEO", "email":"med0@gmail.com", "tel":"98569832", "tel_fixe":"72569832"},
-{"key":2, "name":"sawssen", "title":"VP Marketing/Sales", "parent":1, "email":"med1@gmail.com", "tel":"23569848", "tel_fixe":"72569832"},
-{"key":3, "name":"amin", "title":"VP Marketing/Sales", "parent":2, "email":"med2@gmail.com","tel":"55256489", "tel_fixe":"72569832"}
- ]
-}
+    <textarea id="mySavedModel" style="width:100%;height:250px;display:none;">
+    {{ json_organigramme }}
     </textarea>
+     <div>
+      <form action="" method="POST">
+      <button id="SaveButton" onclick="save()">حفظ</button>
+    </form>
+      <button onclick="load()">إعادة التحميل</button>
+    </div>
+    <div>
+      <h3>{{org_file}}</h3>
+    </div>
+
   </div>
 </div>
 </body>

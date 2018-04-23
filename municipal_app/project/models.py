@@ -2,7 +2,7 @@
 
 
 import datetime
-
+from sqlalchemy.dialects.postgresql import JSON
 from project import db, bcrypt
 
 
@@ -281,6 +281,22 @@ class Detention(db.Model):
         self.Date_Release = Date_Release
         self.Num_Bon = Num_Bon
         self.Note = Note
+
+    def get_id(self):
+        return self.id
+
+
+class Organigramme(db.Model):
+    __tablename__ = "organigramme"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    organigramme_data = db.Column(JSON, nullable=True)
+
+    def __init__(self, municipal_id, organigramme_data, user_id):
+        self.municipal_id = municipal_id
+        self.user_id = user_id
+        self.organigramme_data = organigramme_data
 
     def get_id(self):
         return self.id
