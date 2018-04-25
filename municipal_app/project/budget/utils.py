@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
 
-from flask.ext.login import current_user
+from flask_login import current_user
 from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle
 from project import db
 from parser import decode_unicode, get_csv_file

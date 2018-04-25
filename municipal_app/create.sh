@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-pip install -r requirements.txt
+#pip install -r requirements.txt
 export APP_SETTINGS="project.config.ProductionConfig"
 python manage.py create_db
 python manage.py db init

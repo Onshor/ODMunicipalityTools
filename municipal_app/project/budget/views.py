@@ -8,7 +8,7 @@
 from utils import save_budget_fee_annuelle, save_budget_fee_monthly, csv_annuelle_file, allowed_file, check_municipal_id, save_budget_parametre, csv_mensuelle_file
 from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
-from flask.ext.login import login_required, current_user
+from flask_login import login_required, current_user
 from parser import parse_budget, parse_recette_file, parse_depence_file
 
 

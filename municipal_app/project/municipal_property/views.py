@@ -8,7 +8,7 @@
 from project.decorators import check_confirmed
 from project.models import Proprietemunicipal, Municipality
 from flask import render_template, Blueprint, url_for, redirect, flash, request
-from flask.ext.login import login_required, current_user
+from flask_login import login_required, current_user
 from .forms import ProprietyForm
 from project import db
 from pprint import pprint as pp

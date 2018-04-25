@@ -5,8 +5,8 @@ import os
 import unittest
 import coverage
 
-from flask.ext.script import Manager, Server
-from flask.ext.migrate import Migrate, MigrateCommand
+from flask_script import Manager, Server
+from flask_migrate import Migrate, MigrateCommand
 
 from project import app, db
 from project.models import User, Municipality

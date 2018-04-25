@@ -6,7 +6,7 @@ import datetime
 from project.decorators import check_confirmed
 from project.token import generate_confirmation_token, confirm_token
 from flask import render_template, Blueprint, url_for, redirect, flash, request, send_file
-from flask.ext.login import login_user, logout_user, login_required, current_user
+from flask_login import login_user, logout_user, login_required, current_user
 from project.models import User, Budget_parametre, Budget_annuelle, Budget_mensuelle
 from project.email import send_email
 from project import db, bcrypt

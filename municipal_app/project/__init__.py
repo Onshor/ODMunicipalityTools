@@ -8,12 +8,12 @@
 import os
 
 from flask import Flask, render_template
-from flask.ext.login import LoginManager
-from flask.ext.bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_bcrypt import Bcrypt
 from flask_mail import Mail
-from flask.ext.debugtoolbar import DebugToolbarExtension
-from flask.ext.sqlalchemy import SQLAlchemy
-
+from flask_debugtoolbar import DebugToolbarExtension
+from flask_sqlalchemy import SQLAlchemy
+from config import ProductionConfig as APP_SETTINGS
 
 ################
 #### config ####
@@ -21,7 +21,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config.from_object(os.environ['APP_SETTINGS'])
+# app.config.from_object(os.environ['APP_SETTINGS'])
+app.config.from_object(APP_SETTINGS)
 # app.debug = True
 ####################
 #### extensions ####

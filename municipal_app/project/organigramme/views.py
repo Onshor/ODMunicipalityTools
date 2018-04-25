@@ -7,7 +7,7 @@
 
 from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
-from flask.ext.login import login_required, current_user
+from flask_login import login_required, current_user
 from project.models import Organigramme
 from project import db
 import json
