@@ -49,7 +49,11 @@ def organigramme():
             db.session.commit()
         org_file = get_json_file(json_organigramme, 'organigramme_' + current_user.municipal_id)
         flash(u'تم تحيين التنظيم الهيكلي', 'success')
-    confirm_url = url_for('main.home', _external=True) + 'static/files/'
+    if 'project' in url_for('main.home', _external=True) + 'static/files/':
+        confirm_url = url_for('main.home', _external=True) + 'static/files/'
+        confirm_url = confirm_url.replace('project', '')
+    else:
+        confirm_url = url_for('main.home', _external=True) + 'static/files/'
     org_file = confirm_url + get_json_file(json_organigramme, 'organigramme_' + current_user.municipal_id)
     return render_template('organigramme/organigramme.html', json_organigramme=json_organigramme, org_file=org_file)
 

@@ -11,8 +11,11 @@ from flask_migrate import Migrate, MigrateCommand
 from project import app, db
 from project.models import User, Municipality
 from list_municipality import municipalitys
+from project.config import ProductionConfig as APP_SETTINGS
 
-app.config.from_object(os.environ['APP_SETTINGS'])
+
+app.config.from_object(APP_SETTINGS)
+
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -83,14 +86,14 @@ def create_admin():
 def create_test_user():
     """Creates the admin user."""
     db.session.add(User(
-        email="med.dahas@gmail.com",
+        email="med.dahas@esprit.com",
         password="medPWD17%%",
         admin=False,
         confirmed=True,
         confirmed_on=datetime.datetime.now(),
         name='med',
         last_name='dahas',
-        municipal_id='34012',)
+        municipal_id='72013',)
     )
     db.session.commit()
 

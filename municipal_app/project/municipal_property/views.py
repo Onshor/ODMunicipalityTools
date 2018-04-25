@@ -100,7 +100,11 @@ def update_municipal_property():
 @check_confirmed
 def get_property_file():
     private_list, public_list = [], []
-    confirm_url = url_for('main.home', _external=True) + 'static/files/'
+    if 'project' in url_for('main.home', _external=True) + 'static/files/':
+        confirm_url = url_for('main.home', _external=True) + 'static/files/'
+        confirm_url = confirm_url.replace('project', '')
+    else:
+        confirm_url = url_for('main.home', _external=True) + 'static/files/'
     data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
     for d in data:
         if u'خاص' in d['Type_Proprety']:
