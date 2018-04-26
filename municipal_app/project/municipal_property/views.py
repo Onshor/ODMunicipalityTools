@@ -162,4 +162,4 @@ def get_file_path():
     if os.path.isdir('project/static/files/'):
         return 'project/static/files/'
     else:
-        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/files"
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/files/"
