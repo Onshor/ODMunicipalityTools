@@ -9,7 +9,7 @@ from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from project.models import Organigramme
-from project import db
+from project import db, app
 import json
 import os
 from pprint import pprint as pp
@@ -65,7 +65,6 @@ def get_json_file(data, ref):
     with open(filepath, 'wb') as outfile:
         json.dump(data, outfile)
     return file_name
-
 
 
 def get_file_path():
