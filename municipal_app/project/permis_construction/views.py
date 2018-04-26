@@ -12,7 +12,6 @@ from flask_login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
 from project import db
 import os
-from pprint import pprint as pp
 import datetime
 import csv
 
@@ -190,14 +189,23 @@ def get_files():
             initial_dict['date_refuse'] = d['date_refuse'].strftime("%Y/%m/%d")
             refused_list.append(initial_dict)
     if request.values['type_file'] == 'en_cours':
-        encour_url = confirm_url + get_csv_file(encours_list, ref_encours, [])
-        return render_template('permis_construction/permis_construction.html', data=data, encours=True, encour_url=encour_url)
+        if encours_list:
+            encour_url = confirm_url + get_csv_file(encours_list, ref_encours, [])
+            return render_template('permis_construction/permis_construction.html', data=data, encours=True, encour_url=encour_url)
+        else:
+            flash(u'ليست هنالك بيانات حول    التراخيص بصدد الدرس', 'warning')
     elif request.values['type_file'] == 'approved':
-        approved_url = confirm_url + get_csv_file(approved_list, ref_approved, field_approved_list)
-        return render_template('permis_construction/permis_construction.html', data=data, approved=True, approved_url=approved_url)
+        if approved_list:
+            approved_url = confirm_url + get_csv_file(approved_list, ref_approved, field_approved_list)
+            return render_template('permis_construction/permis_construction.html', data=data, approved=True, approved_url=approved_url)
+        else:
+            flash(u'ليست هنالك بيانات حول    التراخيص المقبولة', 'warning')
     elif request.values['type_file'] == 'refused':
-        refused_url = confirm_url + get_csv_file(refused_list, ref_refused, field_refused_list)
-        return render_template('permis_construction/permis_construction.html', data=data, refused=True, refused_url=refused_url)
+        if refused_list:
+            refused_url = confirm_url + get_csv_file(refused_list, ref_refused, field_refused_list)
+            return render_template('permis_construction/permis_construction.html', data=data, refused=True, refused_url=refused_url)
+        else:
+            flash(u'ليست هنالك بيانات حول     التراخيص المرفوضة', 'warning')
     return render_template('permis_construction/permis_construction.html', data=data)
 
 
