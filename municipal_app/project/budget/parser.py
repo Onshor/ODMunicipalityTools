@@ -6,6 +6,7 @@ import datetime
 import csv
 from list_month import decode_month
 from pprint import pprint as pp
+import os
 
 
 def decode_unicode(v):
@@ -184,9 +185,16 @@ def parse_depence_file(xml_file):
 def get_csv_file(data, ref, year_list):
     _ = ['Titre', 'Article', 'Paragraphe', 'Sous_paragraphe', 'Imputation']
     fieldnames = _ + year_list
-    filepath = 'project/static/files/' + ref + '.csv'
+    filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
         dict_writer.writeheader()
         dict_writer.writerows(data)
     return ref + '.csv'
+
+
+def get_file_path():
+    if os.path.isdir('project/static/files/'):
+        return 'project/static/files/'
+    else:
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/files"

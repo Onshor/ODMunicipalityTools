@@ -14,6 +14,7 @@ from project import db
 from pprint import pprint as pp
 import datetime
 import csv
+import os
 
 ################
 #### config ####
@@ -129,7 +130,7 @@ def check_float(value):
 def get_csv_file(data, ref, field_list):
     _ = ['Titre_Foncier', 'Type_du_Bien', 'Mode_Octroi', 'Type_Usage', 'Surface', 'Adresse_Localisation', 'Longitude', 'Laltitude']
     fieldnames = _ + field_list
-    filepath = 'project/static/files/' + ref + '.csv'
+    filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
         dict_writer.writeheader()
@@ -155,3 +156,10 @@ def decode_unicode(v):
         return v.encode('utf-8')
     except:
         return v
+
+
+def get_file_path():
+    if os.path.isdir('project/static/files/'):
+        return 'project/static/files/'
+    else:
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/files"

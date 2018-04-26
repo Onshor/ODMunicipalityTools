@@ -11,6 +11,7 @@ from flask_login import login_required, current_user
 from project.models import Organigramme
 from project import db
 import json
+import os
 from pprint import pprint as pp
 
 ################
@@ -60,7 +61,15 @@ def organigramme():
 
 def get_json_file(data, ref):
     file_name = ref + '.json'
-    filepath = 'project/static/files/' + ref + '.json'
+    filepath = get_file_path() + ref + '.json'
     with open(filepath, 'wb') as outfile:
         json.dump(data, outfile)
     return file_name
+
+
+
+def get_file_path():
+    if os.path.isdir('project/static/files/'):
+        return 'project/static/files/'
+    else:
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/files"

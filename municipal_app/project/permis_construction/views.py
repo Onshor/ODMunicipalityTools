@@ -11,6 +11,7 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
 from project import db
+import os
 from pprint import pprint as pp
 import datetime
 import csv
@@ -203,12 +204,19 @@ def get_files():
 def get_csv_file(data, ref, field_list):
     _ = ['Numero_demande', 'Nom_titulaire', 'Address_travaux', 'Date_depot', 'Type_construction', 'Description_travaux', 'Longitude', 'Laltitude']
     fieldnames = _ + field_list
-    filepath = 'project/static/files/' + ref + '.csv'
+    filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
         dict_writer.writeheader()
         dict_writer.writerows(data)
     return ref + '.csv'
+
+
+def get_file_path():
+    if os.path.isdir('project/static/files/'):
+        return 'project/static/files/'
+    else:
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/files"
 
 
 def decode_unicode(v):
@@ -238,7 +246,7 @@ def reforme(p_dict):
 
 def check_float(value):
     try:
-        x = float(value)
+        float(value)
         return True
     except:
         return False
