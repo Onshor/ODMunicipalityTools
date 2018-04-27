@@ -3,6 +3,15 @@
 {% block content %}
 <head>
 {% block js %}
+<script>
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+}
+</script>
 <script id="code">
   function init() {
     if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
@@ -11,7 +20,7 @@
     myDiagram =
       $(go.Diagram, "myDiagramDiv", // must be the ID or reference to div
         {
-          initialContentAlignment: go.Spot.Center,
+          initialContentAlignment: go.Spot.TopCenter,
           maxSelectionCount: 1, // users can select only one part at a time
           validCycle: go.Diagram.CycleDestinationTree, // make sure users can only create trees
           "clickCreatingTool.archetypeNodeData": {}, // allow double-click in background to create a new node
@@ -338,26 +347,46 @@
 </head>
 <body onload="init()">
 <div id="sample">
-  <div id="myDiagramDiv" style="background-color: #e6f7ff; border: solid 1px blue; height: 600px"></div>
-  <div>
-    <div id="myInspector">
+  <div class=' animated fadeInUp go col-lg-9'>
+  <div id="myDiagramDiv"  style="background-color: #e6f7ff; border: solid 1px blue; height: 500px"></div>
+</div>
+  <div class='animated fadeInUp go col-lg-3'>
+
+    <div class='animated fadeInUp go' id="myInspector">
 
     </div>
   </div>
   <div>
+    <div class="row">
     <textarea id="mySavedModel" style="width:100%;height:250px;display:none;">
     {{ json_organigramme }}
     </textarea>
-     <div>
+    </div>
+    <div class="line-dashed"></div>
+    <div class="row">
+     <div class="col-lg-6">
+      <div class="col-lg-6">
       <form action="" method="POST">
-      <button id="SaveButton" onclick="save()">حفظ</button>
-    </form>
-      <button onclick="load()">إعادة التحميل</button>
+        <button id="SaveButton" class="btn btn-success btn-block" onclick="save()">حفظ</button>
+      </form>
     </div>
-    <div>
-      <h3>{{org_file}}</h3>
+    <div class="col-lg-6">
+      <form action="" method="POST">
+        <button onclick="load()" class="btn btn-info btn-block">إعادة التحميل</button>
+      <form>
     </div>
-
+  </div>
+    <div class="col-lg-6">
+      <div class='row'>
+              <div class='col-sm-8'>
+                <input type="text" class="form-control has-success" placeholder="{{org_file}}", readonly/>
+              </div>
+              <div class='col-sm-4'>
+                <p id ="copy_link_encours" style="display: none;">{{org_file}}</p>
+                <input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_encours')"/>
+              </div>
+            </div>
+    </div>
   </div>
 </div>
 </body>

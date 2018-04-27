@@ -28,16 +28,16 @@
 						{% endif %}
 					</select>
 				</div></div>
-				<div class="col-md-4">Titre_Foncier<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Titre_Foncier' value='{{property_data.Titre_Foncier}}' id ="maj" readonly></div></div>
-				<div class="col-md-4">Type_du_Bien<div class="form-group-inner"><input type="text" class="form-control" placeholder="" id ="maj" name='Type_du_Bien' value='{{property_data.Type_du_Bien}}' readonly></div></div>
+				<div class="col-md-4">الترسيم العقاري<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Titre_Foncier' value='{{property_data.Titre_Foncier}}' id ="maj" readonly></div></div>
+				<div class="col-md-4">نوع الملك<div class="form-group-inner"><input type="text" class="form-control" placeholder="" id ="maj" name='Type_du_Bien' value='{{property_data.Type_du_Bien}}' readonly></div></div>
 			</div>                    
 			<div class="row">
-				<div class="col-md-4">Type_Usage<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Type_Usage' value='{{property_data.Type_Usage}}' id ="maj" readonly></div></div>
-				<div class="col-md-4">Adresse_Localisation<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Adresse_Localisation' value='{{property_data.Adresse_Localisation}}' id ="maj" readonly></div></div>
-				<div class="col-md-4">Mode_Octroi<div class="form-group-inner"><input type="text" class="form-control" name='Mode_Octroi' placeholder="" value='{{property_data.Mode_Octroi}}' id ="maj" readonly></div></div>
+				<div class="col-md-4">طريقة الإستغلال<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Type_Usage' value='{{property_data.Type_Usage}}' id ="maj" readonly></div></div>
+				<div class="col-md-4">العنوان<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Adresse_Localisation' value='{{property_data.Adresse_Localisation}}' id ="maj" readonly></div></div>
+				<div class="col-md-4">المستغل<div class="form-group-inner"><input type="text" class="form-control" name='Mode_Octroi' placeholder="" value='{{property_data.Mode_Octroi}}' id ="maj" readonly></div></div>
 			</div>
 			<div class="row">
-				<div class="col-md-4">Surface<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Surface' value='{{property_data.Surface}}' id ="maj" readonly></div></div>
+				<div class="col-md-4">المساحة بالمتر ² <div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Surface' value='{{property_data.Surface}}' id ="maj" readonly></div></div>
 				<div class="col-md-4">Longitude<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Longitude' value='{{property_data.Longitude}}' id ="maj" readonly></div></div>
 				<div class="col-md-4">Laltitude<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Laltitude' value='{{property_data.Laltitude}}' id ="maj" readonly></div></div>
 				<div class="col-md-4"></div>
@@ -60,7 +60,7 @@
 	<form class="form-horizontal" role="form" method="post" action="">
 		{{ form.csrf_token }}
 		<div class="form-group"> 
-			<label class="col-sm-3 control-label">Type_Proprety *</label> 
+			<label class="col-sm-3 control-label">صفة الملك *</label> 
 			<div class="col-sm-5">
 				{{ form.Type_Proprety( class="form-control") }}
 				{% if form.Type_Proprety.errors %}
@@ -72,7 +72,7 @@
 		</div>
 		<div class="line-dashed"></div>
 		<div class="form-group">
-			<label class="col-sm-3 control-label">Titre_Foncier *</label> 
+			<label class="col-sm-3 control-label">الترسيم العقاري *</label> 
 			<div class="col-sm-5">
 				{{ form.Titre_Foncier( class="form-control",type="text") }}
 				{% if form.Titre_Foncier.errors %}
@@ -84,7 +84,7 @@
 		</div>
 		<div class="line-dashed"></div>
 		<div class="form-group"> 
-			<label class="col-sm-3 control-label">Type_du_Bien *</label> 
+			<label class="col-sm-3 control-label">نوع الملك *</label> 
 			<div class="col-sm-5">
 				{{ form.Type_du_Bien( class="form-control", type="text") }}
 				{% if form.Type_du_Bien.errors %}
@@ -96,7 +96,7 @@
 		</div>
 		<div class="line-dashed"></div>
 		<div class="form-group"> 
-			<label class="col-sm-3 control-label">Type_Usage *</label> 
+			<label class="col-sm-3 control-label">طريقة الإستغلال *</label> 
 			<div class="col-sm-5">
 				{{ form.Type_Usage( class="form-control", type="text") }}
 				{% if form.Type_Usage.errors %}
@@ -108,7 +108,7 @@
 		</div>
 		<div class="line-dashed"></div>
 		<div class="form-group"> 
-			<label class="col-sm-3 control-label">Adresse_Localisation *</label> 
+			<label class="col-sm-3 control-label">العنوان *</label> 
 			<div class="col-sm-5">
 				{{ form.Adresse_Localisation( class="form-control", type="text") }}
 				{% if form.Adresse_Localisation.errors %}
@@ -120,7 +120,7 @@
 		</div>
 		<div class="line-dashed"></div>
 		<div class="form-group"> 
-			<label class="col-sm-3 control-label">Mode_Octroi *</label> 
+			<label class="col-sm-3 control-label">المستغل *</label> 
 			<div class="col-sm-5">
 				{{ form.Mode_Octroi( class="form-control", type="text") }}
 				{% if form.Mode_Octroi.errors %}
@@ -132,7 +132,7 @@
 		</div>
 		<div class="line-dashed"></div>
 		<div class="form-group"> 
-			<label class="col-sm-3 control-label">Surface *</label> 
+			<label class="col-sm-3 control-label">المساحة بالمتر ²  *</label> 
 			<div class="col-sm-5">
 				{{ form.Surface( class="form-control") }}
 				{% if form.Surface.errors %}
