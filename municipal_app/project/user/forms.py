@@ -10,7 +10,6 @@ from project.models import User
 from list_municipality import municipalitys
 
 
-
 class LoginForm(Form):
     email = TextField('email', validators=[DataRequired(), Email()])
     password = PasswordField('password', validators=[DataRequired()])
@@ -37,7 +36,7 @@ class RegisterForm(Form):
     for _ in municipalitys:
         if _['municipal_id'] != '1':
             choices.append((_['municipal_id'], _['municipal_name_ar']))
-    municipal_id = SelectField('Municipality name', validators=[DataRequired()], choices=choices)
+    municipal_id = SelectField('Municipality name', validators=[DataRequired()], choices=sorted(choices, key=lambda tup: tup[0]))
 
     def validate(self):
         initial_validation = super(RegisterForm, self).validate()

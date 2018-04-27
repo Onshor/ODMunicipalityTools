@@ -123,14 +123,13 @@ def update_municipality():
                 municipal_long=m['municipal_long'],
                 municipal_lat=m['municipal_lat']))
             db.session.commit()
-        #else:
-        #    print(m)
-        #    mun = Municipality.query.get(m['municipal_id'])
-        #    mun.municipal_name = m['municipal_name']
-        #    mun.municipal_name_ar = m['municipal_name_ar']
-        #    mun.municipal_long = float(m['municipal_long'])
-        #    mun.municipal_lat = float(m['municipal_lat'])
-        #    db.session.commit()
+        else:
+            mun = Municipality.query.get(m['municipal_id'])
+            mun.municipal_name = m['municipal_name']
+            mun.municipal_name_ar = m['municipal_name_ar']
+            mun.municipal_long = float(m['municipal_long'])
+            mun.municipal_lat = float(m['municipal_lat'])
+            db.session.commit()
 
 if __name__ == '__main__':
     manager.run()
