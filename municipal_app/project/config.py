@@ -31,11 +31,16 @@ class BaseConfig(object):
 
 
 class DevelopmentConfig(BaseConfig):
-    """Development configuration."""
-    DEBUG = True
-    WTF_CSRF_ENABLED = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'dev.sqlite')
-    DEBUG_TB_ENABLED = True
+    """Production configuration."""
+    SECRET_KEY = 'my_precious'
+    DEBUG = False
+    SECURITY_PASSWORD_SALT = "saltsercretmunicipal%%onshor"
+    # SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/municipal_db_test2_0"
+    SQLALCHEMY_DATABASE_URI = "postgresql://municipality:municipality@localhost/municipal_db"
+    DEBUG_TB_ENABLED = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    STRIPE_SECRET_KEY = 'foo'
+    STRIPE_PUBLISHABLE_KEY = 'bar'
 
 
 class TestingConfig(BaseConfig):
@@ -52,7 +57,6 @@ class ProductionConfig(BaseConfig):
     SECRET_KEY = 'my_precious'
     DEBUG = False
     SECURITY_PASSWORD_SALT = "saltsercretmunicipal%%onshor"
-    # SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/municipal_db_test2_0"
     SQLALCHEMY_DATABASE_URI = "postgresql://municipality:municipality@localhost/municipal_db"
     DEBUG_TB_ENABLED = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -11,7 +11,7 @@ from flask_migrate import Migrate, MigrateCommand
 from project import app, db
 from project.models import User, Municipality
 from list_municipality import municipalitys
-from project.config import ProductionConfig as APP_SETTINGS
+from project.config import DevelopmentConfig as APP_SETTINGS
 
 
 app.config.from_object(APP_SETTINGS)
@@ -118,9 +118,19 @@ def update_municipality():
             db.session.add(Municipality(
                 municipal_id=m['municipal_id'],
                 municipal_name=m['municipal_name'],
-                municipal_state=m['municipal_state']))
+                municipal_state=m['municipal_state'],
+                municipal_name_ar=m['municipal_name_ar'],
+                municipal_long=m['municipal_long'],
+                municipal_lat=m['municipal_lat']))
             db.session.commit()
-
+        #else:
+        #    print(m)
+        #    mun = Municipality.query.get(m['municipal_id'])
+        #    mun.municipal_name = m['municipal_name']
+        #    mun.municipal_name_ar = m['municipal_name_ar']
+        #    mun.municipal_long = float(m['municipal_long'])
+        #    mun.municipal_lat = float(m['municipal_lat'])
+        #    db.session.commit()
 
 if __name__ == '__main__':
     manager.run()

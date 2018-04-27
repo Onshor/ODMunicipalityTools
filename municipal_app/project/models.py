@@ -11,11 +11,17 @@ class Municipality(db.Model):
     municipal_id = db.Column(db.String, primary_key=True)
     municipal_name = db.Column(db.String, nullable=False)
     municipal_state = db.Column(db.String, nullable=False)
+    municipal_name_ar = db.Column(db.String, nullable=True)
+    municipal_long = db.Column(db.Float, nullable=True)
+    municipal_lat = db.Column(db.Float, nullable=True)
 
-    def __init__(self, municipal_id, municipal_name, municipal_state):
+    def __init__(self, municipal_id, municipal_name, municipal_state, municipal_name_ar, municipal_long, municipal_lat):
         self.municipal_id = municipal_id
         self.municipal_name = municipal_name
         self.municipal_state = municipal_state
+        self.municipal_name_ar = municipal_name_ar
+        self.municipal_long = municipal_long
+        self.municipal_lat = municipal_lat
 
     def get_municipal_id(self):
         return self.municipal_id

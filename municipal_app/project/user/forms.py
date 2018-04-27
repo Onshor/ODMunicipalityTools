@@ -33,10 +33,10 @@ class RegisterForm(Form):
     )
     name = TextField('First Name', validators=[DataRequired(), Length(max=15)])
     last_name = TextField('Last Name', validators=[DataRequired(), Length(max=80)])
-    choices = []
+    choices = [(None, u'المنطقة البلدية')]
     for _ in municipalitys:
         if _['municipal_id'] != '1':
-            choices.append((_['municipal_id'], _['municipal_name']))
+            choices.append((_['municipal_id'], _['municipal_name_ar']))
     municipal_id = SelectField('Municipality name', validators=[DataRequired()], choices=choices)
 
     def validate(self):
