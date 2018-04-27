@@ -12,6 +12,8 @@ from .forms import FourrierForm, DetentionForm, ReleaseForm
 from project.models import Fourrier, Detention
 from project import db
 import datetime
+import csv
+import os
 from pprint import pprint as pp
 
 ################
@@ -139,6 +141,66 @@ def update_detention():
             flash(u'تم تحيين مستودع الحجز', 'success')
             return redirect(url_for('fourrier.fourrier'))
     return render_template('fourrier/form_detention.html', update=True, detention_data=reforme_dict(detention_data), name_fourrier_option=name_fourrier_option, authority_option=authority_option)
+
+
+@fourrier_blueprint.route('/get_fourrier_file', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def get_fourrier_file():
+    confirm_url = url_for('main.home', _external=True) + 'static/files/'
+    fourrier_file, detention_file = [], []
+    fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
+    detention_data = [u.__dict__ for u in Detention.query.filter_by(municipal_id=current_user.municipal_id).all()]
+    if 'type_file' in request.values:
+        if request.values['type_file'] == 'list_fourrier':
+            for f in fourrier_data:
+                fourrier_file.append({'Nom_Fourrier': decode_unicode(f['Name_Fourrier']),
+                                      'Address_Fourrier': decode_unicode(f['Address_Fourrier']),
+                                      'Longitude': f['Longitude'],
+                                      'Laltitude': f['Laltitude']})
+            ref = 'list_fourrier_' + str(current_user.municipal_id)
+            field_list = ['Nom_Fourrier', 'Address_Fourrier', 'Longitude', 'Laltitude']
+            fourrier_url = confirm_url + get_csv_file(fourrier_file, ref, field_list)
+            return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), fourrier_url=fourrier_url, fourrier_lancher=True)
+        else:
+            for d in detention_data:
+                det_lon = Fourrier.query.filter_by(id=d['fourrier_id']).first().Longitude
+                det_lat = Fourrier.query.filter_by(id=d['fourrier_id']).first().Laltitude
+                detention_file.append({'Longitude': det_lon,
+                                       'Laltitude': det_lat,
+                                       'Nom_Fourrier': decode_unicode(d['Name_Fourrier']),
+                                       'Date_Detention': d['Date_Detention'].strftime("%Y/%m/%d"),
+                                       'Cause_Detention': decode_unicode(d['Cause_Detention']),
+                                       'Name_Owner': decode_unicode(d['Name_Owner']),
+                                       'Authority_Detention': decode_unicode(d['Authority_Detention']),
+                                       'Type_Detention': decode_unicode(d['Type_Detention']),
+                                       'Registration_Detention': decode_unicode(d['Registration_Detention']),
+                                       'Descr_Detention': decode_unicode(d['Descr_Detention'])})
+            ref = 'list_detention_' + str(current_user.municipal_id)
+            field_list = ['Date_Detention', 'Cause_Detention', 'Authority_Detention', 'Name_Owner', 'Type_Detention', 'Registration_Detention', 'Descr_Detention', 'Nom_Fourrier', 'Longitude', 'Laltitude']
+            detention_url = confirm_url + get_csv_file(detention_file, ref, field_list)
+            return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), detention_url=detention_url, detention_lancher=True)
+    return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))
+
+
+def get_csv_file(data, ref, field_list):
+    filepath = get_file_path() + ref + '.csv'
+    with open(filepath, 'wb') as output_file:
+        dict_writer = csv.DictWriter(output_file, fieldnames=field_list)
+        dict_writer.writeheader()
+        dict_writer.writerows(data)
+    return ref + '.csv'
+
+
+def get_file_path():
+    if os.path.isdir('project/static/files/'):
+        return 'project/static/files/'
+    else:
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/files/"
+
+
+def get_file_content_fourrier(d):
+    return 0
 
 
 def check_float(value):

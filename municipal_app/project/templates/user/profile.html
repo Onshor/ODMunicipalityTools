@@ -2,22 +2,22 @@
 
 {% block content %}
 
-<h1>Your Profile</h1>
+<h1>الملف الشخصي</h1>
 <br>
 
 {% if current_user.is_authenticated() %}
-  <p>Email: {{current_user.email}}</p>
-  <p>Name: {{current_user.name}}</p>
-  <p>Last Name: {{current_user.last_name}}</p>
-  <p>Municipal id: {{current_user.municipal_id}}</p>
+  <p>البريد الالكتروني: {{current_user.email}}</p>
+  <p>الاسم : {{current_user.name}}</p>
+  <p>اللقب : {{current_user.last_name}}</p>
+  <p>البلدية : {{mun}}</p>
 {% endif %}
 
-<h2>Change Password</h2>
+<h2>تغير كلمة السر</h2>
 <br>
 <form class="form-reset" role="form" method="post" action="">
   {{ form.csrf_token }}
   <p>
-    {{ form.password(placeholder="password") }}
+    {{ form.password(placeholder="كلمة السر الجديدة") }}
     <span class="error">
       {% if form.password.errors %}
         {% for error in form.password.errors %}
@@ -27,7 +27,7 @@
     </span>
   </p>
   <p>
-  {{ form.confirm(placeholder="confirm") }}
+  {{ form.confirm(placeholder="تأكيد كلمة السر") }}
     <span class="error">
       {% if form.confirm.errors %}
         {% for error in form.confirm.errors %}

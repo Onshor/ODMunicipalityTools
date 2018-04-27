@@ -7,7 +7,7 @@ from project.decorators import check_confirmed
 from project.token import generate_confirmation_token, confirm_token
 from flask import render_template, Blueprint, url_for, redirect, flash, request, send_file
 from flask_login import login_user, logout_user, login_required, current_user
-from project.models import User, Budget_parametre, Budget_annuelle, Budget_mensuelle
+from project.models import User, Municipality
 from project.email import send_email
 from project import db, bcrypt
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
@@ -81,6 +81,7 @@ def logout():
 @check_confirmed
 def profile():
     form = ChangePasswordForm(request.form)
+    mun = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar
     if form.validate_on_submit():
         user = User.query.filter_by(email=current_user.email, last_name=current_user.last_name, name=current_user.name,
                                     municipal_id=current_user.municipal_id).first()
@@ -92,7 +93,7 @@ def profile():
         else:
             flash('Password change was unsuccessful.', 'danger')
             return redirect(url_for('user.profile'))
-    return render_template('user/profile.html', form=form)
+    return render_template('user/profile.html', form=form, mun=mun)
 
 
 @user_blueprint.route('/confirm/<token>')
