@@ -10,7 +10,7 @@ municipalitys = [{"municipal_id": "1", "municipal_name": "Admin", "municipal_sta
                  {"municipal_id": "81013", "municipal_name": u"Métouia", "municipal_state": "Gabes", "municipal_name_ar":u"المـطـويّـة", "municipal_long":"10.007845", "municipal_lat":"33.957571"},
                  {"municipal_id": "82011", "municipal_name": u'Médenine', "municipal_state": "Mednine", "municipal_name_ar":u"مدنين", "municipal_long":"10.489030", "municipal_lat":"33.346582"},
                  {"municipal_id": "72013", "municipal_name": u"Nafta", "municipal_state": "Tozeur", "municipal_name_ar":u"نفطة", "municipal_long":"7.878291", "municipal_lat":"33.874111"},
-                 {"municipal_id": "34045", "municipal_name": u"El krib", "municipal_state": "Siliana", "municipal_name_ar":u"الکريب", "municipal_long":"9.135818", "municipal_lat":"36.327157"},]
+                 {"municipal_id": "34014", "municipal_name": u"El krib", "municipal_state": "Siliana", "municipal_name_ar":u"الکريب", "municipal_long":"9.135818", "municipal_lat":"36.327157"},]
 
 
 

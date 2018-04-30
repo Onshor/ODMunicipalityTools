@@ -86,14 +86,14 @@ def create_admin():
 def create_test_user():
     """Creates the admin user."""
     db.session.add(User(
-        email="med.dahas@esprit.com",
+        email="med.dahas@test.com",
         password="medPWD17%%",
         admin=False,
         confirmed=True,
         confirmed_on=datetime.datetime.now(),
         name='med',
         last_name='dahas',
-        municipal_id='72013',)
+        municipal_id='34014',)
     )
     db.session.commit()
 

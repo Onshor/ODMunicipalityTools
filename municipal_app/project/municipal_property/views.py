@@ -33,6 +33,8 @@ municipal_property_blueprint = Blueprint('municipal_property', __name__,)
 def add_municipal_property():
     form = ProprietyForm(request.form)
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
+    mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
+    mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
     if form.validate_on_submit():
         mun_property = Proprietemunicipal(
             user_id=current_user.id,
@@ -51,7 +53,7 @@ def add_municipal_property():
         db.session.commit()
         flash(u'تم حفظها في قاعدة البيانات', 'success')
         return redirect(url_for('municipal_property.consult_municipal_property'))
-    return render_template('municipal_property/forms_municipal_property.html', form=form, update=False, mun_name=mun_name)
+    return render_template('municipal_property/forms_municipal_property.html', form=form, update=False, mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
 @municipal_property_blueprint.route('/consult_municipal_property', methods=['GET', 'POST'])

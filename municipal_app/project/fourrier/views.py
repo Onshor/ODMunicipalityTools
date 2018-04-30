@@ -9,7 +9,7 @@ from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import FourrierForm, DetentionForm, ReleaseForm
-from project.models import Fourrier, Detention
+from project.models import Fourrier, Detention, Municipality
 from project import db
 import datetime
 import csv
@@ -31,6 +31,9 @@ fourrier_blueprint = Blueprint('fourrier', __name__,)
 @login_required
 @check_confirmed
 def add_fourrier():
+    mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
+    mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
+    mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
     form = FourrierForm(request.form)
     if form.validate_on_submit():
         fourrier = Fourrier(
@@ -45,7 +48,7 @@ def add_fourrier():
         db.session.commit()
         flash(u'تم حفظها في قاعدة البيانات', 'success')
         return redirect(url_for('fourrier.fourrier'))
-    return render_template('fourrier/form_fourrier.html', form=form, update=False)
+    return render_template('fourrier/form_fourrier.html', form=form, update=False, mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
 @fourrier_blueprint.route('/add_detention', methods=['GET', 'POST'])
