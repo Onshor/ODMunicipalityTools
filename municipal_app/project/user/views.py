@@ -44,10 +44,10 @@ def register():
         token = generate_confirmation_token(user.email)
         confirm_url = url_for('user.confirm_email', token=token, _external=True)
         html = render_template('user/activate.html', confirm_url=confirm_url)
-        subject = "Please confirm your email"
+        subject = u"برجاء تأكيد بريدك الالكترونى"
         send_email(user.email, subject, html)
         login_user(user)
-        flash('A confirmation email has been sent via email.', 'success')
+        flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
         return redirect(url_for("user.unconfirmed"))
     return render_template('user/register.html', form=form)
 
