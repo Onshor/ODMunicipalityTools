@@ -156,7 +156,9 @@ def parse_depence_file(xml_file):
     soup = tree.getroot()
     for list_g in soup.findall('LIST_G_1'):
         for g1 in list_g.findall('G_1'):
-            month = get_decode_month(g1.find('CF_MOIS').text)
+            month = get_decode_month(g1.find('CF_MOIS').text.replace(u'اضافي', '').replace(' ', ''))
+            pp(g1.find('CF_MOIS').text)
+            pp(month)
             municipal_id = g1.find('MUN').text
             year = g1.find('GESTIO').text
             for list_titre in g1.findall('LIST_G_TIT'):

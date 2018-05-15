@@ -14,12 +14,12 @@
 			<div class="panel-body">
 				<div class='row'>
 					<div class="col-lg-4">
-						<!--
-						<div id="DataTables_Table_0_filter" class="dataTables_filter"><label>البحث عن طريق رقم بطاقة التعريف أو بطاقة الاقامة للاجانب
-							<input type="search" class="form-control input-sm" placeholder="" aria-controls="DataTables_Table_0" id="myInput" onkeyup="myFunction()" >
+						
+						<div id="DataTables_Table_0_filter" class="dataTables_filter"><label>البحث عن طريق الترسيم العقاري
+							<input type="search" class="form-control input" placeholder="" aria-controls="DataTables_Table_0" id="myInput" onkeyup="myFunction()" >
 						</label>
 					</div>
-				-->
+				
 				<div>
 					<form method="get" action="/add_municipal_property">
 						<button class="btn btn-blue btn-outline" type="submit">إضافة ملك بلدي جديد</button>
@@ -74,23 +74,23 @@
 			<thead>
 
 				<tr>
-					<th>id</th>
 					<th>صفة الملك</th>
-					<th>Titre_Foncier</th>
-					<th>نوع الملك</th>
 					<th>الترسيم العقاري</th>
+					<th>نوع الملك</th>
+					<th>طريقة الإستغلال</th>
 					<th>العنوان</th>
 					<th>المستغل</th>
 					<th>المساحة بالمتر ² </th>
 					<th>Longitude</th>
 					<th>Laltitude</th>
+					<th></th>
+					<th></th>
 
 				</tr>
 			</thead>
 			<tbody>
 				{% for d in data %}
 				<tr class="gradeA">
-					<td>{{d['id']}}</td>
 					<td>{{d['Type_Proprety']}}</td>
 					<td>{{d['Titre_Foncier']}}</td>
 					<td>{{d['Type_du_Bien']}}</td>
@@ -106,31 +106,46 @@
 							<input type="hidden" name="type" value="{{d['id']}}">
 						</td>
 					</form>
-				</tr>
-				{% endfor %}
-			</tbody>
-			<tfoot>
-				<tr>
-					<th>id</th>
-					<th>صفة الملك</th>
-					<th>الترسيم العقاري</th>
-					<th>نوع الملك</th>
-					<th>Type_Usage</th>
-					<th>العنوان</th>
-					<th>المستغل</th>
-					<th>المساحة بالمتر ² </th>
-					<th>Longitude</th>
-					<th>Laltitude</th>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
+					<td>
+						<input onclick="DeleteFunction()" class="btn btn-danger btn-outline btn-rounded btn-block" type="submit" name='shit' value='حذف'/>
+						<p id="id_input" style='display:none;'>{{d['id']}}</p>
+					</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>صفة الملك</th>
+				<th>الترسيم العقاري</th>
+				<th>نوع الملك</th>
+				<th>طريقة الإستغلال</th>
+				<th>العنوان</th>
+				<th>المستغل</th>
+				<th>المساحة بالمتر ² </th>
+				<th>Longitude</th>
+				<th>Laltitude</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</tfoot>
+	</table>
+</div>
 </div>
 </div>
 </div>
 </div>
 {% block js %}
 <script>
+function DeleteFunction() {
+	var r = confirm("تأكيد الحذف ؟؟");
+	if (r == true) {
+		$.post( "/consult_municipal_property", {
+			delete_row: 'delete_row',
+			type : document.getElementById("id_input").innerHTML
+		});		
+		location.reload(true)
+	}
+}
 function myFunction() {
 	var input, filter, table, tr, td, i;
 	input = document.getElementById("myInput");
@@ -138,7 +153,7 @@ function myFunction() {
 	table = document.getElementById("myTable");
 	tr = table.getElementsByTagName("tr");
 	for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName("td")[3];
+		td = tr[i].getElementsByTagName("td")[1];
 		if (td) {
 			if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
 				tr[i].style.display = "";

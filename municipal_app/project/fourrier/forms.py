@@ -6,7 +6,6 @@ from wtforms import TextField, SelectField, FloatField, DateField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
 
-
 class FourrierForm(Form):
     Name_Fourrier = TextField(u'إسم مستودع الحجز', validators=[DataRequired(), Length(max=25)])
     Address_Fourrier = TextField(u'"عنوان  مستودع الحجز "', validators=[DataRequired(), Length(max=150)])

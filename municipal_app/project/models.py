@@ -141,6 +141,7 @@ class Permisconstruct(db.Model):
     municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     num_demande = db.Column(db.String, nullable=True)
+    surface = db.Column(db.Float, nullable=True)
     date_depot = db.Column(db.DateTime, nullable=True)
     nom_titulaire = db.Column(db.String, nullable=True)
     num_cin = db.Column(db.Integer, nullable=True)
@@ -160,15 +161,17 @@ class Permisconstruct(db.Model):
     mont_cloture = db.Column(db.Integer, nullable=True)
     mont_decision = db.Column(db.Integer, nullable=True)
     mont_total = db.Column(db.Integer, nullable=True)
+    refuse_note = db.Column(db.String, nullable=True)
 
 
     def __init__(self, municipal_id, user_id, num_demande, date_depot, nom_titulaire, num_cin, type_construct, permis_status,
                  mont_cloture, mont_charge_ascend, mont_charge_fix, date_refuse, num_permis, zone_municipal, address, desc_construct,
-                 date_attribution, date_expiration, longitude, laltitude, mont_decision, mont_total):
+                 date_attribution, date_expiration, longitude, laltitude, mont_decision, mont_total, surface, refuse_note):
         self.municipal_id = municipal_id
         self.user_id = user_id
         self.num_demande = num_demande
         self.date_depot = date_depot
+        self.surface = surface
         self.nom_titulaire = nom_titulaire
         self.num_cin = num_cin
         self.zone_municipal = zone_municipal
@@ -187,6 +190,7 @@ class Permisconstruct(db.Model):
         self.mont_cloture = mont_cloture
         self.mont_decision = mont_decision
         self.mont_total = mont_total
+        self.refuse_note = refuse_note
 
     def get_id(self):
         return self.id

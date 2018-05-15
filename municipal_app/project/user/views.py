@@ -60,10 +60,10 @@ def login():
         if user and bcrypt.check_password_hash(
                 user.password, request.form['password']):
             login_user(user)
-            flash('Welcome.', 'success')
+            flash(u'مرحباً', 'success')
             return redirect(url_for('main.home'))
         else:
-            flash('Invalid email and/or password.', 'danger')
+            flash(u'البريد الإلكتروني  و  أو كلمة المرور  غير صالح', 'danger')
             return render_template('user/login.html', form=form)
     return render_template('user/login.html', form=form)
 
@@ -72,7 +72,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('You were logged out.', 'success')
+    flash(u'لقد خرجت', 'success')
     return redirect(url_for('user.login'))
 
 
@@ -105,13 +105,13 @@ def confirm_email(token):
         flash('The confirmation link is invalid or has expired.', 'danger')
     user = User.query.filter_by(email=email).first_or_404()
     if user.confirmed:
-        flash('Account already confirmed. Please login.', 'success')
+        flash(u'تم تأكيد الحساب بالفعل. الرجاء تسجيل الدخول', 'success')
     else:
         user.confirmed = True
         user.confirmed_on = datetime.datetime.now()
         db.session.add(user)
         db.session.commit()
-        flash('You have confirmed your account. Thanks!', 'success')
+        flash(u'لقد قمت بتأكيد حسابك. شكر!', 'success')
     return redirect(url_for('main.home'))
 
 
@@ -120,7 +120,7 @@ def confirm_email(token):
 def unconfirmed():
     if current_user.confirmed:
         return redirect('main.home')
-    flash('Please confirm your account!', 'warning')
+    flash(u'يرجى تأكيد حسابك!', 'warning')
     return render_template('user/unconfirmed.html')
 
 
@@ -130,7 +130,7 @@ def resend_confirmation():
     token = generate_confirmation_token(current_user.email)
     confirm_url = url_for('user.confirm_email', token=token, _external=True)
     html = render_template('user/activate.html', confirm_url=confirm_url)
-    subject = "Please confirm your email"
+    subject = u"تأكيد بريدك الالكترونى"
     send_email(current_user.email, subject, html)
-    flash('A new confirmation email has been sent.', 'success')
+    flash(u'تم إرسال رسالة تأكيد إلكترونية جديدة.', 'success')
     return redirect(url_for('user.unconfirmed'))

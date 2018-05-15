@@ -10,6 +10,7 @@ from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from parser import parse_budget, parse_recette_file, parse_depence_file
+from project.models import Budget_annuelle
 
 
 ################
@@ -27,7 +28,28 @@ budget_blueprint = Blueprint('budget', __name__,)
 @login_required
 @check_confirmed
 def budget():
-    return render_template('budget/budget.html')
+    return render_template('budget/budget_annuel.html')
+
+
+@budget_blueprint.route('/budget_annuel')
+@login_required
+@check_confirmed
+def budget_annuel():
+    return render_template('budget/budget_annuel.html')
+
+
+@budget_blueprint.route('/budget_depence_mensuelle')
+@login_required
+@check_confirmed
+def budget_depence_mensuelle():
+    return render_template('budget/budget_depence_mensuelle.html')
+
+
+@budget_blueprint.route('/budget_recette_mensuelle')
+@login_required
+@check_confirmed
+def budget_recette_mensuelle():
+    return render_template('budget/budget_recette_mensuelle.html')
 
 
 @budget_blueprint.route('/uploader', methods=['GET', 'POST'])
@@ -57,13 +79,18 @@ def upload_file():
                         dps = confirm_url + depecence_link_simple
                         rcy = confirm_url + recette_link_per_year
                         dpy = confirm_url + depecence_link_per_year
-                        return render_template('budget/budget.html', rcs=rcs, dps=dps, rcy=rcy, dpy=dpy, parsed_annuel=True)
+                        years = Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).all()
+                        years = [_.year for _ in years]
+                        year_str = ''
+                        for y in sorted(list(set(years))):
+                            year_str = year_str + ', ' + y if year_str else y
+                        return render_template('budget/budget_annuel.html', rcs=rcs, dps=dps, rcy=rcy, dpy=dpy, parsed_annuel=True, years=year_str)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
-                        return redirect(request.url)
+                        return redirect(url_for('budget.budget_annuel'))
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( AREPLFTMUN أو AREPMLFMUN)', 'danger')
-                    return redirect(request.url)
+                    return redirect(url_for('budget.budget_annuel'))
             elif request.values['file_type'] == 'dep_month':
                 try:
                     b, file_mun_id = parse_depence_file(f)
@@ -74,13 +101,13 @@ def upload_file():
                         dpm = csv_mensuelle_file('Depence')
                         dpm = confirm_url + dpm
                         flash(u'تم حفظها في قاعدة البيانات', 'success')
-                        return render_template('budget/budget.html', dpm=dpm, parsed_dep=True)
+                        return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
-                        return redirect(request.url)
+                        return redirect(url_for('budget.budget_depence_mensuelle'))
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSITMNS )', 'danger')
-                    return redirect(request.url)
+                    return redirect(url_for('budget.budget_depence_mensuelle'))
             else:
                 try:
                     b, file_mun_id = parse_recette_file(f)
@@ -91,14 +118,21 @@ def upload_file():
                         rcm = csv_mensuelle_file('Recette')
                         rcm = confirm_url + rcm
                         flash(u'تم حفظها في قاعدة البيانات', 'success')
-                        return render_template('budget/budget.html', rcm=rcm, parsed_rect=True)
+                        return render_template('budget/budget_recette_mensuelle.html', rcm=rcm, parsed_rect=True)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
-                        return redirect(request.url)
+                        return redirect(url_for('budget.budget_recette_mensuelle'))
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')
-                    return redirect(request.url)
+                    return redirect(url_for('budget.budget_recette_mensuelle'))
     return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
+
+
+# @budget_blueprint.route('/uploader_annuel', methods=['GET', 'POST'])
+# @login_required
+# @check_confirmed
+# def upload_file_annuel():
+#     return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
 
 
 @budget_blueprint.route('/download_file', methods=['GET', 'POST'])

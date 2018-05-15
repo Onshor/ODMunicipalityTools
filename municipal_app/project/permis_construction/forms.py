@@ -2,22 +2,23 @@
 # -*- coding: utf-8 -*
 
 from flask_wtf import Form
-from wtforms import TextField, SelectField, FloatField, DateField, IntegerField
+from wtforms import TextField, TextAreaField, FloatField, DateField, IntegerField
 from wtforms.validators import DataRequired, Length
 
 
 
 class PermisencourForm(Form):
     num_demande = TextField(u'رقم المطلب', validators=[Length(max=80)])
-    date_depot = DateField(u'تاريخ إيداع المطلب', validators=[DataRequired()], format='%Y/%m/%d')
+    date_depot = DateField(u'تاريخ إيداع المطلب', format='%Y/%m/%d')
     nom_titulaire = TextField(u'صاحب الرخصة', validators=[DataRequired(), Length(max=150)])
     num_cin = TextField(u'رقم بطاقة التعريف أو رقم جواز السفر', validators=[DataRequired(), Length(max=15)])
     address = TextField(u'العنوان', validators=[DataRequired(), Length(max=150)])
     zone_municipale = TextField(u'المنطقة البلدية', validators=[Length(max=80)])
-    desc_construct = TextField(u'وصف الأشغال', validators=[Length(max=255)])
+    desc_construct = TextAreaField(u'وصف الأشغال', validators=[Length(max=255)])
     type_construct = TextField(u'العنوان', validators=[DataRequired(), Length(max=25)])
     longitude = FloatField('Longitude', validators=[DataRequired()])
     latitude = FloatField('Latitude', validators=[DataRequired()])
+    surface = FloatField('surface', validators=[DataRequired()])
 
 
 class PermisrefuseForm(Form):

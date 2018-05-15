@@ -88,6 +88,21 @@ def add_detention():
 def fourrier():
     fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
     detention_data = [u.__dict__ for u in Detention.query.filter_by(municipal_id=current_user.municipal_id).all()]
+    if 'delete_row' in request.values:
+        if request.values['delete_row'] == 'delete_row_detention':
+            det = Detention.query.get(int(request.values['type']))
+            flash(u'تم فسخ المحجوز', 'success')
+        elif Detention.query.filter_by(fourrier_id=int(request.values['type'])).first():
+            flash(u'لا يمكن فسخ المستودع وبه محجوز', 'warning')
+            return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), msg='yooo')
+        else:
+            det = Fourrier.query.get(int(request.values['type']))
+            flash(u'تم فسخ المستودع', 'success')
+        db.session.delete(det)
+        db.session.commit()
+        fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
+        detention_data = [u.__dict__ for u in Detention.query.filter_by(municipal_id=current_user.municipal_id).all()]
+        return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))
     return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))
 
 
@@ -95,6 +110,9 @@ def fourrier():
 @login_required
 @check_confirmed
 def update_fourrier():
+    mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
+    mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
+    mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
     fourrier_data = Fourrier.query.filter_by(id=request.values['f_id']).first().__dict__
     save = True
     if len(request.values) > 3:
@@ -115,7 +133,7 @@ def update_fourrier():
             db.session.commit()
             flash(u'تم تحيين مستودع الحجز', 'success')
             return redirect(url_for('fourrier.fourrier'))
-    return render_template('fourrier/form_fourrier.html', update=True, fourrier_data=fourrier_data)
+    return render_template('fourrier/form_fourrier.html', update=True, fourrier_data=fourrier_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
 @fourrier_blueprint.route('/update_detention', methods=['GET', 'POST'])
@@ -132,6 +150,7 @@ def update_detention():
             save = False
         if save:
             detent = Detention.query.get(int(request.values['d_id']))
+            detent.Descr_Detention = request.values['Descr_Detention']
             detent.Date_Detention = request.values['Date_Detention']
             detent.Cause_Detention = request.values['Cause_Detention']
             detent.Name_Owner = request.values['Name_Owner']

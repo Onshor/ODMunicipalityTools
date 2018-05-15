@@ -161,7 +161,7 @@ def csv_mensuelle_file(b_type):
                     for v, k in a.iteritems():
                         if v != 'p_id':
                             p_dict.update({v: k})
-            final_list.append(p_dict)
+                    final_list.append(p_dict)
     for k, v in final_list[1].iteritems():
         if k.startswith('Budget'):
             order_list.append(k)

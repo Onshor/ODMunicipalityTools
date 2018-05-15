@@ -51,15 +51,20 @@
 
 			<!-- Main navigation -->
 			<ul id="side-nav" class="main-menu navbar-collapse collapse">
-				<li><a href="/budget"><i class="fa fa-money"></i><span class="title">الميزانية</span></a>
+				<li class="has-sub"><a href="#"><i class="fa fa-money"></i><span class="title">الميزانية</span></a>
+					<ul class="nav collapse">
+						<li><a href="/budget_annuel"><span class="title">الميزانية السنوية</span></a></li>
+						<li><a href="/budget_depence_mensuelle"><span class="title">النفقات الشهرية</span></a></li>
+						<li><a href="/budget_recette_mensuelle"><span class="title">الموارد الشهرية</span></a></li>
+					</ul>
 				</li>
-				<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">تراخيص البناء</span></a>
+				<!-- <li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">تراخيص البناء</span></a>
 
 					<ul class="nav collapse">
 						<li><a href="/permisconst"><span class="title">إضافة ترخيص جديد</span></a></li>
 						<li><a href="/consult_permisconst"><span class="title">مراجعة و تحيين الرخص</span></a></li>
 					</ul>
-				</li>
+				</li> -->
 				<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">الملك البلدي </span></a>
 
 					<ul class="nav collapse">
@@ -77,79 +82,79 @@
 						<li><a href="/fourrier"><span class="title">مراجعة و تحيين المحجوز</span></a></li>
 					</ul>
 				</li>
-	</ul>
-	<!-- /main navigation -->		
-</div>
+			</ul>
+			<!-- /main navigation -->		
+		</div>
 
-<!-- /page sidebar -->
+		<!-- /page sidebar -->
 
-<!-- Main container -->
-<div class="main-container gray-bg">
+		<!-- Main container -->
+		<div class="main-container gray-bg">
 
-	<!-- Main header -->
-	<div class="main-header row">
-		<div class="col-sm-6 col-xs-7">
+			<!-- Main header -->
+			<div class="main-header row">
+				<div class="col-sm-6 col-xs-7">
 
-			<!-- User info -->
-			<ul class="user-info pull-left">          
-				<li class="profile-info dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">{{ current_user.name }}  {{ current_user.last_name }}<span class="caret"></span></a>
+					<!-- User info -->
+					<ul class="user-info pull-left">          
+						<li class="profile-info dropdown"><a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">{{ current_user.name }}  {{ current_user.last_name }}<span class="caret"></span></a>
 
-					<!-- User action menu -->
-					<ul class="dropdown-menu">
+							<!-- User action menu -->
+							<ul class="dropdown-menu">
 
-						<li><a href="/profile"><i class="icon-user"></i>ملفي الشخصي</a></li>
+								<li><a href="/profile"><i class="icon-user"></i>ملفي الشخصي</a></li>
 						<!--
 						<li><a href="#/"><i class="icon-mail"></i>Messages</a></li>
 						<li><a href="#"><i class="icon-clipboard"></i>Tasks</a></li>
 						<li class="divider"></li>
 						<li><a href="#"><i class="icon-cog"></i>Account settings</a></li>
 					-->
-						<li class="divider"></li>
-						<li><a href="/logout"><i class="icon-logout"></i>الخروج</a></li>
-					</ul>
-					<!-- /user action menu -->
+					<li class="divider"></li>
+					<li><a href="/logout"><i class="icon-logout"></i>الخروج</a></li>
+				</ul>
+				<!-- /user action menu -->
 
-				</li>
-			</ul>
-			<!-- /user info -->
-			
-		</div>
+			</li>
+		</ul>
+		<!-- /user info -->
 
-		<div class="col-sm-6 col-xs-5">
-			<div class="pull-right">
-				<!-- User alerts -->
-				<!-- /user alerts -->
-				
-			</div>
+	</div>
+
+	<div class="col-sm-6 col-xs-5">
+		<div class="pull-right">
+			<!-- User alerts -->
+			<!-- /user alerts -->
+
 		</div>
 	</div>
-	<!-- /main header -->
-	{% with messages = get_flashed_messages(with_categories=true) %}
-	{% if messages %}
-	<div class="row">
-		<div class="col-md-12">
-			{% for category, message in messages %}
-			<div class="alert alert-{{ category }}">
-				<a class="close" title="Close" href="#" data-dismiss="alert">&times;</a>
-				{{message}}
-			</div>
-			{% endfor %}
+</div>
+<!-- /main header -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="row">
+	<div class="col-md-12">
+		{% for category, message in messages %}
+		<div class="alert alert-{{ category }}">
+			<a class="close" title="Close" href="#" data-dismiss="alert">&times;</a>
+			{{message}}
 		</div>
+		{% endfor %}
 	</div>
-	{% endif %}
-	{% endwith %}
-	<!-- Main content -->
-	<div class="main-content">
-		{% block content %}
-		{% endblock %}
-		<!-- Footer -->
-		<footer class="animatedParent animateOnce z-index-10"> 
-			<div class="footer-main animated fadeInUp slow">&copy; 2018 <a target="_blank" href="http://onshor.org/"><strong>Onshor</strong></a> </div>
-		</footer>	
-		<!-- /footer -->
-		
-	</div>
-	<!-- /main content -->
+</div>
+{% endif %}
+{% endwith %}
+<!-- Main content -->
+<div class="main-content">
+	{% block content %}
+	{% endblock %}
+	<!-- Footer -->
+	<footer class="animatedParent animateOnce z-index-10"> 
+		<div class="footer-main animated fadeInUp slow">&copy; 2018 <a target="_blank" href="http://onshor.org/"><strong>Onshor</strong></a> </div>
+	</footer>	
+	<!-- /footer -->
+
+</div>
+<!-- /main content -->
 
 </div>
 
@@ -168,6 +173,8 @@
 <script src="{{ url_for('static', filename='js/plugins/nouislider/nouislider.min.js' ) }}"></script>
 <script src="{{ url_for('static', filename='js/plugins/jasny/jasny-bootstrap.min.js' ) }}"></script>
 <script src="{{ url_for('static', filename='js/plugins/colorpicker/bootstrap-colorpicker.min.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery-ui.js' ) }}"></script>
+<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery.blockUI.js' ) }}"></script>
 <script src="{{ url_for('static', filename='js/plugins/datepicker/bootstrap-datepicker.js' ) }}"></script>
 <script src="{{ url_for('static', filename='js/plugins/select2/select2.full.min.js' ) }}"></script>
 <script src="{{ url_for('static', filename='js/plugins/nouislider/nouislider.min.js' ) }}"></script>
@@ -181,8 +188,6 @@
 <script src="{{ url_for('static', filename='js/dataInspector.js' ) }}"></script>
 <!-- Load CSS3 Animate It Plugin JS -->
 <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
-<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery-ui.js' ) }}"></script>
-<script src="{{ url_for('static', filename='js/plugins/blockui-master/jquery.blockUI.js' ) }}"></script>
 <!--Float Charts-->
 <script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.min.js' ) }}"></script>
 <script src="{{ url_for('static', filename='js/plugins/flot/jquery.flot.tooltip.min.js' ) }}"></script>
