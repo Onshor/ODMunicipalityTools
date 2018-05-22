@@ -10,6 +10,34 @@
 					<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
 					<li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
 				</ul>
+				<br><br>
+		<div class='row'>
+			<div class='col-lg-4'></div>
+			<div class='col-lg-3'>
+				<div class="panel panel-danger animated fadeInUp go" id='DeleteDetention' style="display: none;">
+					<div class="panel-heading clearfix"> 
+						<div class="panel-title">تأكيد الحذف ؟؟</div> 
+						<ul class="panel-tool-options"> 
+						</ul>  
+					</div>
+					<div class="panel-body">
+						<div class='row'>
+							<div class='col-sm-6'>
+								<form action="/consult_permisconst" method="POST">
+								<input class="btn btn-outline btn-red btn-block" type="submit" value='نعم'/>
+								<input type="hidden" id='DelId' name="type" value="">
+								<input type="hidden" id='del_row' name="delete_row" value="">
+							</form>
+							</div>
+							<div class='col-sm-6'>
+								<a href="/consult_permisconst" class="btn btn-outline btn-primary btn-block" type="submit">لا</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='col-lg-5'></div>
+		</div>
 			</div>
 			<div class="panel-body">
 				<div class='row'>
@@ -76,7 +104,8 @@
 							<th>العنوان</th>
 							<th>نوع البناء</th>
 							<th>الوضعيّة</th>
-							<th></th>
+							<th>تحيين</th>
+							<th>حذف</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -98,9 +127,13 @@
 								<td>
 									<input type="hidden" name="type" value={{d['id']}}>
 									<input type="hidden" name="name" value="{{d['nom_titulaire']}}">
-									<i class="fa fa-edit"></i><input class="btn btn-link btn-outline btn-block"type="submit" value='تحيين'/>
+									<button class="btn btn-link btn-outline btn-block" type="submit" value=''><i class="fa fa-edit"></i></button>
 								</td>
 							</form>
+							<td><p id='copy_{{d['id']}}' style="display: none;">{{d['id']}}</p>
+									<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="Deletefunction('copy_{{d['id']}}')"><span class="glyphicon glyphicon-trash"></span></button>
+									<input type="hidden" id="copy_{{d['id']}}" name="d_id" value="{{d['id']}}">
+									<input type="hidden" id='ref_del' name="delete_row" value="delete_row_detention"></td>
 						</tr>
 						{% endfor %}
 					</tbody>
@@ -112,7 +145,8 @@
 							<th>العنوان</th>
 							<th>نوع البناء</th>
 							<th>الوضعيّة</th>
-							<th></th>
+							<th>تحيين</th>
+							<th>حذف</th>
 						</tr>
 					</tfoot>
 				</table>
@@ -123,6 +157,16 @@
 </div>
 {% block js %}
 <script>
+function Deletefunction(element){
+	console.log(event.target.value);
+	var x = event.target.value 
+	$('#DeleteDetention').css({
+			'display': 'block',
+		})
+	$('#DelId').val(x)
+	$('#del_row').val(document.getElementById("ref_del").value) 
+}
+
 function myFunction() {
 	var input, filter, table, tr, td, i;
 	input = document.getElementById("myInput");

@@ -91,6 +91,8 @@ def fourrier():
     if 'delete_row' in request.values:
         if request.values['delete_row'] == 'delete_row_detention':
             det = Detention.query.get(int(request.values['type']))
+            db.session.delete(det)
+            db.session.commit()
             flash(u'تم فسخ المحجوز', 'success')
         elif Detention.query.filter_by(fourrier_id=int(request.values['type'])).first():
             flash(u'لا يمكن فسخ المستودع وبه محجوز', 'warning')

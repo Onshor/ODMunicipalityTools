@@ -50,7 +50,7 @@
 				<div class='row'>
 					<div class='col-lg-4'>
 						<form method="get" action="/add_detention">
-							<button class="btn btn-blue btn-outline" type="submit">إضافة محجوز جديد</button>
+							<button class="btn btn-blue" type="submit"><i class="fa fa-plus"></i>&nbsp;إضافة محجوز جديد</button>
 						</form>
 					</div>
 					<div class='col-lg-8'>
@@ -84,8 +84,8 @@
 								<th>الترقيم المنجمي</th>
 								<th>مستودع الحجز</th>
 								<th>حالة المحجوز</th>
-								<th></th>
-								<th></th>
+								<th>تحيين</th>
+								<th>حذف</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -101,13 +101,14 @@
 								<td>{{d['Status_Detention']}}</td>
 								<form action="/update_detention" method="POST">
 									<td>
-										<input class="btn btn-link btn-outline" type="submit" name='shit' value='تحيين'/>
+										<button class="btn btn-link btn-outline" type="submit" name='shit' value='تحيين'/><i class="fa fa-edit"></i></button>
 										<input type="hidden" name="d_id" value="{{d['id']}}">
 									</td>
 								</form>
 								<td>
-									<input id="btndel" class="btn btn-danger btn-outline btn-rounded" value="حذف" type="submit">
-									<input type="hidden" id='id_del' name="d_id" value="{{d['id']}}">
+									<p id='copy_{{d['id']}}' style="display: none;">{{d['id']}}</p>
+									<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="Deletefunction('copy_{{d['id']}}')"><span class="glyphicon glyphicon-trash"></span></button>
+									<input type="hidden" id="copy_{{d['id']}}" name="d_id" value="{{d['id']}}">
 									<input type="hidden" id='ref_del' name="delete_row" value="delete_row_detention">
 						</td>
 					</tr>
@@ -123,8 +124,8 @@
 						<th>الترقيم المنجمي</th>
 						<th>مستودع الحجز</th>
 						<th>حالة المحجوز</th>
-						<th></th>
-						<th></th>
+						<th>تحيين</th>
+						<th>حذف</th>
 					</tr>
 				</tfoot>
 			</table>
@@ -134,7 +135,7 @@
 		<div class='row'>
 			<div class='col-lg-4'>
 				<form method="get" action="/add_fourrier">
-					<button class="btn btn-blue btn-outline" type="submit">إضافة مستودع جديد</button>
+					<button class="btn btn-blue" type="submit"><i class="fa fa-plus"></i>&nbsp;إضافة مستودع جديد</button>
 				</form>
 			</div>
 			<div class='col-lg-8'>
@@ -164,8 +165,8 @@
 						<th>عنوان  مستودع الحجز</th>
 						<th>Longitude</th>
 						<th>Laltitude</th>
-						<th></th>
-						<th></th>
+						<th>تحيين</th>
+						<th>حذف</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -177,12 +178,12 @@
 						<td>{{d['Laltitude']}}</td>
 						<form action="/update_fourrier" method="POST">
 							<td>
-								<input class="btn btn-link btn-outline btn-block"type="submit" name='shit' value='تحيين'/>
+								<button class="btn btn-link btn-outline btn-block" type="submit" name='shit' value='تحيين'/><i class="fa fa-edit"></i></button>
 								<input type="hidden" name="f_id" value="{{d['id']}}">
 							</td>
 						</form>
 						<td>
-							<input id="btndel_f" class="btn btn-danger btn-outline btn-rounded btn-block" value="حذف" type='submit'>
+							<button  class="btn btn-red" value="{{d['id']}}" type='button' onclick="Deletefunction2('copy_{{d['id']}}')"><span class="glyphicon glyphicon-trash"></span></button>
 							<input type="hidden" id='id_del_f' name="d_id" value="{{d['id']}}">
 							<input type="hidden" id='ref_del_f' name="delete_row" value="delete_row_fourrier">
 						</td>
@@ -195,8 +196,8 @@
 						<th>عنوان  مستودع الحجز</th>
 						<th>Longitude</th>
 						<th>Laltitude</th>
-						<th></th>
-						<th></th>
+						<th>تحيين</th>
+						<th>حذف</th>
 					</tr>
 				</tfoot>
 			</table>
@@ -207,25 +208,44 @@
 </div>
 {% block js %}
 <script>
-$(document).ready(function()
-{
-	$('#btndel').click(function()
-	{	
-		$('#DeleteDetention').css({
+// $(document).ready(function()
+// {
+// 	$('#btndel').click(function()
+// 	{	
+// 		$('#DeleteDetention').css({
+// 			'display': 'block',
+// 		})
+// 		$('#DelId').val(document.getElementById("id_del").value)
+// 		$('#del_row').val(document.getElementById("ref_del").value) 
+// 	});
+// 	$('#btndel_f').click(function()
+// 	{	
+// 		$('#DeleteDetention').css({
+// 			'display': 'block',
+// 		})
+// 		$('#DelId').val(document.getElementById("id_del_f").value)
+// 		$('#del_row').val(document.getElementById("ref_del_f").value) 
+// 	});
+// });
+function Deletefunction(element){
+	console.log(event.target.value);
+	var x = event.target.value 
+	$('#DeleteDetention').css({
 			'display': 'block',
 		})
-		$('#DelId').val(document.getElementById("id_del").value)
-		$('#del_row').val(document.getElementById("ref_del").value) 
-	});
-	$('#btndel_f').click(function()
-	{	
-		$('#DeleteDetention').css({
+	$('#DelId').val(x)
+	$('#del_row').val(document.getElementById("ref_del").value) 
+}
+
+function Deletefunction2(element){
+	console.log(event.target.value);
+	var x = event.target.value 
+	$('#DeleteDetention').css({
 			'display': 'block',
 		})
-		$('#DelId').val(document.getElementById("id_del_f").value)
-		$('#del_row').val(document.getElementById("ref_del_f").value) 
-	});
-});
+	$('#DelId').val(x)
+	$('#del_row').val(document.getElementById("ref_del_f").value) 
+}
 // function DeleteDetention() {
 // var r = confirm("تأكيد الحذف ؟؟");
 // if (r == true) {

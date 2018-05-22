@@ -72,6 +72,13 @@ def permisconst():
 @login_required
 @check_confirmed
 def consult_permisconst():
+    if 'delete_row' in request.values:
+        p_id = Permisconstruct.query.get(int(request.values['type']))
+        db.session.delete(p_id)
+        db.session.commit()
+        flash(u'تم فسخ المحجوز', 'success')
+        data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
+        return render_template('permis_construction/permis_construction.html', data=data)
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
     return render_template('permis_construction/permis_construction.html', data=data)
 
@@ -81,7 +88,6 @@ def consult_permisconst():
 @login_required
 @check_confirmed
 def update_permisconst(status=None):
-    print(status)
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -127,13 +133,16 @@ def update_permisconst(status=None):
                 permis = Permisconstruct.query.get(int(permis_id))
                 permis.date_refuse = request.values['date_refuse']
                 permis.refuse_note = request.values['refuse_note']
+                permis.num_permis = None
+                permis.date_attribution = None
+                permis.date_expiration = None
+                permis.mont_total = None
                 permis.permis_status = 'refused'
                 db.session.commit()
                 flash(u'تم تحيين الرخصة', 'success')
                 return redirect(url_for('permis_construction.consult_permisconst'))
         return render_template('permis_construction/update_permis.html', permis_id=permis_id, name=name, permis_data=permis_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long], refuse=True)
     elif 'accept' in status:
-        pp(request.values)
         if 'date_attribution' in request.values:
             if not check_date(request.values['date_attribution']):
                 flash(u'تاريخ اسناد الرخصة مفروض', 'danger')
@@ -147,38 +156,14 @@ def update_permisconst(status=None):
                 permis.date_attribution = request.values['date_attribution']
                 permis.date_expiration = request.values['date_expiration']
                 permis.mont_total = request.values['mont_total']
+                permis.date_refuse = None
+                permis.refuse_note = None
                 permis.permis_status = 'approved'
                 db.session.commit()
                 flash(u'تم تحيين الرخصة', 'success')
                 return redirect(url_for('permis_construction.consult_permisconst'))
         montant_total = int(round(calculer_montant(permis_data['surface'])))
         return render_template('permis_construction/update_permis.html', permis_id=permis_id, name=name, permis_data=permis_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long], accept=True, montant_total=montant_total)
-    """
-    calc = calculer_montant(Permisconstruct.query.filter_by(id=int(permis_id)).first().surface)
-    if len(request.values) > 3:
-        if not check_date(request.values['date_depot']):
-            flash(u'الرجاء التثبت في صيغة تاريخ التسجيل yyyy/mm/dd', 'warning')
-            save = False
-        if not check_float(request.values['longitude']):
-            flash(u'longitude verified format', 'warning')
-            save = False
-        if not check_float(request.values['laltitude']):
-            flash(u'laltitude verified format', 'warning')
-            save = False
-        if save:
-            permis = Permisconstruct.query.get(int(permis_id))
-            permis.nom_titulaire = request.values['nom_titulaire']
-            permis.latitude = float(request.values['laltitude'])
-            permis.num_demande = request.values['num_demande']
-            permis.longitude = float(request.values['longitude'])
-            permis.date_depot = request.values['date_depot']
-            permis.address = request.values['address']
-            permis.desc_construct = request.values['desc_construct']
-            permis.surface = request.values['surface']
-            db.session.commit()
-            flash(u'تم تحيين الرخصة', 'success')
-            return redirect(url_for('permis_construction.consult_permisconst'))
-    """
     return render_template('permis_construction/update_permis.html', permis_id=permis_id, name=name, permis_data=permis_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
