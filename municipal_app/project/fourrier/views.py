@@ -91,8 +91,6 @@ def fourrier():
     if 'delete_row' in request.values:
         if request.values['delete_row'] == 'delete_row_detention':
             det = Detention.query.get(int(request.values['type']))
-            db.session.delete(det)
-            db.session.commit()
             flash(u'تم فسخ المحجوز', 'success')
         elif Detention.query.filter_by(fourrier_id=int(request.values['type'])).first():
             flash(u'لا يمكن فسخ المستودع وبه محجوز', 'warning')
@@ -102,9 +100,7 @@ def fourrier():
             flash(u'تم فسخ المستودع', 'success')
         db.session.delete(det)
         db.session.commit()
-        fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
-        detention_data = [u.__dict__ for u in Detention.query.filter_by(municipal_id=current_user.municipal_id).all()]
-        return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))
+        return redirect(url_for('fourrier.fourrier'))
     return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))
 
 

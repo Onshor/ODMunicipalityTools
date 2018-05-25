@@ -106,8 +106,8 @@
 									</td>
 								</form>
 								<td>
-									<p id='copy_{{d['id']}}' style="display: none;">{{d['id']}}</p>
-									<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="Deletefunction('copy_{{d['id']}}')"><span class="glyphicon glyphicon-trash"></span></button>
+									<p id="copy_{{d['id']}}" style="display: none;">{{d['id']}}</p>
+									<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="Deletefunction({{d['id']}})"><span class="glyphicon glyphicon-trash"></span></button>
 									<input type="hidden" id="copy_{{d['id']}}" name="d_id" value="{{d['id']}}">
 									<input type="hidden" id='ref_del' name="delete_row" value="delete_row_detention">
 						</td>
@@ -183,7 +183,7 @@
 							</td>
 						</form>
 						<td>
-							<button  class="btn btn-red" value="{{d['id']}}" type='button' onclick="Deletefunction2('copy_{{d['id']}}')"><span class="glyphicon glyphicon-trash"></span></button>
+							<button  class="btn btn-red" value="{{d['id']}}" type='button' onclick="Deletefunction2({{d['id']}})"><span class="glyphicon glyphicon-trash"></span></button>
 							<input type="hidden" id='id_del_f' name="d_id" value="{{d['id']}}">
 							<input type="hidden" id='ref_del_f' name="delete_row" value="delete_row_fourrier">
 						</td>
@@ -228,22 +228,20 @@
 // 	});
 // });
 function Deletefunction(element){
-	console.log(event.target.value);
-	var x = event.target.value 
+	console.log(element); 
 	$('#DeleteDetention').css({
 			'display': 'block',
 		})
-	$('#DelId').val(x)
+	$('#DelId').val(element)
 	$('#del_row').val(document.getElementById("ref_del").value) 
 }
 
 function Deletefunction2(element){
-	console.log(event.target.value);
-	var x = event.target.value 
+	console.log(element); 
 	$('#DeleteDetention').css({
 			'display': 'block',
 		})
-	$('#DelId').val(x)
+	$('#DelId').val(element)
 	$('#del_row').val(document.getElementById("ref_del_f").value) 
 }
 // function DeleteDetention() {

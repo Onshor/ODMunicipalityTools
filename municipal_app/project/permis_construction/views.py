@@ -76,9 +76,8 @@ def consult_permisconst():
         p_id = Permisconstruct.query.get(int(request.values['type']))
         db.session.delete(p_id)
         db.session.commit()
-        flash(u'تم فسخ المحجوز', 'success')
-        data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
-        return render_template('permis_construction/permis_construction.html', data=data)
+        flash(u'تم فسخ الرخصة', 'success')
+        return redirect(url_for('permis_construction.consult_permisconst'))
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
     return render_template('permis_construction/permis_construction.html', data=data)
 

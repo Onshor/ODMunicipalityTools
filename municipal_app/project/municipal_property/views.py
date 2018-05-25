@@ -52,8 +52,7 @@ def add_municipal_property():
         db.session.add(mun_property)
         db.session.commit()
         flash(u'تم حفظها في قاعدة البيانات', 'success')
-        data_mun = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
-        return render_template('municipal_property/municipal_property.html', data=data_mun)
+        return redirect(url_for('municipal_property.consult_municipal_property'))
     return render_template('municipal_property/forms_municipal_property.html', form=form, update=False, mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
@@ -62,14 +61,12 @@ def add_municipal_property():
 @check_confirmed
 def consult_municipal_property():
     data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
-    pp(request.values)
     if 'delete_row' in request.values:
         mun_property = Proprietemunicipal.query.get(int(request.values['type']))
         db.session.delete(mun_property)
         db.session.commit()
-        flash(u'تم تحيين الملك البلدي', 'success')
-        data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
-        return render_template('municipal_property/municipal_property.html', data=data)
+        flash(u'تم حذف الملك البلدي' , 'success')
+        return redirect(url_for('municipal_property.consult_municipal_property'))
     return render_template('municipal_property/municipal_property.html', data=data)
 
 

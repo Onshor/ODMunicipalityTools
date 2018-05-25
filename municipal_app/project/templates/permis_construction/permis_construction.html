@@ -125,13 +125,14 @@
 							{%endif%}
 							<form action="/update_permisconst" method="POST">
 								<td>
+									{{d['id']}}
 									<input type="hidden" name="type" value={{d['id']}}>
 									<input type="hidden" name="name" value="{{d['nom_titulaire']}}">
 									<button class="btn btn-link btn-outline btn-block" type="submit" value=''><i class="fa fa-edit"></i></button>
 								</td>
 							</form>
-							<td><p id='copy_{{d['id']}}' style="display: none;">{{d['id']}}</p>
-									<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="Deletefunction('copy_{{d['id']}}')"><span class="glyphicon glyphicon-trash"></span></button>
+							<td><p id="copy_{{d['id']}}" style="display: none;">{{d['id']}}</p>
+									<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="Deletefunction({{d['id']}})"><span class="glyphicon glyphicon-trash"></span></button>
 									<input type="hidden" id="copy_{{d['id']}}" name="d_id" value="{{d['id']}}">
 									<input type="hidden" id='ref_del' name="delete_row" value="delete_row_detention"></td>
 						</tr>
@@ -158,12 +159,10 @@
 {% block js %}
 <script>
 function Deletefunction(element){
-	console.log(event.target.value);
-	var x = event.target.value 
 	$('#DeleteDetention').css({
 			'display': 'block',
 		})
-	$('#DelId').val(x)
+	$('#DelId').val(element)
 	$('#del_row').val(document.getElementById("ref_del").value) 
 }
 

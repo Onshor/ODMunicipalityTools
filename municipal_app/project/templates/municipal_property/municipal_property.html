@@ -10,6 +10,34 @@
 					<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
 					<li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
 				</ul>
+					<br><br>
+		<div class='row'>
+			<div class='col-lg-4'></div>
+			<div class='col-lg-3'>
+				<div class="panel panel-danger animated fadeInUp go" id='DeleteDetention' style="display: none;">
+					<div class="panel-heading clearfix"> 
+						<div class="panel-title">تأكيد الحذف ؟؟</div> 
+						<ul class="panel-tool-options"> 
+						</ul>  
+					</div>
+					<div class="panel-body">
+						<div class='row'>
+							<div class='col-sm-6'>
+								<form action="/consult_municipal_property" method="POST">
+								<input class="btn btn-outline btn-red btn-block" type="submit" value='نعم'/>
+								<input type="hidden" id='DelId' name="type" value="">
+								<input type="hidden" id='del_row' name="delete_row" value="">
+							</form>
+							</div>
+							<div class='col-sm-6'>
+								<a href="/consult_municipal_property" class="btn btn-outline btn-primary btn-block" type="submit">لا</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='col-lg-5'></div>
+		</div>
 			</div>
 			<div class="panel-body">
 				<div class='row'>
@@ -22,7 +50,7 @@
 				
 				<div>
 					<form method="get" action="/add_municipal_property">
-						<button class="btn btn-blue btn-outline" type="submit">إضافة ملك بلدي جديد</button>
+						<button class="btn btn-blue" type="submit"><i class="fa fa-plus"></i>&nbsp;إضافة ملك بلدي جديد</button>
 					</form>
 				</div>
 			</div>
@@ -83,8 +111,8 @@
 					<th>المساحة بالمتر ² </th>
 					<th>Longitude</th>
 					<th>Laltitude</th>
-					<th></th>
-					<th></th>
+					<th>تحيين</th>
+					<th>حذف</th>
 
 				</tr>
 			</thead>
@@ -102,12 +130,12 @@
 					<td>{{d['Laltitude']}}</td>
 					<form action="/update_municipal_property" method="POST">
 						<td>
-							<input class="btn btn-link btn-outline btn-block"type="submit" name='shit' value='تحيين'/>
 							<input type="hidden" name="type" value="{{d['id']}}">
+							<button class="btn btn-link btn-outline btn-block" type="submit" value=''><i class="fa fa-edit"></i></button>
 						</td>
 					</form>
 					<td>
-						<input onclick="DeleteFunction()" class="btn btn-danger btn-outline btn-rounded btn-block" type="submit" name='shit' value='حذف'/>
+						<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="DeleteFunction({{d['id']}})"><span class="glyphicon glyphicon-trash"></span></button>
 						<p id="id_input" style='display:none;'>{{d['id']}}</p>
 					</td>
 			</tr>
@@ -124,8 +152,8 @@
 				<th>المساحة بالمتر ² </th>
 				<th>Longitude</th>
 				<th>Laltitude</th>
-				<th></th>
-				<th></th>
+				<th>تحيين</th>
+				<th>حذف</th>
 			</tr>
 		</tfoot>
 	</table>
@@ -136,16 +164,23 @@
 </div>
 {% block js %}
 <script>
-function DeleteFunction() {
-	var r = confirm("تأكيد الحذف ؟؟");
-	if (r == true) {
-		$.post( "/consult_municipal_property", {
-			delete_row: 'delete_row',
-			type : document.getElementById("id_input").innerHTML
-		});		
-		location.reload(true)
-	}
+function DeleteFunction(element){
+	$('#DeleteDetention').css({
+			'display': 'block',
+		})
+	$('#DelId').val(element)
+	$('#del_row').val(document.getElementById("ref_del").value) 
 }
+// function DeleteFunction(id) {
+// 	var r = confirm("تأكيد الحذف ؟؟");
+// 	if (r == true) {
+// 		$.post( "/consult_municipal_property", {
+// 			delete_row: 'delete_row',
+// 			type : id
+// 		});		
+// 		location.reload(true)
+// 	}
+// }
 function myFunction() {
 	var input, filter, table, tr, td, i;
 	input = document.getElementById("myInput");
