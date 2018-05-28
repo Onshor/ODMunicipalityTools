@@ -48,9 +48,11 @@ from project.permis_construction.views import permisconst_blueprint
 from project.budget.views import budget_blueprint
 from project.main.views import main_blueprint
 from project.user.views import user_blueprint
+from project.admin.views import admin_blueprint
 from project.municipal_property.views import municipal_property_blueprint
 app.register_blueprint(main_blueprint)
 app.register_blueprint(user_blueprint)
+app.register_blueprint(admin_blueprint)
 app.register_blueprint(budget_blueprint)
 app.register_blueprint(fourrier_blueprint)
 app.register_blueprint(organigram_blueprint)

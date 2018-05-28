@@ -103,7 +103,10 @@
 							<ul class="dropdown-menu">
 
 								<li><a href="/profile"><i class="icon-user"></i>ملفي الشخصي</a></li>
-						<!--
+								{% if current_user.admin %}
+								<li><a href="/admin"><i class="icon-users"></i>list users</a></li>
+								{% endif %}
+							<!-- 
 						<li><a href="#/"><i class="icon-mail"></i>Messages</a></li>
 						<li><a href="#"><i class="icon-clipboard"></i>Tasks</a></li>
 						<li class="divider"></li>

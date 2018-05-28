@@ -1,43 +1,7 @@
 {% extends "_base.html" %}
 {% block content %}
 
-<html>
-   <body>
-    <!--
-    <div style="float:left;">
-    <h1> Annuelle </h1>
-      <form action = "/uploader_annuelle" method = "POST" 
-         enctype = "multipart/form-data">
-         <input type = "file" name = "file" />
-         <input type = "submit"/>
-      </form>
-    </div>
-       <div style="float:left; width:50%;">
-      {% if parsed  %}
-        <h2><a href="{{ url_for('static', filename='files/%s' % (recette_link)) }}">recette</a></h2>
-        <h2><a href="{{ url_for('static', filename='files/%s' % (depecence_link)) }}">depence</a></h2>
-      {% endif %}
-      </div>
 
-      <div style="float:right;">
-        <h1> Dépence Mensuelle</h1>
-      <form action = "/uploader_mensuelle_depence" method = "POST" 
-         enctype = "multipart/form-data">
-         <input type = "file" name = "file" />
-         <input type = "submit"/>
-      </form>
-      </div>
-      <div>
-        <h1> Recette Mensuelle</h1>
-      <form action = "/uploader_mensuelle_recette" method = "POST"
-         enctype = "multipart/form-data">
-         <input type = "file" name = "file" />
-         <input type = "submit"/>
-      </form>
-      </div>
-    -->
-   </body>
-</html>
-<!--<p><a href="/logout">Logout</a>-->
+
 
 {% endblock %}

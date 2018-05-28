@@ -15,3 +15,14 @@ def check_confirmed(func):
         return func(*args, **kwargs)
 
     return decorated_function
+
+
+def check_admin(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if current_user.admin is False:
+            flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'danger')
+            return redirect(url_for('main.home'))
+        return func(*args, **kwargs)
+
+    return decorated_function
