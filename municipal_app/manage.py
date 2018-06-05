@@ -4,6 +4,7 @@ import datetime
 import os
 import unittest
 import coverage
+import csv
 
 from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
@@ -23,6 +24,11 @@ manager = Manager(app)
 # migrations
 manager.add_command('db', MigrateCommand)
 manager.add_command("runserver", Server(use_debugger=True, use_reloader=True))
+
+
+def read_csv(file):
+    with open(file, 'rb') as f:
+        return [{k: v for k, v in row.items()} for row in csv.DictReader(f, skipinitialspace=True)]
 
 
 @manager.command
@@ -107,6 +113,23 @@ def create_municipality():
             municipal_name=m['municipal_name'],
             municipal_state=m['municipal_state']))
         db.session.commit()
+
+
+@manager.command
+def update_municipality_from_file():
+    """ Creates list of municipality """
+    mun_list = list(set([_.municipal_id for _ in Municipality.query.all()]))
+    municipalits = read_csv('clean_mun_final.csv')
+    for m in municipalits:
+        if m['municipal_id'] not in mun_list:
+            db.session.add(Municipality(
+                municipal_id=m['municipal_id'],
+                municipal_name=m['name'],
+                municipal_state=m['state'],
+                municipal_name_ar=m['name_ar'],
+                municipal_long=m['lng'],
+                municipal_lat=m['lat']))
+            db.session.commit()
 
 
 @manager.command

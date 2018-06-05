@@ -14,14 +14,16 @@ class Municipality(db.Model):
     municipal_name_ar = db.Column(db.String, nullable=True)
     municipal_long = db.Column(db.Float, nullable=True)
     municipal_lat = db.Column(db.Float, nullable=True)
+    approved = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, municipal_id, municipal_name, municipal_state, municipal_name_ar, municipal_long, municipal_lat):
+    def __init__(self, municipal_id, municipal_name, municipal_state, municipal_name_ar, municipal_long, municipal_lat, approved):
         self.municipal_id = municipal_id
         self.municipal_name = municipal_name
         self.municipal_state = municipal_state
         self.municipal_name_ar = municipal_name_ar
         self.municipal_long = municipal_long
         self.municipal_lat = municipal_lat
+        self.approved = approved
 
     def get_municipal_id(self):
         return self.municipal_id
