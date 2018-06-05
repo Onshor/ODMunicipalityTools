@@ -27,6 +27,11 @@ ALLOWED_EXTENSIONS = set(['xml'])
 ################
 
 
+@user_blueprint.route('/contact', methods=['GET'])
+def contact():
+    return render_template('user/contact.html')
+
+
 @user_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)

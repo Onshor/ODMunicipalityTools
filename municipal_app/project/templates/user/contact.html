@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>   
+<head>
+  <!-- meta -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Municipalit tools for open data">
+  <link rel="shortcut icon" type="image/x-icon" href="http://onshor.org/wp-content/uploads/2017/10/icon.png">
+  <meta name="keywords" content="Responsive, HTML5, Municipality, Tunisia, Opendata">
+  <title>Municipal app</title>
+  <meta name="author" content="med dahas">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!-- styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/select2/select2.css' ) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-forms.css' ) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/entypo.css' ) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css' ) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-core.css' ) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-rtl.min.css' ) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-rtl-core.css' ) }}">     
+</head>
+{% block content %}
+<body class="login-page">
+  <div class="animatedParent animateOnce z-index-50">
+    <div class="login-container animated growIn slower">
+      <div class="login-content">
+        <div class="login-branding">
+          <a href="http://onshor.org/"><img src="http://openbaladiati.tn/img/openbaladiati_tn.png" alt="Onshor" title="Onshor"></a>
+        </div>
+        <p>للإنخراط بهذه منظومة الرجاء الاتصال برنامج أنشر عالبريد الإلكتروني <strong>contact@onshor.org</strong></p><br>
+        <p>أو بالهاتف : 0021636330375</p>
+        <p>أو بالهاتف المحمول: 0021629761033</p>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+  <!--Load JQuery-->
+  <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
+  <script src="{{ url_for('static', filename='js/plugins/select2/select2.full.min.js' ) }}"></script>
+  <!-- Load CSS3 Animate It Plugin JS -->
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js' ) }}"></script>
+  <script src="{{ url_for('static', filename='js/plugins/css3-animate-it-plugin/css3-animate-it.js')}}" type="text/javascript"></script>
+</body>
+
