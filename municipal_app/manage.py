@@ -75,14 +75,24 @@ def drop_db():
 @manager.command
 def create_admin():
     """Creates the admin user."""
+    # db.session.add(User(
+    #     email="med@onshor.org",
+    #     password="admin",
+    #     admin=True,
+    #     confirmed=True,
+    #     confirmed_on=datetime.datetime.now(),
+    #     name='admin',
+    #     last_name='admin',
+    #     municipal_id='1',)
+    # )
     db.session.add(User(
-        email="med@onshor.org",
-        password="admin",
+        email="boltanebochra@gmail.com",
+        password='adminBochra17%%',
         admin=True,
         confirmed=True,
         confirmed_on=datetime.datetime.now(),
-        name='admin',
-        last_name='admin',
+        name='Boltane',
+        last_name='Bochra',
         municipal_id='1',)
     )
     db.session.commit()
