@@ -10,8 +10,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from project.models import User, Municipality
 from project.email import send_email
 from project import db, bcrypt
-from .forms import LoginForm, RegisterForm, ChangePasswordForm
-from project.parser import parse_budget, decode_unicode, get_csv_file, parse_recette_file, parse_depence_file, get_csv_file_per_year
+from .forms import LoginForm, RegisterForm, ChangePasswordForm, ContactForm
 from pprint import pprint as pp
 
 
@@ -27,9 +26,21 @@ ALLOWED_EXTENSIONS = set(['xml'])
 ################
 
 
-@user_blueprint.route('/contact', methods=['GET'])
+@user_blueprint.route('/contact', methods=['GET', 'POST'])
 def contact():
-    return render_template('user/contact.html')
+    form = ContactForm(request.form)
+    if form.validate_on_submit():
+        d = {'name': form.name.data,
+             'email': form.email.data,
+             'tel': form.tel.data,
+             'message': form.message.data,
+             'municipalite': form.municipalite.data}
+        email = "med@onshor.org"
+        html = render_template('user/email.html', d=d)
+        subject = u"Join demande from municipality  " + d['municipalite']
+        send_email(email, subject, html)
+        return render_template('user/contact.html', send=True)
+    return render_template('user/contact.html', form=form)
 
 
 @user_blueprint.route('/register', methods=['GET', 'POST'])

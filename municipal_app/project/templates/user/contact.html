@@ -29,9 +29,62 @@
         <div class="login-branding">
           <a href="http://onshor.org/"><img src="http://openbaladiati.tn/img/openbaladiati_tn.png" alt="Onshor" title="Onshor"></a>
         </div>
-        <p>للإنخراط بهذه منظومة الرجاء الاتصال برنامج أنشر عالبريد الإلكتروني <strong>contact@onshor.org</strong></p><br>
-        <p>أو بالهاتف :  36330375 216+</p>
-        <p>أو بالهاتف المحمول:  29761033 216+</p>
+        {% if send %}
+        <h3>لقد تم إرسال المطلب بنجاح </h3>
+        <p>وسوف يتصل بك فريق أنشر في قريب العاجل</p>
+        {% else %}
+        <form class="form-signin" role="form" method="post" action="">
+            {{ form.csrf_token }}                      
+            <div class="form-group">
+              {{ form.name(type="text", placeholder="الاسم و اللقب", class="form-control") }}
+              {% if form.name.errors %}
+              {% for error in form.name.errors %}
+              {{ error }}
+              {% endfor %}
+              {% endif %}
+            </div>   
+            <div class="form-group">
+              {{ form.municipalite(type="text" ,placeholder="االمنطقة البلدية", class="form-control") }}
+              {% if form.municipalite.errors %}
+              {% for error in form.municipalite.errors %}
+              {{ error }}
+              {% endfor %}
+              {% endif %}
+            </div>                     
+            <div class="form-group">
+              {{ form.email(type="email" ,placeholder="البريد الإلكتروني", class="form-control") }}
+              {% if form.email.errors %}
+              {% for error in form.email.errors %}
+              {{ error }}
+              {% endfor %}
+              {% endif %}
+            </div>
+            <div class="form-group">
+              {{ form.tel(type="text" ,placeholder="رقم الهاتف", class="form-control") }}
+              {% if form.tel.errors %}
+              {% for error in form.tel.errors %}
+              {{ error }}
+              {% endfor %}
+              {% endif %}
+            </div>
+            <div class="form-group">
+              {{ form.message(type="textarea" ,placeholder="الرسالة ", class="form-control", style='height: auto') }}
+              {% if form.message.errors %}
+              {% for error in form.message.errors %}
+              {{ error }}
+              {% endfor %}
+              {% endif %}
+            </div>
+            <div class="form-group form-action">
+              <button class="btn btn-primary btn-block" type="submit">إرسال المطلب </button>
+            </div>                        
+          </form>
+          {% endif %}
+        <div>
+          <p>لمزيد المعلومات  الرجاء الاتصال برنامج أنشر عالبريد الإلكتروني <strong>contact@onshor.org</strong></p>
+          <p>أو بالهاتف القار:  36330375 216+</p>
+          <p>أو بالهاتف المحمول:  29761033 216+</p>
+        </div>
       </div>
     </div>
   </div>

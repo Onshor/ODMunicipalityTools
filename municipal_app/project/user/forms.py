@@ -3,7 +3,7 @@
 
 
 from flask_wtf import Form
-from wtforms import TextField, PasswordField, SelectField
+from wtforms import TextField, PasswordField, SelectField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 
 
@@ -28,7 +28,7 @@ class RegisterForm(Form):
         'Repeat password',
         validators=[
             DataRequired(),
-            EqualTo('password', message='Passwords must match.')
+            EqualTo('password', message=u'الكلمة السريه يجب ان تتطابق')
         ]
     )
     name = TextField('First Name', validators=[DataRequired(), Length(max=15)])
@@ -60,3 +60,11 @@ class ChangePasswordForm(Form):
             EqualTo('password', message='Passwords must match.')
         ]
     )
+
+
+class ContactForm(Form):
+    name = TextField('name', validators=[DataRequired()])
+    municipalite = TextField('municipalite', validators=[DataRequired()])
+    email = TextField('email', validators=[DataRequired(), Email()])
+    tel = IntegerField('tel', validators=[DataRequired()])
+    message = TextAreaField('message')
