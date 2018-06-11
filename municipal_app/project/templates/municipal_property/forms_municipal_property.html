@@ -198,7 +198,9 @@
 				{% endif %}
 			</div>
 		</div>
+		{% endblock %}
 		{% block js %}
+		
 
 		<script>
 
@@ -224,26 +226,31 @@
 			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
 			id: 'mapbox.streets'
 		}).addTo(mymap);
+		// L.marker({{mun_cord}}).addTo(mymap)
+		// .bindPopup("<b>{{mun_name}} بلدية</b><br />").openPopup();
 
-		L.marker({{mun_cord}}).addTo(mymap)
-		.bindPopup("<b>{{mun_name}} بلدية</b><br />").openPopup();
+		var marker = L.marker({{mun_cord}}, {
+    					draggable:true
+						}).addTo(mymap);
 
-
-
+		marker.on('dragend', function (e) {
+    		document.getElementById('Laltitude').value = marker.getLatLng().lat;
+    		document.getElementById('Longitude').value = marker.getLatLng().lng;
+		});
 
 		var popup = L.popup();
 
-		function onMapClick(e) {
-			document.getElementById('Laltitude').value = e.latlng.lat.toString();
-			document.getElementById('Longitude').value = e.latlng.lng.toString();
-			popup
-			.setLatLng(e.latlng)
-			.setContent("<i class='fa fa-map-marker'/>" + e.latlng.toString())
-			.openOn(mymap);
-		}
+		// function onMapClick(e) {
+		// 	document.getElementById('Laltitude').value = e.latlng.lat.toString();
+		// 	document.getElementById('Longitude').value = e.latlng.lng.toString();
+		// 	popup
+		// 	.setLatLng(e.latlng)
+		// 	.setContent("<i class='fa fa-map-marker'/>" + e.latlng.toString())
+		// 	.openOn(mymap);
+		// }
 
-		mymap.on('click', onMapClick);
+		// mymap.on('click', onMapClick);
 
 		</script>
-		{% endblock %}
+		
 		{% endblock %}
