@@ -31,7 +31,9 @@
         </div>
         {% if send %}
         <h3>لقد تم إرسال المطلب بنجاح </h3>
-        <p>وسوف يتصل بك فريق أنشر في قريب العاجل</p>
+        <p>وسوف يتصل بك فريق أنشر في قريب العاجل</p><!-- 
+        <p>إنشاء <a href='/register'>حساب</a></p> -->
+        <p><button class='btn btn-info' onclick="goBack()">عد للصفحة السابقة</button></p>
         {% else %}
         <form class="form-signin" role="form" method="post" action="">
             {{ form.csrf_token }}                      
@@ -79,16 +81,22 @@
               <button class="btn btn-primary btn-block" type="submit">إرسال المطلب </button>
             </div>                        
           </form>
-          {% endif %}
-        <div>
+          <div>
           <p>لمزيد المعلومات  الرجاء الاتصال برنامج أنشر عالبريد الإلكتروني <strong>contact@onshor.org</strong></p>
           <p>أو بالهاتف القار:  36330375 216+</p>
           <p>أو بالهاتف المحمول:  29761033 216+</p>
+          <p><button class="btn btn-link btn-outline" onclick="goBack()">عد للصفحة السابقة</button></p>
         </div>
+          {% endif %}
       </div>
     </div>
   </div>
   {% endblock %}
+  <script>
+function goBack() {
+    window.history.back();
+}
+</script>
   <!--Load JQuery-->
   <script src="{{ url_for('static', filename='js/jquery.min.js' ) }}"></script>
   <script src="{{ url_for('static', filename='js/plugins/select2/select2.full.min.js' ) }}"></script>

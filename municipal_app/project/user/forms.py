@@ -34,7 +34,7 @@ class RegisterForm(Form):
     name = TextField('First Name', validators=[DataRequired(), Length(max=15)])
     last_name = TextField('Last Name', validators=[DataRequired(), Length(max=80)])
     choices = [(None, u'المنطقة البلدية')]
-    choices.extend([(_.municipal_id, _.municipal_name_ar) for _ in Municipality.query.filter_by(approved=True).all() if _.municipal_id != '1'])
+    choices.extend([(_.municipal_id, _.municipal_name_ar + ' ' + _.municipal_name) for _ in Municipality.query.filter_by(approved=True).all() if _.municipal_id != '1'])
     municipal_id = SelectField('Municipality name', validators=[DataRequired()], choices=sorted(choices, key=lambda tup: tup[0]))
 
     def validate(self):
