@@ -1,0 +1,235 @@
+{% extends "_base.html" %}
+{% block content %}
+<div class="panel panel-default animated fadeInUp go">
+  <div class="panel-heading clearfix">
+    <h3 class="panel-title">قائمة البلديات</h3>
+    <ul class="panel-tool-options"> 
+      <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+      <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+      <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+    </ul>
+  </div>
+  <div class='row'>
+      <div class='col-lg-4'></div>
+      <div class='col-lg-3'>
+        <div class="panel panel-danger animated fadeInUp go" id='DeletePanel' style="display: none;">
+          <div class="panel-heading clearfix"> 
+            <div class="panel-title">تأكيد الحذف ؟؟</div> 
+            <ul class="panel-tool-options"> 
+            </ul>  
+          </div>
+          <div class="panel-body">
+            <div class='row'>
+              <div class='col-sm-6'>
+                <form action="/admin/admin_mun" method="POST">
+                <input class="btn btn-outline btn-red btn-block" type="submit" value='نعم'/>
+                <input type="hidden" id='DelId' name="id" value="">
+                <input type="hidden" id='del_row' name="deleting" value="">
+              </form>
+              </div>
+              <div class='col-sm-6'>
+                <a href="/admin/admin_mun" class="btn btn-outline btn-primary btn-block" type="submit">لا</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='col-lg-5'></div>
+    </div>
+  <div class="panel-body" id='freeze_zone'>
+    <div class='row'>
+      <table class="table">
+      <thead>
+        <tr class="filters">
+          <th>إسم البلدية
+            <select id="assigned-user-filter" class="form-control js-example-basic-single2">
+              <option></option>
+              {% for name in list_names %}
+              <option>{{name}}</option>
+              {% endfor %}
+            </select>
+          </th>
+          <th>الولاية
+            <select id="status-filter" class="form-control js-example-basic-single">
+              <option></option>
+              {% for states in list_states %}
+              <option>{{states}}</option>
+              {% endfor %}
+            </select>
+          </th>
+          <th>الاتفاقية
+            <select id="milestone-filter" class="form-control">
+              <option></option>
+              <option>وقعت</option>
+              <option>غير موقع</option>
+            </select>
+          </th>
+        </tr>
+      </thead>
+    </table>
+    </div>
+  <div class="line-dashed"></div>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover dataTables-example datatbl" id="myTable">
+      <thead>
+        <tr>
+          <th>المعرف</th>
+          <th>الولاية</th>
+          <th>الاسم بالعربية</th>
+          <th>الاسم بالفرنسية</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>الإتفاقية</th>
+          <th>تحيين</th>
+          <th>فسخ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in  list_mun %}
+        <tr class="task-list-row" 
+              data-assigned-user="{{d['search_name']}}"
+              data-status="{{d['municipal_state']}}"
+              {% if d['approved'] %}
+              data-milestone="وقعت"
+              {% else %}
+              data-milestone="غير موقع"
+              {% endif %}>
+          <td>{{d['municipal_id']}}</td>
+          <td>{{d['municipal_state']}}</td>
+          <td>{{d['municipal_name_ar']}}</td>
+          <td>{{d['municipal_name']}}</td>
+          <td>{{d['municipal_lat']}}</td>
+          <td>{{d['municipal_long']}}</td>
+          <td>{% if d['approved'] %}
+            <button class="btn btn-success" value="{{d['imunicipal_id']}}" type='button' onclick="Actfunction({{d['id']}})" ><i class="fa fa-check" >&nbspوقعت </i></button>
+            {% else %}
+            <button class="btn btn-danger" value="{{d['municipal_id']}}" type='button' onclick="Actfunction({{d['id']}})" ><i class="fa fa-remove">&nbspغير موقع</i></button>
+            {% endif %}
+          </td>
+          <td>
+            <a href="/admin/mun/edit/{{d['municipal_id']}}"><i class="fa fa-edit" data-unicode="f084" style="color:#33ccff"></i></a>
+          </button>
+          </td>
+          <td>
+            <button  class="btn btn-red" value="{{d['municipal_id']}}" type='button' onclick="Deletefunction2({{d['municipal_id']}})">
+              <span class="glyphicon glyphicon-trash">
+              </span>
+            </button>
+          </td>
+       </tr>
+       {% endfor %}
+     </tbody>
+     <tfoot>
+      <tr>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+function Deletefunction2(element){
+  console.log(element)
+  $('#DeletePanel').css({
+      'display': 'block',
+    })
+  $('#DelId').val(element)
+  $('#del_row').val(document.getElementById("ref_del").value) 
+}
+
+$(document).ready(function() {
+    $('.js-example-basic-single').select2({
+      allowClear: true,
+       placeholder: '',
+     width: '100%'});
+});
+$(document).ready(function() {
+    $('.js-example-basic-single2').select2({
+      allowClear: true,
+       placeholder: '',
+     width: '100%'});
+});
+// Assigned User Dropdown Filter
+$('#assigned-user-filter').on('change', function() {
+  var assignedUser = this.value;
+  
+  if(assignedUser === ''){
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('assigned-user') != assignedUser;
+    }).show();
+  }else{
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('assigned-user') == assignedUser;
+    }).show();   
+  }
+});
+
+
+// Task Status Dropdown Filter
+$('#status-filter').on('change', function() {
+  var taskStatus = this.value;
+  
+  if(taskStatus === ''){
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('status') != taskStatus;
+    }).show();
+  }else{
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('status') == taskStatus;
+    }).show();   
+  }
+});
+
+
+
+// Task Milestone Dropdown Filter
+$('#milestone-filter').on('change', function() {
+  var taskMilestone = this.value;
+  
+  if(taskMilestone === ''){
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('milestone') != taskMilestone;
+    }).show();
+  }else{
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('milestone') == taskMilestone;
+    }).show();  
+  }
+});
+
+
+// Task Priority Dropdown Filter
+$('#priority-filter').on('change', function() {
+  var taskPriority = this.value;
+  
+  if(taskPriority === ''){
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('priority') != taskPriority;
+    }).show();
+  }else{
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('priority') == taskPriority;
+    }).show();  
+  }
+});
+
+
+// Task Tags Dropdown Filter
+$('#tags-filter').on('change', function() {
+  var taskTags = this.value;
+  
+  if(taskTags === ''){
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('tags') != taskTags;
+    }).show();
+  }else{
+    $('.task-list-row').hide().filter(function() {
+      return $(this).data('tags') == taskTags;
+    }).show(); 
+  }
+});
+</script>
+{% endblock %}

@@ -72,12 +72,20 @@ def register():
 def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
+        deleted_list = [_.email for _ in User.query.filter_by(deleted=True).all()]
+        panned_list = deleted_list + [_.email for _ in User.query.filter_by(activate=False, confirmed=True).all()]
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(
                 user.password, request.form['password']):
-            login_user(user)
-            flash(u'مرحباً', 'success')
-            return redirect(url_for('main.home'))
+            if form.email.data in panned_list:
+                flash(u'لقد تم حظرك من المنظومة ,ارجاء الإتصال بمشرف التطبيقه', 'warning')
+                return render_template('user/login.html', form=form)
+            else:
+                login_user(user)
+                user.last_login = datetime.datetime.now()
+                db.session.commit()
+                flash(u'مرحباً', 'success')
+                return redirect(url_for('main.home'))
         else:
             flash(u'البريد الإلكتروني  و  أو كلمة المرور  غير صالح', 'danger')
             return render_template('user/login.html', form=form)
@@ -124,6 +132,7 @@ def confirm_email(token):
         flash(u'تم تأكيد الحساب بالفعل. الرجاء تسجيل الدخول', 'success')
     else:
         user.confirmed = True
+        user.activate = True
         user.confirmed_on = datetime.datetime.now()
         db.session.add(user)
         db.session.commit()

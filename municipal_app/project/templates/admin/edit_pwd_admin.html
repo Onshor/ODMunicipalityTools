@@ -1,9 +1,8 @@
 {% extends "_base.html" %}
 {% block content %}
-  <h1 class="page-title">gestion des utilisateurs </h1>
   <div class="panel panel-default animated fadeInUp go">
   	<div class="panel-heading clearfix">
-  		<h3 class="panel-title"> changer mot de passe du <strong>{{user['name']}} {{user['last_name']}}</strong> municipalité <strong>{{mun}}</strong></h3>
+  		<h3 class="panel-title"> تغير كلمة سر    <strong>{{user['name']}} {{user['last_name']}}</strong> من بلدية <strong>{{mun}}</strong></h3>
   		<ul class="panel-tool-options"> 
   			<li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
   			<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
@@ -14,7 +13,7 @@
   			{{ form.csrf_token }}
   			<div class="row">                      
   				<div class="form-group">
-  					<label class="col-sm-3 control-label">Votre mot de passe*</label> 
+  					<label class="col-sm-3 control-label">كلمة سر خاصتك *</label> 
   					<div class="col-sm-5">
   						{{ form.admin_password(class="form-control") }}
   						{% if form.admin_password.errors %}
@@ -28,7 +27,7 @@
   			<div class="line-dashed"></div>
   			<div class="row">   
   				<div class="form-group">
-  					<label class="col-sm-3 control-label"><strong>{{user['name']}} {{user['last_name']}}</strong> Nouveau mot de passe*</label> 
+  					<label class="col-sm-3 control-label">كلمة سر الجديدة *</label> 
   					<div class="col-sm-5">
   						{{ form.password(class="form-control") }}
   						{% if form.password.errors %}
@@ -42,7 +41,7 @@
   			<div class="line-dashed"></div>
   			<div class="row">                     
   				<div class="form-group">
-  					<label class="col-sm-3 control-label">confirmer <strong>{{user['name']}} {{user['last_name']}}</strong> mot de passe*</label> 
+  					<label class="col-sm-3 control-label">* تأكيد كلمة سر *</label> 
   					<div class="col-sm-5">
   						{{ form.confirm(class="form-control") }}
   						{% if form.confirm.errors %}
@@ -54,9 +53,17 @@
   				</div>
   			</div>
   			<div class="row">
+          <div class="col-sm-8">
+
+      </div>
+      <div class="col-sm-4">
   				<div class="form-group form-action">
-  					<button class="btn btn-primary" type="submit">save</button>
-  					<a href="/admin" class="btn  btn-red" type="submit">cancel</a>
+            <div class="col-sm-6">
+  					<button class="btn btn-primary" type="submit">حفظ</button>
+          </div>
+          <div class="col-sm-6">
+  					<a href="/admin" class="btn  btn-red" type="submit">إلغاء</a>
+          </div>
   				</div>
   			</div>
 

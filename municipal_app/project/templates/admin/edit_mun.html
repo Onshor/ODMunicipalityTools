@@ -1,0 +1,62 @@
+{% extends "_base.html" %}
+{% block content %}
+<h1 class="page-title">تحيين بلدية {{data.municipal_name_ar}} </h1>
+<div class="panel panel-default animated fadeInUp go">
+	<div class="panel-heading clearfix">
+		<ul class="panel-tool-options"> 
+			<li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+			<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+		</ul>
+	</div>
+	<div class='panel-body'>
+		<form action="/admin/mun/edit/{{data['municipal_id']}}" method="POST">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-md-6"> الاسم بالعربية<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='municipal_name_ar' value='{{data.municipal_name_ar}}' id ="maj" readonly></div></div>
+					<div class="col-md-6"> الاسم بالفرنسية<div class="form-group-inner"><input type="text" class="form-control" placeholder="" id ="maj" name='municipal_name' value='{{data.municipal_name}}' readonly></div></div>
+				</div>                    
+				<div class="row">
+					<div class="col-md-6">Longitude *<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='municipal_long' value='{{data.municipal_long}}' id ="Longitude" readonly></div></div>
+					<div class="col-md-6">Latitude *<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='municipal_lat' value='{{data.municipal_lat}}' id ="Laltitude" readonly></div></div>
+				</div>
+			</div>
+			<div class="form-group animated fadeInUp go" id='save_encours' style="display:none">
+			<div class="col-sm-8">
+
+			</div>
+			<div class="col-sm-2">
+				<button class="btn btn-primary btn-block" type="submit">حفظ</button>
+				<input type="hidden" name="id" value="{{data.municipal_id}}">
+				<input type="hidden" name="edit" value="">
+
+			</div>
+			<div class="col-sm-2">
+				<a href='/admin/admin_mun' class="btn btn-red btn-block" type="submit">إلغاء</a>
+			</div>
+		</div>
+		</form>
+		<input class="btn btn-info btn-outline" name='button' id="btnEdit" type="submit" value= 'تحيين بلدية' style="display:block">
+
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+
+$(document).ready(function()
+{
+	$('#btnEdit').click(function()
+	{
+		$("input[id='Longitude']").removeAttr("readonly")
+		$("input[id='Laltitude']").removeAttr("readonly")
+		$("input[id='maj']").removeAttr("readonly")
+		$("div[id=row_map]").removeAttr('style')
+		$("div[id=save_encours]").removeAttr('style')
+		$('#btnEdit').css({
+			'display': 'none',
+		});  
+	});
+
+});
+</script>
+{% endblock %}

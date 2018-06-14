@@ -10,7 +10,6 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from project.models import User, Municipality
 from .forms import ChangePwdForm
-from pprint import pprint as pp
 from project import db, bcrypt
 
 
@@ -26,58 +25,192 @@ admin_blueprint = Blueprint('admin', __name__,)
 @login_required
 @check_confirmed
 def admin():
-    if current_user.admin:
-        if 'dasactivation' in request.values:
-            user_id = request.values['id']
-            user = User.query.get(int(user_id))
-            user.confirmed = False
+    if 'deleting' in request.values:
+        mun_id = request.values['id']
+        mun = User.query.get(str(mun_id))
+        mun.deleted = True
+        db.session.commit()
+        flash(u'تم حذف المستخدم','success')
+        return redirect(url_for('admin.admin'))
+    if 'activer' in request.values:
+        user_id = request.values['id']
+        user = User.query.get(int(user_id))
+        user.confirmed = True
+        db.session.commit()
+        return redirect(url_for('admin.admin'))
+    elif 'cancel_user' in request.values:
+        user_id = request.values['id']
+        user = User.query.get(int(user_id))
+        user.activate = False
+        db.session.commit()
+        return redirect(url_for('admin.admin'))
+    if 'activate_user' in request.values:
+        user_id = request.values['id']
+        user = User.query.get(int(user_id))
+        if user.confirmed:
+            user.activate = True
             db.session.commit()
-            return redirect(url_for('admin.admin'))
-        elif 'activer' in request.values:
-            user_id = request.values['id']
-            user = User.query.get(int(user_id))
-            user.confirmed = True
-            db.session.commit()
-            return redirect(url_for('admin.admin'))
-        new_list = []
-        list_user = [u.__dict__ for u in User.query.all()]
-        for u in list_user:
-            if not u['admin']:
-                new_list.append({'confirmed': u['confirmed'],
-                                 'confirmed_on': u['confirmed_on'].strftime("%d/%m/%Y") if u['confirmed'] and u['confirmed_on'] else None,
-                                 'name': u['name'],
-                                 'id': u['id'],
-                                 'email': u['email'],
-                                 'last_name': u['last_name'],
-                                 'municipality': Municipality.query.filter_by(municipal_id=u['municipal_id']).first().municipal_name if int(u['municipal_id']) != 1 else 'Super Admin',
-                                 'register_on': u['registered_on'].strftime("%d/%m/%Y")})
-        return render_template('admin/admin.html', list_user=new_list)
-    else:
-        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home'))
+        else:
+            flash(u'هذا المستعمل غير معتمد ، الرجاء اعتماده قبل تفعيله','warning')
+        return redirect(url_for('admin.admin'))
+    new_list = []
+    list_user = [u.__dict__ for u in User.query.all()]
+    for u in list_user:
+        if not u['deleted'] and int(u['municipal_id']) != 1:
+            mun_name_ar = Municipality.query.filter_by(municipal_id=u['municipal_id']).first().municipal_name_ar  if int(u['municipal_id']) != 1 else 'Super Admin'
+            mun_name = mun_name_ar + ' ' + Municipality.query.filter_by(municipal_id=u['municipal_id']).first().municipal_name  if int(u['municipal_id']) != 1 else 'Super Admin'
+            new_list.append({'confirmed': u['confirmed'],
+                             'confirmed_on': u['confirmed_on'].strftime("%d/%m/%Y") if u['confirmed'] and u['confirmed_on'] else None,
+                             'name': u['name'],
+                             'id': u['id'],
+                             'email': u['email'],
+                             'last_name': u['last_name'],
+                             'municipal_id': u['municipal_id'],
+                             'municipality': mun_name,
+                             'register_on': u['registered_on'].strftime("%d/%m/%Y"),
+                             'last_login': u['last_login'] if u['last_login'] else '',
+                             'activate': u['activate'],
+                             'admin': u['admin'],
+                             'municipal_admin': u['municipal_admin']})
+    return render_template('admin/admin.html', list_user=new_list)
 
 
 @admin_blueprint.route('/admin/editpwd/<id>', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
 def edit_pawd_admin(id):
-    form = ChangePwdForm()
-    user = User.query.filter_by(id=int(id)).first().__dict__
-    mun = Municipality.query.filter_by(municipal_id=str(user['municipal_id'])).first()
-    mun = mun.municipal_name
-    if form.validate_on_submit():
-        user_admin = User.query.filter_by(email=current_user.email).first()
-        if user_admin and bcrypt.check_password_hash(user_admin.password, request.form['admin_password']):
-            user = User.query.filter_by(id=int(id)).first()
-            if user:
-                user.password = bcrypt.generate_password_hash(form.password.data)
+    if current_user.admin or current_user.municipal_admin:
+        form = ChangePwdForm()
+        user = User.query.filter_by(id=int(id)).first().__dict__
+        mun = Municipality.query.filter_by(municipal_id=str(user['municipal_id'])).first()
+        mun = mun.municipal_name_ar
+        if form.validate_on_submit():
+            user_admin = User.query.filter_by(email=current_user.email).first()
+            if user_admin and bcrypt.check_password_hash(user_admin.password, request.form['admin_password']):
+                user = User.query.filter_by(id=int(id)).first()
+                if user:
+                    user.password = bcrypt.generate_password_hash(form.password.data)
+                    db.session.commit()
+                    flash('Password successfully changed.', 'success')
+                    return redirect(url_for('admin.admin'))
+                else:
+                    flash('Password change was unsuccessful.', 'danger')
+                    return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
+            else:
+                flash(u'vérifier votre mot de passe', 'danger')
+                return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
+        return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
+    else:
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
+
+
+@admin_blueprint.route('/admin/admin_mun', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def admin_mun():
+    new_list = []
+    if current_user.admin:
+        if 'deleting' in request.values:
+            mun_id = request.values['id']
+            mun = Municipality.query.get(str(mun_id))
+            mun.deleted = True
+            db.session.commit()
+            flash(u'تم حذف البلدية','success')
+            return redirect(url_for('admin.admin_mun'))
+        list_mun = [u.__dict__ for u in Municipality.query.all() if int(u.municipal_id) > 1]
+        for x in list_mun:
+            if not x['deleted']:
+                dict_m = x
+                dict_m['search_name'] = x['municipal_name_ar'] + ' ' + x['municipal_name']
+                new_list.append(dict_m)
+        list_names = [_['municipal_name_ar'] + ' ' + _['municipal_name'] for _ in list_mun]
+        list_states = list(set([_['municipal_state'] for _ in list_mun]))
+        new_list = sorted(new_list, key=lambda k: (-k["approved"], k['municipal_id']))
+        return render_template('admin/admin_mun.html', list_mun=new_list, list_states=sorted(list_states), list_names=sorted(list_names))
+    else:
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
+
+
+
+@admin_blueprint.route('/admin/mun/edit/<id>', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def edit_admin_mun(id):
+    if current_user.admin:
+        if 'edit' in request.values:
+            save = True
+            if not check_float(request.values['municipal_lat']):
+                flash(u'longitude verified format', 'warning')
+                save = False
+            if not check_float(request.values['municipal_long']):
+                flash(u'laltitude verified format', 'warning')
+                save = False
+            if save:
+                mun = Municipality.query.get(str(request.values['id']))
+                mun.municipal_name = request.values['municipal_name']
+                mun.municipal_name_ar = request.values['municipal_name_ar']
+                mun.municipal_long = request.values['municipal_long']
+                mun.municipal_lat = request.values['municipal_lat']
                 db.session.commit()
-                flash('Password successfully changed.', 'success')
+                flash(u'لقد تم التحيين بنجاح ', 'success')
+                return redirect(url_for('admin.admin_mun'))
+        data = Municipality.query.filter_by(municipal_id=str(id)).first()
+        return render_template('admin/edit_mun.html', data=data)
+    else:
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
+
+
+@admin_blueprint.route('/admin/user/edit/<id>', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def edit_admin_user(id):
+    if current_user.admin or current_user.municipal_admin:
+        if 'edit' in request.values:
+            if check_string(request.values['name']) and check_string(request.values['last_name']):
+                user = User.query.get(int(request.values['id']))
+                user.name = request.values['name']
+                user.admin = get_role(request.values['role'])['admin']
+                user.municipal_admin = get_role(request.values['role'])['municipal_admin']
+                user.last_name = request.values['last_name']
+                user.municipal_id = request.values['municipal_id']
+                db.session.commit()
+                flash(u'لقد تم التحيين بنجاح ', 'success')
                 return redirect(url_for('admin.admin'))
             else:
-                flash('Password change was unsuccessful.', 'danger')
-                return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
-        else:
-            flash(u'vérifier votre mot de passe', 'danger')
-            return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
-    return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
+                flash(u'تحقق من الاسم واللقب', 'warning')
+        data = User.query.filter_by(id=int(id)).first() 
+        list_mun = [u.__dict__ for u in Municipality.query.all() if int(u.municipal_id) > 1]
+        data_mun = [{'value':_['municipal_id'], 'name':_['municipal_name'] + ' ' + _['municipal_name_ar']} for _ in list_mun]
+        mun = Municipality.query.filter_by(municipal_id=str(data.municipal_id)).first()
+        user_mun_name = mun.municipal_name + ' ' + mun.municipal_name_ar
+        return render_template('admin/edituser.html', data=data, data_mun=data_mun, user_mun_name=user_mun_name)
+    else:
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
+
+
+
+def get_role(role):
+    if int(role) == 0:
+        return {'admin': True, 'municipal_admin': False}
+    elif int(role) == 1:
+        return {'admin': False, 'municipal_admin': True}
+    else:
+        return {"admin": False, 'municipal_admin': False} 
+
+
+def check_string(v):
+    if not v or v.strip() == '':
+        return False
+    else:
+        return True
+
+def check_float(value):
+    try:
+        float(value)
+        return True
+    except:
+        return False

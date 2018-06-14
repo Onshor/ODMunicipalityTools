@@ -15,8 +15,9 @@ class Municipality(db.Model):
     municipal_long = db.Column(db.Float, nullable=True)
     municipal_lat = db.Column(db.Float, nullable=True)
     approved = db.Column(db.Boolean, nullable=False)
+    deleted = db.Column(db.Boolean, nullable=False)
 
-    def __init__(self, municipal_id, municipal_name, municipal_state, municipal_name_ar, municipal_long, municipal_lat, approved):
+    def __init__(self, municipal_id, deleted, municipal_name, municipal_state, municipal_name_ar, municipal_long, municipal_lat, approved):
         self.municipal_id = municipal_id
         self.municipal_name = municipal_name
         self.municipal_state = municipal_state
@@ -24,6 +25,7 @@ class Municipality(db.Model):
         self.municipal_long = municipal_long
         self.municipal_lat = municipal_lat
         self.approved = approved
+        self.deleted = deleted
 
     def get_municipal_id(self):
         return self.municipal_id
@@ -41,8 +43,13 @@ class User(db.Model):
     name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
     municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    last_login = db.Column(db.DateTime)
+    deleted = db.Column(db.Boolean)
+    activate = db.Column(db.Boolean)
+    municipal_admin = db.Column(db.Boolean)
 
-    def __init__(self, email, password, confirmed, name, municipal_id, last_name, paid=False, admin=False, confirmed_on=None):
+    def __init__(self, email, last_login, password, confirmed, name, municipal_id, last_name, deleted, activate , paid=False, admin=False, confirmed_on=None, municipal_admin=False):
+        self.deleted = deleted
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
         self.registered_on = datetime.datetime.now()
@@ -52,6 +59,9 @@ class User(db.Model):
         self.name = name
         self.last_name = last_name
         self.municipal_id = municipal_id
+        self.last_login = last_login
+        self.activate = activate
+        self.municipal_admin = municipal_admin
 
     def is_authenticated(self):
         return True

@@ -2,7 +2,7 @@
 {% block content %}
 <div class="panel panel-default animated fadeInUp go">
   <div class="panel-heading clearfix">
-    <h3 class="panel-title">Liste des utilisateurs</h3>
+    <h3 class="panel-title">قائمة المستخدمين</h3>
     <ul class="panel-tool-options"> 
       <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
       <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
@@ -11,244 +11,328 @@
   </div>
   <div class="panel-body">
     <div class='row'>
-      <div class='col-md-4'>
-        <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Filter par municipalité
-          <input type="search" class="form-control input" placeholder="" aria-controls="DataTables_Table_0" id="myInput" onkeyup="Filter_municipality()" >
-        </label>
-      </div>
-    </div>
-    <div class='col-md-4'>
-      <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Filter par nom utilisateur
-        <input type="search" class="form-control input" placeholder="" aria-controls="DataTables_Table_0" id="nomInput" onkeyup="Filter_nom()" >
-      </label>
-    </div>
-  </div>
-  <!-- <div class='col-md-4'>
-    <tr>
-      <td>
-        <input type='checkbox' name='filter'  id="Active"  value= "Active" onchange="Filter_active()"/>
-        Active
-      </td>
-      <td>
-        <input type='checkbox' name='filter'  id="Non active"  value= "Non active" onkeyup="Filter_nactive()"/>
-        Non active
-      </td>
-    </tr>
-       <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Filter par activation
-          <input type="search" class="form-control input" placeholder="" aria-controls="DataTables_Table_0" id="myInput" onkeyup="myFunction()" >
-        </label>
-      </div>
-    </div> -->
-  </div>
-  <div class='row'>
-    <div class='col-lg-4'></div>
-    <div class='col-lg-3'>
-      <div class="panel panel-warning animated fadeInUp go" id='Desac_user' style="display: none;">
-        <div class="panel-heading clearfix"> 
-          <div class="panel-title">confirmer la desactivation</div> 
-          <ul class="panel-tool-options"> 
-          </ul>  
-        </div>
-        <div class="panel-body">
-          <div class='row'>
-            <div class='col-sm-6'>
-              <form action="/admin" method="POST">
-                <input class="btn btn-outline btn-success btn-block" type="submit" value='Oui'/>
-                <input type="hidden" id='user_Id' name="id" value="">
-                <input type="hidden" id='del_row' name="dasactivation" value="decativation">
-              </form>
+      <div class='col-lg-4'></div>
+      <div class='col-lg-3'>
+        <div class="panel panel-info animated fadeInUp go" id='Activate_user' style="display: none;">
+          <div class="panel-heading clearfix"> 
+            <div class="panel-title">تأكيد تفعيل الحساب</div> 
+            <ul class="panel-tool-options"> 
+            </ul>  
+          </div>
+          <div class="panel-body">
+            <div class='row'>
+              <div class='col-sm-6'>
+                <form action="/admin" method="POST">
+                  <input class="btn btn-outline btn-success btn-block" type="submit" value='نعم'/>
+                  <input type="hidden" id='user_Id_activate' name="id" value="">
+                  <input type="hidden" id='del_row' name="activate_user" value="activate_user">
+                </form>
+              </div>
+              <div class='col-sm-6'>
+                <a href="/admin" class="btn btn-outline btn-red btn-block" type="submit">لا</a>
+              </div>
             </div>
-            <div class='col-sm-6'>
-              <a href="/admin" class="btn btn-outline btn-red btn-block" type="submit">Non</a>
+          </div>
+        </div>
+        <div class="panel panel-warning animated fadeInUp go" id='Cancel_user' style="display: none;">
+          <div class="panel-heading clearfix"> 
+            <div class="panel-title">تأكيد إلغاء الحساب</div> 
+            <ul class="panel-tool-options"> 
+            </ul>  
+          </div>
+          <div class="panel-body">
+            <div class='row'>
+              <div class='col-sm-6'>
+                <form action="/admin" method="POST">
+                  <input class="btn btn-outline btn-success btn-block" type="submit" value='نعم'/>
+                  <input type="hidden" id='user_Id_cancel' name="id" value="">
+                  <input type="hidden" id='del_row' name="cancel_user" value="cancel_user">
+                </form>
+              </div>
+              <div class='col-sm-6'>
+                <a href="/admin" class="btn btn-outline btn-red btn-block" type="submit">لا</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-info animated fadeInUp go" id='Ac_user' style="display: none;">
+          <div class="panel-heading clearfix"> 
+            <div class="panel-title">تأكيد الاعتماد</div> 
+            <ul class="panel-tool-options"> 
+            </ul>  
+          </div>
+          <div class="panel-body">
+            <div class='row'>
+              <div class='col-sm-6'>
+                <form action="/admin" method="POST">
+                  <input class="btn btn-outline btn-success btn-block" type="submit" value='نعم'/>
+                  <input type="hidden" id='user_Id_confirm' name="id" value="">
+                  <input type="hidden" id='del_row' name="activer" value="activer">
+                </form>
+              </div>
+              <div class='col-sm-6'>
+                <a href="/admin" class="btn btn-outline btn-red btn-block" type="submit">لا</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-danger animated fadeInUp go" id='DeletePanel' style="display: none;">
+          <div class="panel-heading clearfix"> 
+            <div class="panel-title">تأكيد الحذف ؟؟</div> 
+            <ul class="panel-tool-options"> 
+            </ul>  
+          </div>
+          <div class="panel-body">
+            <div class='row'>
+              <div class='col-sm-6'>
+                <form action="/admin" method="POST">
+                  <input class="btn btn-outline btn-red btn-block" type="submit" value='نعم'/>
+                  <input type="hidden" id='DelId' name="id" value="">
+                  <input type="hidden" id='del_row' name="deleting" value="">
+                </form>
+              </div>
+              <div class='col-sm-6'>
+                <a href="/admin" class="btn btn-outline btn-primary btn-block" type="submit">لا</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="panel panel-info animated fadeInUp go" id='Ac_user' style="display: none;">
-        <div class="panel-heading clearfix"> 
-          <div class="panel-title">confirmer l'activation</div> 
-          <ul class="panel-tool-options"> 
-          </ul>  
+      <div class='col-lg-5'></div>
+    </div>
+    <div class='row'>
+          <div class="col-lg-4">
+            
+            <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>البحث عن طريق إسم و لقب
+              <input type="search" class="form-control input" placeholder="" aria-controls="DataTables_Table_0" id="myInput" onkeyup="Filter_name()" >
+            </label>
+          </div>
         </div>
-        <div class="panel-body">
-          <div class='row'>
-            <div class='col-sm-6'>
-              <form action="/admin" method="POST">
-                <input class="btn btn-outline btn-success btn-block" type="submit" value='Oui'/>
-                <input type="hidden" id='user_Id_ac' name="id" value="">
-                <input type="hidden" id='del_row' name="activer" value="activer">
-              </form>
-            </div>
-            <div class='col-sm-6'>
-              <a href="/admin" class="btn btn-outline btn-red btn-block" type="submit">Non</a>
-            </div>
+        <div class="col-lg-4">
+            
+            <div id="DataTables_Table_0_filter" class="dataTables_filter"><label>البحث عن طريق البلدية
+              <input type="search" class="form-control input" placeholder="" aria-controls="DataTables_Table_0" id="myInput_mun" onkeyup="Filter_municipality()" >
+            </label>
           </div>
         </div>
       </div>
-    </div>
-    <div class='col-lg-5'></div>
-  </div>
-  <div class="line-dashed"></div>
-  <div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover dataTables-example datatbl" id="myTable">
-      <thead>
-        <tr>
-          <th>edit pwd</th>
-          <th>Activer/Désactiver</th>
-          <th>Date d'inscription</th>
-          <th>Active</th>
-          <th>Email</th>
-          <th>Municipalité</th>
-          <th>Nom d'utilisateur</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for d in  list_user%}
-        <tr class="gradeA">
-          <td><a href="/admin/editpwd/{{d['id']}}"><i class="fa fa-key" data-unicode="f084" style="color:blue"></i></a></td>
-          <td>{% if d['confirmed'] %}
-            <button class="btn btn btn-danger" value="{{d['id']}}" type='button' onclick="Desafunction({{d['id']}})"><i class="fa fa-remove">&nbspdesActiver</i></button>
-            {% else %}
-            <button class="btn btn-success" value="{{d['id']}}" type='button' onclick="Actfunction({{d['id']}})" ><i class="fa fa-remove">&nbspactiver</i></button>
+    <div class="line-dashed"></div>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover dataTables-example datatbl" id="myTable">
+        <thead>
+          <tr>
+            <th>إسم و لقب</th>
+            <th>البلدية</th>
+            <th>البريد الإلكتروني</th>
+            <th>تاريخ ووقت آخر تسجيل دخول</th>
+            <th>تاريخ التسجيل</th>
+            <th>الدور</th>
+            <th>حالة الحساب</th>
+            <th>تفعيل أو <br>إلغاء الحساب</th>
+            {% if current_user.admin or current_user.municipal_admin%}
+            <th>تغيير كلمة <br>سر المستعمل</th>
+            <th>تحيين</th>
+            <th>فسخ</th>
             {% endif %}
-          </td>
-          <td>{{d['register_on']}}</td>
-          <td>{% if d['confirmed'] %}
-           <i class="fa fa-check-circle " data-unicode="f058" style="color:green"><p style="display: none;">Active</p></i>
-           {% else %}
-           <i class="fa fa-times-circle" data-unicode="f057" style="color:red"><p style="display: none;">Non active</p></i>
-           {% endif %}
-         </td>
-         <td>{{d['email']}}</td>
-         <td>{{d['municipality']}}</td>
-         <td>{{d['name']}}  {{d['last_name']}}</td>
-       </tr>
-       {% endfor %}
-     </tbody>
-     <tfoot>
-      <tr>
-      </tr>
-    </tfoot>
-  </table>
-</div>
-</div>
-</div>
-</div>
-{% endblock %}
-{% block js %}
+          </tr>
+        </thead>
+        <tbody>
+          {% if current_user.admin %}
+          {% for d in  list_user%}
+          <tr class="gradeA">
+            <td>{{d['name']}}  {{d['last_name']}}</td>
+            <td>{{d['municipality']}}</td>
+            <td>{{d['email']}}</td>
+            <td>{{d['last_login']}}</td>
+            <td>{{d['register_on']}}</td>
+            <td>
+              {% if d['admin'] %}
+              مشرف على منظومة
+              {% elif d['municipal_admin'] %}
+              مشرف على البلدية
+              {% else %}
+              مستخدم بلدي عادي
+              {% endif %}
+            </td>
+            <td>{% if d['confirmed'] %}
+              <i class="fa fa-check" style='color:green'>&nbspحساب معتمد</i>
+              {% else %}
+              <button class="btn btn-info" value="{{d['id']}}" type='button' onclick="Actfunction({{d['id']}})" ><i class="fa fa-remove">&nbspإعتماد الحساب</i></button>
+              {% endif %}</td>
+              <td>
+                {% if d['activate'] %}
+                <button class="btn btn btn-danger" value="{{d['id']}}" type='button' onclick="Cancelfunction({{d['id']}})">إلغاء</button>
+                {% else %}
+                <button class="btn btn-success" value="{{d['id']}}" type='button' onclick="Activatefunction({{d['id']}})" >تفعيل</button>
+                {% endif %}
+              </td>
+              <td><a href="/admin/editpwd/{{d['id']}}"><i class="fa fa-key" data-unicode="f084" style="color:blue"></i></a></td>
+              <td><a href="/admin/user/edit/{{d['id']}}"><i class="fa fa-edit" data-unicode="f084" style="color:#33ccff"></i></a></td>
+              <td>
+                <button  class="btn btn-red" value="{{d['id']}}" type='button' onclick="Deletefunction2({{d['id']}})">
+                  <span class="glyphicon glyphicon-trash">
+                  </span>
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+            {% elif current_user.municipal_admin %}
+            {% for d in  list_user%}
+            <tr class="gradeA">
+              {% if current_user.municipal_id == d['municipal_id']%}
+              <td>{{d['name']}}  {{d['last_name']}}</td>
+              <td>{{d['municipality']}}</td>
+              <td>{{d['email']}}</td>
+              <td>{{d['last_login']}}</td>
+              <td>{{d['register_on']}}</td>
+              <td>
+                {% if d['admin'] %}
+                مشرف على منظومة
+                {% elif d['municipal_admin'] %}
+                مشرف على البلدية
+                {% else %}
+                مستخدم بلدي عادي
+                {% endif %}
+              </td>
+              <td>{% if d['confirmed'] %}
+                <i class="fa fa-check" style='color:green'>&nbspحساب معتمد</i>
+                {% else %}
+                <button class="btn btn-info" value="{{d['id']}}" type='button' onclick="Actfunction({{d['id']}})" ><i class="fa fa-remove">&nbspإعتماد الحساب</i></button>
+                {% endif %}</td>
+                <td>
+                  {% if d['activate'] %}
+                  <button class="btn btn btn-danger" value="{{d['id']}}" type='button' onclick="Cancelfunction({{d['id']}})">إلغاء</button>
+                  {% else %}
+                  <button class="btn btn-success" value="{{d['id']}}" type='button' onclick="Activatefunction({{d['id']}})" >تفعيل</button>
+                  {% endif %}
+                </td>
+                <td><a href="/admin/editpwd/{{d['id']}}"><i class="fa fa-key" data-unicode="f084" style="color:blue"></i></a></td>
+                <td><a href="/admin/user/edit/{{d['id']}}"><i class="fa fa-edit" data-unicode="f084" style="color:#33ccff"></i></a></td>
+                <td>
+                  <button  class="btn btn-red" value="{{d['id']}}" type='button' onclick="Deletefunction2({{d['id']}})">
+                    <span class="glyphicon glyphicon-trash">
+                    </span>
+                  </button>
+                </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            {% else %}
+            {% for d in  list_user%}
 
-<script>
-function Filter_municipality() {
-  var input, filter, table, tr, td, i;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[5];
-    if (td) {
-      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
-  }
-}
-function Filter_active() {
-  console.log('yoyooo');
-  var input, filter, table, tr, td, i;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[3];
-    if (td) {
-      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
-  }
-}
-function Filter_nactive() {
-  var input, filter, table, tr, td, i;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[3];
-    if (td) {
-      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
-  }
-}
-function Filter_nom() {
-  var input, filter, table, tr, td, i;
-  input = document.getElementById("nomInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[6];
-    if (td) {
-      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }       
-  }
-}
-function Desafunction(element){
-  console.log(element);
-  $('#Desac_user').css({
-    'display': 'block',
-  })
-  $('#user_Id').val(element)
-}
+              <tr class="gradeA">
+                {% if current_user.municipal_id == d['municipal_id']%}
+                <td>{{d['name']}}  {{d['last_name']}}</td>
+                <td>{{d['municipality']}}</td>
+                <td>{{d['email']}}</td>
+                <td>{{d['last_login']}}</td>
+                <td>{{d['register_on']}}</td>
+                <td>
+                  {% if d['admin'] %}
+                  مشرف على منظومة
+                  {% elif d['municipal_admin'] %}
+                  مشرف على البلدية
+                  {% else %}
+                  مستخدم بلدي عادي
+                  {% endif %}
+                </td>
+                <td>{% if d['confirmed'] %}
+                  <i class="fa fa-check" style='color:green'>&nbspحساب معتمد</i>
+                  {% else %}
+                  <i class="fa fa-remove">&nbspإعتماد الحساب</i>
+                  {% endif %}</td>
+                  <td>
+                    {% if d['activate'] %}
+                    <i class="fa fa-check" style='color:green'>&nbspمفعل</i>
+                    {% else %}
+                    <i class="fa fa-remove">&nbspملغى</i>
+                    {% endif %}
+                  </td>
+                  {% endif %}
 
-function Actfunction(element){
-  console.log(element);
-  $('#Ac_user').css({
-    'display': 'block',
-  })
-  $('#user_Id_ac').val(element)
-}
-// jQuery(document).on('ready', function() {
-//   console.log('yoyooo');
-//     var filter_magic = function(e) {
-//         var trs = jQuery('.datatbl tr:not(:first)');
+                  {% endfor %}
+                  {% endif %}
 
-//         trs.hide();
-//         var showAll = true;
-//         jQuery('input[type="checkbox"][name="filter"]').each(function() {
-//             if (jQuery(this).is(':checked')) {
-//                 var val = jQuery(this).val();
-//                 trs.each(function() {
-//                     var tr = jQuery(this);
-//                     var td = tr.find('td:nth-child(3)');
-//                     if (td.text() === val) {
-//                         tr.show();
-//                         showAll = false;
-//                     }
-//                 });
-//             }
-//         });
-//         if (showAll) {
-//             trs.show();
-//         }
-//     };
+                </tbody>
+                <tfoot>
+                  <tr>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock %}
+      {% block js %}
 
-//     jQuery('input[type="checkbox"][name="filter"]').on('change', filter_magic);
-//     filter_magic();
-// });
-</script>
-{% endblock %}
+      <script>
+      function Filter_name() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[0];
+          if (td) {
+            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }       
+        }
+      }
+      function Filter_municipality() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput_mun");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[1];
+          if (td) {
+            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }       
+        }
+      }
+      
+      function Deletefunction2(element){
+        console.log(element)
+        $('#DeletePanel').css({
+          'display': 'block',
+        })
+        $('#DelId').val(element)
+        $('#del_row').val(document.getElementById("ref_del").value) 
+      }
+
+      function Cancelfunction(element){
+        console.log(element);
+        $('#Cancel_user').css({
+          'display': 'block',
+        })
+        $('#user_Id_cancel').val(element)
+      }
+
+      function Activatefunction(element){
+        console.log(element);
+        $('#Activate_user').css({
+          'display': 'block',
+        })
+        $('#user_Id_activate').val(element)
+      }
+
+      function Actfunction(element){
+        console.log(element);
+        $('#Ac_user').css({
+          'display': 'block',
+        })
+        $('#user_Id_confirm').val(element)
+      }
+      </script>
+      {% endblock %}
