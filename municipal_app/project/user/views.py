@@ -62,7 +62,8 @@ def register():
         db.session.commit()
         token = generate_confirmation_token(user.email)
         confirm_url = url_for('user.confirm_email', token=token, _external=True)
-        html = render_template('user/activate.html', confirm_url=confirm_url)
+        mun_name = Municipality.query.filter_by(municipal_id=str(form.municipal_id.data)).first().municipal_name
+        html = render_template('user/activate.html', confirm_url=confirm_url, name=form.name.data, last_name=form.last_name.data, last_login=datetime.datetime.now(), mun_name=mun_name)
         subject = u"برجاء تأكيد بريدك الالكترونى"
         send_email(user.email, subject, html)
         login_user(user)
