@@ -53,7 +53,10 @@ def register():
             name=form.name.data,
             last_name=form.last_name.data,
             municipal_id=form.municipal_id.data,
-            confirmed=False
+            confirmed=False,
+            deleted=False,
+            activate=False,
+            last_login=datetime.datetime.now()
         )
         db.session.add(user)
         db.session.commit()
@@ -63,7 +66,7 @@ def register():
         subject = u"برجاء تأكيد بريدك الالكترونى"
         send_email(user.email, subject, html)
         login_user(user)
-        flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
+        # flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
         return redirect(url_for("user.unconfirmed"))
     return render_template('user/register.html', form=form)
 
@@ -145,7 +148,7 @@ def confirm_email(token):
 def unconfirmed():
     if current_user.confirmed:
         return redirect('main.home')
-    flash(u'يرجى تأكيد حسابك!', 'warning')
+    # flash(u'يرجى تأكيد حسابك!', 'warning')
     return render_template('user/unconfirmed.html')
 
 
