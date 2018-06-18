@@ -11,6 +11,7 @@ from flask_login import login_required, current_user
 from project.models import User, Municipality
 from .forms import ChangePwdForm
 from project import db, bcrypt
+from pprint import pprint as pp
 
 
 ################
@@ -111,6 +112,22 @@ def edit_pawd_admin(id):
 def admin_mun():
     new_list = []
     if current_user.admin:
+        if 'mun_act' in request.values:
+            mun_id = request.values['id']
+            mun = Municipality.query.get(str(mun_id))
+            mun_name = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name_ar
+            mun.approved = True
+            db.session.commit()
+            flash(u'تم إضافة بلدية' + mun_name + u' إلى موقعين','success')
+            return redirect(url_for('admin.admin_mun'))
+        if 'mun_dact' in request.values:
+            mun_id = request.values['id']
+            mun = Municipality.query.get(str(mun_id))
+            mun_name = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name_ar
+            mun.approved = False
+            db.session.commit()
+            flash(u'تم سحب بلدية' + mun_name + u' من موقعين','success')
+            return redirect(url_for('admin.admin_mun'))
         if 'deleting' in request.values:
             mun_id = request.values['id']
             mun = Municipality.query.get(str(mun_id))

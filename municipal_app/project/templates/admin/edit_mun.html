@@ -19,6 +19,12 @@
 					<div class="col-md-6">Longitude *<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='municipal_long' value='{{data.municipal_long}}' id ="Longitude" readonly></div></div>
 					<div class="col-md-6">Latitude *<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='municipal_lat' value='{{data.municipal_lat}}' id ="Laltitude" readonly></div></div>
 				</div>
+				<div class='row'>
+					<div id="mapid" style="width: 600px; height: 400px; position: relative; outline: none;" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0">
+					<div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(87px, 44px, 0px);">
+						<div class="leaflet-pane leaflet-tile-pane">
+							<div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 18; transform: translate3d(0px, 0px, 0px) scale(1);"></div></div></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-overlay-pane"></div><div class="leaflet-pane leaflet-marker-pane"></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated" style="transform: translate3d(1.04796e+06px, 697335px, 0px) scale(4096);"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in">+</a><a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out">−</a></div></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-attribution leaflet-control"><a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> | Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a></div></div></div></div>
+				</div>
 			</div>
 			<div class="form-group animated fadeInUp go" id='save_encours' style="display:none">
 			<div class="col-sm-8">
@@ -35,7 +41,15 @@
 			</div>
 		</div>
 		</form>
-		<input class="btn btn-info btn-outline" name='button' id="btnEdit" type="submit" value= 'تحيين بلدية' style="display:block">
+		<div class="col-sm-8">
+
+			</div>
+			<div class="col-sm-2">
+		<input class="btn btn-info btn-block" name='button' id="btnEdit" type="submit" value= 'تحيين بلدية' style="display:block">
+		</div>
+			<div class="col-sm-2">
+				<a href='/admin/admin_mun' id="btncan" class="btn btn-red btn-block" type="submit" style="display:block">إلغاء</a>
+			</div>
 
 	</div>
 </div>
@@ -54,9 +68,33 @@ $(document).ready(function()
 		$("div[id=save_encours]").removeAttr('style')
 		$('#btnEdit').css({
 			'display': 'none',
-		});  
+		});
+		$('#btncan').css({
+			'display': 'none',
+		});    
 	});
 
 });
+var mymap = L.map('mapid').setView([{{data.municipal_lat}}, {{data.municipal_long}}], 15);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+	maxZoom: 18,
+	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+	'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+	'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	id: 'mapbox.streets'
+}).addTo(mymap);
+		// L.marker({{mun_cord}}).addTo(mymap)
+		// .bindPopup("<b>{{mun_name}} بلدية</b><br />").openPopup();
+
+var marker = L.marker([{{data.municipal_lat}}, {{data.municipal_long}}], {
+	draggable:true
+}).addTo(mymap);
+
+marker.on('dragend', function (e) {
+	document.getElementById('Laltitude').value = marker.getLatLng().lat;
+	document.getElementById('Longitude').value = marker.getLatLng().lng;
+});
+
+var popup = L.popup();
 </script>
 {% endblock %}
