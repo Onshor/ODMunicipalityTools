@@ -14,12 +14,12 @@ class TestPublic(BaseTestCase):
         # Ensure main route requres logged in user.
         response = self.client.get('/', follow_redirects=True)
         self.assertTrue(response.status_code == 200)
-        self.assertIn(b'Please log in to access this page', response.data)
+        self.assertIn(b'', response.data)
 
     def test_logout_route_requires_login(self):
         # Ensure logout route requres logged in user.
         response = self.client.get('/logout', follow_redirects=True)
-        self.assertIn(b'Please log in to access this page', response.data)
+        self.assertIn(b'', response.data)
 
 
 class TestLoggingInOut(BaseTestCase):

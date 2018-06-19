@@ -9,7 +9,7 @@ from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from project.models import User, Municipality
-from .forms import ChangePwdForm
+from .forms import ChangePwdForm, AddmunForm
 from project import db, bcrypt
 from pprint import pprint as pp
 
@@ -92,13 +92,13 @@ def edit_pawd_admin(id):
                 if user:
                     user.password = bcrypt.generate_password_hash(form.password.data)
                     db.session.commit()
-                    flash('Password successfully changed.', 'success')
+                    flash(u'تم تغير كلمة السر بنجاح', 'success')
                     return redirect(url_for('admin.admin'))
                 else:
-                    flash('Password change was unsuccessful.', 'danger')
+                    flash(u'تغير كلمة السر لم ينجح', 'danger')
                     return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
             else:
-                flash(u'vérifier votre mot de passe', 'danger')
+                flash(u'تحقق من  كلمة السر', 'danger')
                 return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
         return render_template('admin/edit_pwd_admin.html', form=form, user=user, mun=mun)
     else:
@@ -208,6 +208,25 @@ def edit_admin_user(id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
         return redirect(url_for('main.home'))
 
+
+@admin_blueprint.route('/admin/add_mun', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def add_admin_mun():
+    form = AddmunForm()
+    if form.validate_on_submit():
+        db.session.add(Municipality(
+            municipal_id=str(form.municipal_id.data),
+            municipal_name=form.municipal_name.data,
+            municipal_state=form.municipal_state.data,
+            municipal_long=form.municipal_long.data,
+            municipal_lat=form.municipal_lat.data,
+            municipal_name_ar=form.municipal_name_ar.data,
+            approved=True if form.approved.data in 'signed' else False,
+            deleted=False))
+        db.session.commit()
+        return redirect(url_for('admin.admin_mun'))
+    return render_template('admin/add_mun.html', form=form)
 
 
 def get_role(role):

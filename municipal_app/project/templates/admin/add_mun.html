@@ -1,5 +1,140 @@
 {% extends "_base.html" %}
 {% block content %}
+<h1 class="page-title">البلديات</h1>
+<div class="panel panel-default animated fadeInUp go">
+	<div class="panel-heading clearfix">
+		<h3 class="panel-title">إضافة بلدية جديدة</h3>
+		<ul class="panel-tool-options"> 
+			<li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+			<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+		</ul>
+	</div>
+
+	<div class="panel-body">
+		<form class="form-horizontal" role="form" method="post" action="">
+			{{ form.csrf_token }}
+			<div class="form-group">
+				<label class="col-sm-3 control-label">المعرف البلدي *</label> 
+				<div class="col-sm-5">
+					{{ form.municipal_id( class="form-control") }}
+					{% if form.municipal_id.errors %}
+					{% for error in form.municipal_id.errors %}
+					{{ error }}
+					{% endfor %}
+					<!-- <h5>هذه الخانة اجبارية وبها أرقام فقط وتتكون من 5 أرقام</h5> -->
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">الاسم بالفرنسية *</label> 
+				<div class="col-sm-5">
+					{{ form.municipal_name( class="form-control",type="text") }}
+					{% if form.municipal_name.errors %}
+					<h5>هذه الخانة اجبارية</h5>
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">الاسم بالعربية *</label> 
+				<div class="col-sm-5">
+					{{ form.municipal_name_ar( class="form-control",type="text") }}
+					{% if form.municipal_name_ar.errors %}
+					<h5>هذه الخانة اجبارية</h5>
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">الولاية *</label> 
+				<div class="col-sm-5"> 
+					{{ form.municipal_state( class="form-control",type="text") }}
+					{% if form.municipal_state.errors %}
+					<h5>هذه الخانة اجبارية</h5>
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class="form-group"> 
+				<label class="col-sm-3 control-label">الإتفاقية *</label> 
+				<div class="col-sm-5"> 
+					{{ form.approved( class="form-control") }}
+					{% if form.approved.errors %}
+					<h5>هذه الخانة اجبارية</h5>
+					{% endif %}
+				</div> 
+			</div>
+			<div class="line-dashed"></div>
+			<div class='row'>
+				<div class='col-md-4'>
+				
+				<div class="form-group"> 
+					<label class="col-sm-3 control-label">Latitude *</label> 
+					<div class="col-sm-8"> 
+						{{ form.municipal_lat( class="form-control",type="text") }}
+						{% if form.municipal_lat.errors %}
+						<h5>هذه الخانة اجبارية</h5>
+						{% endif %}
+					</div> 
+				</div>
+				<div class="form-group"> 
+					<label class="col-sm-3 control-label">Longitude *</label> 
+					<div class="col-sm-8"> 
+						{{ form.municipal_long( class="form-control",type="text") }}
+						{% if form.municipal_long.errors %}
+						<h5>هذه الخانة اجبارية</h5>
+						{% endif %}
+					</div> 
+				</div>
+				</div>
+				<div class='col-md-6'>
+					<div id="mapid" style="width: 600px; height: 600px; position: relative; outline: none;" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom, " tabindex="0">
+						<div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(87px, 44px, 0px);">
+							<div class="leaflet-pane leaflet-tile-pane">
+								<div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 18; transform: translate3d(0px, 0px, 0px) scale(1);"></div></div></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-overlay-pane"></div><div class="leaflet-pane leaflet-marker-pane"></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated" style="transform: translate3d(1.04796e+06px, 697335px, 0px) scale(4096);"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in">+</a><a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out">−</a></div></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-attribution leaflet-control"><a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> | Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a></div></div></div></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-8"></div>
+				<div class="col-sm-2">
+					<button class="btn btn-primary btn-block" type="submit">حفظ</button>
+				</div>
+				<div class="col-sm-2">
+					<a href='/admin/admin_mun' class="btn btn-red btn-block" type="submit">إلغاء</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+</div>
+</div>
+</div>
 {% endblock %}
-{% blockjs %}
+{% block js %}
+
+<script>
+var mymap = L.map('mapid').setView([35.02999636902566, 9.448242187500002], 6);
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+	maxZoom: 18,
+	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+	'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+	'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	id: 'mapbox.streets'
+}).addTo(mymap);
+
+var marker = L.marker([35.02999636902566, 9.448242187500002], {
+	draggable:true
+}).addTo(mymap);
+
+marker.on('dragend', function (e) {
+	document.getElementById('municipal_lat').value = marker.getLatLng().lat;
+	document.getElementById('municipal_long').value = marker.getLatLng().lng;
+});
+
+var popup = L.popup();
+</script>
+
+
 {% endblock %}
