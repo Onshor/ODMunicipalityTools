@@ -41,7 +41,7 @@
               {{ form.name(type="text", placeholder="الاسم و اللقب", class="form-control") }}
               {% if form.name.errors %}
               {% for error in form.name.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>   
@@ -49,7 +49,7 @@
               {{ form.municipalite(type="text" ,placeholder="االمنطقة البلدية", class="form-control") }}
               {% if form.municipalite.errors %}
               {% for error in form.municipalite.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>                     
@@ -57,7 +57,7 @@
               {{ form.email(type="email" ,placeholder="البريد الإلكتروني", class="form-control") }}
               {% if form.email.errors %}
               {% for error in form.email.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>
@@ -65,7 +65,7 @@
               {{ form.tel(type="text" ,placeholder="رقم الهاتف", class="form-control") }}
               {% if form.tel.errors %}
               {% for error in form.tel.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>
@@ -73,7 +73,7 @@
               {{ form.message(type="textarea" ,placeholder="الرسالة ", class="form-control", style='height: auto') }}
               {% if form.message.errors %}
               {% for error in form.message.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>

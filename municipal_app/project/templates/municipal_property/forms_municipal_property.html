@@ -72,7 +72,7 @@
 				{{ form.Type_Proprety( class="form-control") }}
 				{% if form.Type_Proprety.errors %}
 				{% for error in form.Type_Proprety.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -84,7 +84,7 @@
 				{{ form.Titre_Foncier( class="form-control",type="text") }}
 				{% if form.Titre_Foncier.errors %}
 				{% for error in form.Titre_Foncier.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}	
 				{% endif %}
 			</div> 
@@ -96,7 +96,7 @@
 				{{ form.Type_du_Bien( class="form-control", type="text") }}
 				{% if form.Type_du_Bien.errors %}
 				{% for error in form.Type_du_Bien.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div> 
@@ -108,7 +108,7 @@
 				{{ form.Type_Usage( class="form-control", type="text") }}
 				{% if form.Type_Usage.errors %}
 				{% for error in form.Type_Usage.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div> 
@@ -120,7 +120,7 @@
 				{{ form.Adresse_Localisation( class="form-control", type="text") }}
 				{% if form.Adresse_Localisation.errors %}
 				{% for error in form.Adresse_Localisation.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div> 
@@ -132,7 +132,7 @@
 				{{ form.Mode_Octroi( class="form-control", type="text") }}
 				{% if form.Mode_Octroi.errors %}
 				{% for error in form.Mode_Octroi.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -144,7 +144,7 @@
 				{{ form.Surface( class="form-control") }}
 				{% if form.Surface.errors %}
 				{% for error in form.Surface.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -159,7 +159,7 @@
 							{{ form.Longitude( class="form-control") }}
 							{% if form.Longitude.errors %}
 							{% for error in form.Longitude.errors %}
-							{{ error }}
+							<p style='color:red'>{{ error }}</p>
 							{% endfor %}
 							{% endif %}
 						</div>
@@ -172,7 +172,7 @@
 							{{ form.Laltitude( class="form-control") }}
 							{% if form.Laltitude.errors %}
 							{% for error in form.Laltitude.errors %}
-							{{ error }}
+							<p style='color:red'>{{ error }}</p>
 							{% endfor %}
 							{% endif %}
 						</div>

@@ -62,7 +62,7 @@
 							{{ form.Name_Fourrier( class="form-control") }}
 							{% if form.Name_Fourrier.errors %}
 							{% for error in form.Name_Fourrier.errors %}
-							{{ error }}
+							<p style='color:red'>{{ error }}</p>
 							{% endfor %}
 							{% endif %}
 						</div>
@@ -74,7 +74,7 @@
 							{{ form.Address_Fourrier( class="form-control") }}
 							{% if form.Address_Fourrier.errors %}
 							{% for error in form.Address_Fourrier.errors %}
-							{{ error }}
+							<p style='color:red'>{{ error }}</p>
 							{% endfor %}	
 							{% endif %}
 						</div> 
@@ -88,7 +88,7 @@
 									{{ form.Longitude( class="form-control") }}
 									{% if form.Longitude.errors %}
 									{% for error in form.Longitude.errors %}
-									{{ error }}
+									<p style='color:red'>{{ error }}</p>
 									{% endfor %}
 									{% endif %}
 								</div>
@@ -101,7 +101,7 @@
 									{{ form.Laltitude( class="form-control") }}
 									{% if form.Laltitude.errors %}
 									{% for error in form.Laltitude.errors %}
-									{{ error }}
+									<p style='color:red'>{{ error }}</p>
 									{% endfor %}
 									{% endif %}
 								</div>

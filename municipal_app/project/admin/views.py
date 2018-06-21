@@ -184,18 +184,28 @@ def edit_admin_mun(id):
 @login_required
 @check_confirmed
 def edit_admin_user(id):
+    save = True
     if current_user.admin or current_user.municipal_admin:
+        data = User.query.filter_by(id=int(id)).first()
         if 'edit' in request.values:
             if check_string(request.values['name']) and check_string(request.values['last_name']):
-                user = User.query.get(int(request.values['id']))
-                user.name = request.values['name']
-                user.admin = get_role(request.values['role'])['admin']
-                user.municipal_admin = get_role(request.values['role'])['municipal_admin']
-                user.last_name = request.values['last_name']
-                user.municipal_id = request.values['municipal_id']
-                db.session.commit()
-                flash(u'لقد تم التحيين بنجاح ', 'success')
-                return redirect(url_for('admin.admin'))
+                if  not check_email(request.values['email']):
+                    save = False
+                    flash(u'صيغة البريد الالكتروني غير صحيحة', 'danger')
+                if not mail_exist(request.values['email'], data.email):
+                    save = False
+                    flash(u'البريد الإلكتروني موجود', 'danger')
+                if save:
+                    user = User.query.get(int(request.values['id']))
+                    user.name = request.values['name']
+                    user.admin = get_role(request.values['role'])['admin']
+                    user.municipal_admin = get_role(request.values['role'])['municipal_admin']
+                    user.last_name = request.values['last_name']
+                    user.municipal_id = request.values['municipal_id']
+                    user.email = request.values['email']
+                    db.session.commit()
+                    flash(u'لقد تم التحيين بنجاح ', 'success')
+                    return redirect(url_for('admin.admin'))
             else:
                 flash(u'تحقق من الاسم واللقب', 'warning')
         data = User.query.filter_by(id=int(id)).first() 
@@ -250,3 +260,16 @@ def check_float(value):
         return True
     except:
         return False
+
+def check_email(mail):
+    if '@' in mail and '.' in mail:
+        return True
+    else:
+        return False
+
+def mail_exist(mail, user_email):
+    email_list = [_.email for _ in User.query.filter(User.email != user_email).all()]
+    if mail in email_list:
+        return False
+    else:
+        return True

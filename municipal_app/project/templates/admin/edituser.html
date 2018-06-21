@@ -14,43 +14,49 @@
 				<div class="row">
 					<div class="col-md-6">الاسم<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='name' value='{{data.name}}' id ="maj" readonly></div></div>
 					<div class="col-md-6">اللقب<div class="form-group-inner"><input type="text" class="form-control" placeholder="" id ="maj" name='last_name' value='{{data.last_name}}' readonly></div></div>
-				</div>                    
+				</div>
 				<div class="row">
 					<div class="col-md-6">البلدية
-							<select class="form-control js-example-basic-single" id="maj" name="municipal_id" placeholder="المنطقة البلدية" readonly/>
-								<option value="{{data.municipal_id}}">{{user_mun_name}}</option>
-								{% for m in data_mun %}
-								<option value="{{m['value']}}">{{m['name']}}</option>
-								{% endfor %}
-							</select>
+						<select class="form-control js-example-basic-single" id="maj" name="municipal_id" placeholder="المنطقة البلدية" readonly>
+							<option value="{{data.municipal_id}}">{{user_mun_name}}</option>
+							{% for m in data_mun %}
+							<option value="{{m['value']}}">{{m['name']}}</option>
+							{% endfor %}
+						</select>
 					</div>
+					<div class="col-md-6">البريد الإلكتروني
+						<div class="form-group-inner">
+							<input class="form-control" placeholder="" name='email' value='{{data.email}}' type='email' id ="maj" readonly/>
+						</div>
+					</div>
+				</div>                   
+				<div class="row">
 					<div class="col-md-6">الدور
-						<select class="form-control" id="maj" name="role" readonly/>
-								{% if current_user.admin %}
-								{% if data.admin %}
-								<option value="0">مشرف على منظومة</option>
-								<option value="1">مشرف على البلدية</option>
-								<option value="2">مستخدم بلدي عادي</option>
-								{% elif data.municipal_admin %}
-								<option value="1">مشرف على البلدية</option>
-								<option value="0">مشرف على منظومة</option>
-								<option value="2">مستخدم بلدي عادي</option>
-								{% else %}
-								<option value="2">مستخدم بلدي عادي</option>
-								<option value="1">مشرف على البلدية</option>
-								<option value="0">مشرف على منظومة</option>
-								{% endif %}
-								{% else %}
-								pppp
-								{% if data.municipal_admin %}
-								<option value="2">مشرف على البلدية</option>
-								<option value="1">مستخدم بلدي عادي</option>
-								{% else %}
-								<option value="1">مستخدم بلدي عادي</option>
-								<option value="2">مشرف على البلدية</option>
-								{% endif %}
-								{% endif %}
-							</select>
+						<select class="form-control" id="maj" name="role" readonly>
+							{% if current_user.admin %}
+							{% if data.admin %}
+							<option value="0">مشرف على منظومة</option>
+							<option value="1">مشرف على البلدية</option>
+							<option value="2">مستخدم بلدي عادي</option>
+							{% elif data.municipal_admin %}
+							<option value="1">مشرف على البلدية</option>
+							<option value="0">مشرف على منظومة</option>
+							<option value="2">مستخدم بلدي عادي</option>
+							{% else %}
+							<option value="2">مستخدم بلدي عادي</option>
+							<option value="1">مشرف على البلدية</option>
+							<option value="0">مشرف على منظومة</option>
+							{% endif %}
+							{% else %}
+							{% if data.municipal_admin %}
+							<option value="2">مشرف على البلدية</option>
+							<option value="1">مستخدم بلدي عادي</option>
+							{% else %}
+							<option value="1">مستخدم بلدي عادي</option>
+							<option value="2">مشرف على البلدية</option>
+							{% endif %}
+							{% endif %}
+						</select>
 					</div>
 				</div>
 			</div>
@@ -77,7 +83,7 @@
 {% block js %}
 <script>
 $(document).ready(function() {
-    $('.js-example-basic-single').select2();
+	$('.js-example-basic-single').select2();
 });
 $(document).ready(function()
 {

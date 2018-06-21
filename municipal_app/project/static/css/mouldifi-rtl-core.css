@@ -372,7 +372,9 @@ div.entry-meta > span {
 
 .dataTables_wrapper .dataTables_length,
 .dataTables_wrapper .dataTables_info {
-    float: right;
+    width: 50%;
+    float: left;
+    text-align: left;
 }
 
 .dataTables_wrapper .dataTables_filter {

@@ -74,7 +74,7 @@
 					{{ form.Date_Detention( class="form-control", type="text") }}
 					{% if form.Date_Detention.errors %}
 					{% for error in form.Date_Detention.errors %}
-					{{ error }}
+					<p style='color:red'>{{ error }}</p>
 					{% endfor %}
 					{% endif %}
 					<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -88,7 +88,7 @@
 				{{ form.Cause_Detention( class="form-control") }}
 				{% if form.Cause_Detention.errors %}
 				{% for error in form.Cause_Detention.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -99,7 +99,7 @@
 				{{ form.Descr_Detention( class="form-control", type="textarea") }}
 				{% if form.Descr_Detention.errors %}
 				{% for error in form.Descr_Detention.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -110,7 +110,7 @@
 				{{ form.Name_Owner( class="form-control") }}
 				{% if form.Name_Owner.errors %}
 				{% for error in form.Name_Owner.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -121,7 +121,7 @@
 				{{ form.Authority_Detention( class="form-control") }}
 				{% if form.Authority_Detention.errors %}
 				{% for error in form.Authority_Detention.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -132,7 +132,7 @@
 				{{ form.Type_Detention( class="form-control") }}
 				{% if form.Type_Detention.errors %}
 				{% for error in form.Type_Detention.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -143,7 +143,7 @@
 				{{ form.Registration_Detention( class="form-control") }}
 				{% if form.Registration_Detention.errors %}
 				{% for error in form.Registration_Detention.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>
@@ -154,7 +154,7 @@
 				{{ form.Name_Fourrier2( class="form-control") }}
 				{% if form.Name_Fourrier2.errors %}
 				{% for error in form.Name_Fourrier2.errors %}
-				{{ error }}
+				<p style='color:red'>{{ error }}</p>
 				{% endfor %}
 				{% endif %}
 			</div>

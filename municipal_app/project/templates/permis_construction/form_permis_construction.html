@@ -121,7 +121,7 @@
               {{ form.longitude( class="form-control") }}
               {% if form.longitude.errors %}
               {% for error in form.longitude.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>
@@ -134,7 +134,7 @@
               {{ form.latitude( class="form-control") }}
               {% if form.latitude.errors %}
               {% for error in form.latitude.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>

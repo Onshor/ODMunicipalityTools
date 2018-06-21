@@ -69,6 +69,7 @@ def upload_file():
             if request.values['file_type'] == 'annuel':
                 try:
                     b, file_mun_id, update = parse_budget(f)
+                    print(len(b))
                     check = check_municipal_id(current_user.municipal_id, file_mun_id)
                     if check:
                         save_budget_parametre(b)

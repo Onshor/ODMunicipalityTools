@@ -21,7 +21,7 @@
     <span class="error">
       {% if form.password.errors %}
         {% for error in form.password.errors %}
-          {{ error }}
+          <p style='color:red'>{{ error }}</p>
         {% endfor %}
       {% endif %}
     </span>
@@ -31,7 +31,7 @@
     <span class="error">
       {% if form.confirm.errors %}
         {% for error in form.confirm.errors %}
-          {{ error }}
+          <p style='color:red'>{{ error }}</p>
         {% endfor %}
       {% endif %}
     </span>

@@ -51,7 +51,7 @@
               {{ form.name(type="text", placeholder="الاسم", class="form-control") }}
               {% if form.name.errors %}
               {% for error in form.name.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>   
@@ -59,7 +59,7 @@
               {{ form.last_name(type="text" ,placeholder="اللقب", class="form-control") }}
               {% if form.last_name.errors %}
               {% for error in form.last_name.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>                     
@@ -67,7 +67,7 @@
               {{ form.email(type="email" ,placeholder="البريد الإلكتروني", class="form-control") }}
               {% if form.email.errors %}
               {% for error in form.email.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>
@@ -75,7 +75,7 @@
               {{ form.municipal_id(type="text" ,placeholder="المنطقة البلدية", class="form-control js-example-basic-single",  style='height: 39px') }}
               {% if form.municipal_id.errors %}
               {% for error in form.municipal_id.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>
@@ -86,7 +86,7 @@
               {{ form.password(type="password" ,placeholder="كلمة المرور", class="form-control") }}
               {% if form.password.errors %}
               {% for error in form.password.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>
@@ -94,7 +94,7 @@
               {{ form.confirm(type="password" ,placeholder="تأكيد كلمة المرور", class="form-control") }}
               {% if form.confirm.errors %}
               {% for error in form.confirm.errors %}
-              {{ error }}
+              <p style='color:red'>{{ error }}</p>
               {% endfor %}
               {% endif %}
             </div>

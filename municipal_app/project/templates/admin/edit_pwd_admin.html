@@ -18,7 +18,7 @@
   						{{ form.admin_password(class="form-control") }}
   						{% if form.admin_password.errors %}
   						{% for error in form.admin_password.errors %}
-  						{{ error }}
+  						<p style='color:red'>{{ error }}</p>
   						{% endfor %}
   						{% endif %}
   					</div>
@@ -32,7 +32,7 @@
   						{{ form.password(class="form-control") }}
   						{% if form.password.errors %}
   						{% for error in form.password.errors %}
-  						{{ error }}
+  						<p style='color:red'>{{ error }}</p>
   						{% endfor %}
   						{% endif %}
   					</div>
@@ -46,7 +46,7 @@
   						{{ form.confirm(class="form-control") }}
   						{% if form.confirm.errors %}
   						{% for error in form.confirm.errors %}
-  						{{ error }}
+  						<p style='color:red'>{{ error }}</p>
   						{% endfor %}
   						{% endif %}
   					</div>

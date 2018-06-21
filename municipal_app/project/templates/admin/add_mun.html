@@ -16,10 +16,10 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">المعرف البلدي *</label> 
 				<div class="col-sm-5">
-					{{ form.municipal_id( class="form-control") }}
+					{{ form.municipal_id( class="form-control", type='number') }}
 					{% if form.municipal_id.errors %}
 					{% for error in form.municipal_id.errors %}
-					{{ error }}
+					<label class='label.error'>{{ error }}</label>
 					{% endfor %}
 					<!-- <h5>هذه الخانة اجبارية وبها أرقام فقط وتتكون من 5 أرقام</h5> -->
 					{% endif %}
@@ -31,7 +31,7 @@
 				<div class="col-sm-5">
 					{{ form.municipal_name( class="form-control",type="text") }}
 					{% if form.municipal_name.errors %}
-					<h5>هذه الخانة اجبارية</h5>
+					<h5 style='color:red'>هذه الخانة اجبارية</h5>
 					{% endif %}
 				</div> 
 			</div>

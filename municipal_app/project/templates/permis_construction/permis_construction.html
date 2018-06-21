@@ -42,10 +42,6 @@
 			<div class="panel-body">
 				<div class='row'>
 					<div class="col-lg-4">
-						<div id="DataTables_Table_0_filter" class="dataTables_filter"><label>البحث عن طريق رقم بطاقة التعريف أو بطاقة الاقامة للاجانب
-							<input type="search" class="form-control input-sm" placeholder="" aria-controls="DataTables_Table_0" id="myInput" onkeyup="myFunction()" >
-						</label>
-					</div>
 					<div>
 						<form method="get" action="/permisconst">
 							<button class="btn btn-blue" type="submit"><i class="fa fa-plus"></i>&nbsp;إضافة ترخيص جديد</button>
@@ -127,7 +123,7 @@
 								<td>
 									<input type="hidden" name="type" value={{d['id']}}>
 									<input type="hidden" name="name" value="{{d['nom_titulaire']}}">
-									<button class="btn btn-link btn-outline btn-block" type="submit" value=''><i class="fa fa-edit"></i></button>
+									<button class="btn btn btn-default" type="submit" value=''><i class="fa fa-edit" data-unicode="f084" style="color:#33ccff"></i></button>
 								</td>
 							</form>
 							<td><p id="copy_{{d['id']}}" style="display: none;">{{d['id']}}</p>
@@ -155,6 +151,7 @@
 	</div>
 </div>
 </div>
+{% endblock %}
 {% block js %}
 <script>
 function Deletefunction(element){
@@ -162,26 +159,31 @@ function Deletefunction(element){
 			'display': 'block',
 		})
 	$('#DelId').val(element)
-	$('#del_row').val(document.getElementById("ref_del").value) 
+	$('#del_row').val(document.getElementById("ref_del").value)
+	document.body.scrollTop = 0;
+  	document.documentElement.scrollTop = 0;
 }
 
-function myFunction() {
-	var input, filter, table, tr, td, i;
-	input = document.getElementById("myInput");
-	filter = input.value.toUpperCase();
-	table = document.getElementById("myTable");
-	tr = table.getElementsByTagName("tr");
-	for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName("td")[2];
-		if (td) {
-			if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-				tr[i].style.display = "";
-			} else {
-				tr[i].style.display = "none";
-			}
-		}       
-	}
-}
+$(document).ready(function() {
+  $('#myTable').DataTable({
+   "pagingType": "full_numbers",
+   "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+   "language": {
+    "lengthMenu": "عرض _MENU_ رخص لكل صفحة",
+    "zeroRecords": "لا توجد سجلات متاحة",
+    "info": "عرض رخص  _PAGE_ من _PAGES_",
+    "infoEmpty": "لا توجد سجلات متاحة",
+    "infoFiltered": "(تصفيتها من _MAX_ سجل)",
+    "search": "بحث:",
+    "paginate": {
+      "previous": "السابق",
+      "next":"التالى",
+      "last":"الاخير",
+      "first":"أول"
+    }
+  }
+});
+} );
 function copyToClipboard(element) {
 	var $temp = $("<input>");
 	$("body").append($temp);
@@ -190,5 +192,4 @@ function copyToClipboard(element) {
 	$temp.remove();
 }
 </script>
-{% endblock %}
 {% endblock %}
