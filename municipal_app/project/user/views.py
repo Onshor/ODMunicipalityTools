@@ -11,7 +11,6 @@ from project.models import User, Municipality
 from project.email import send_email
 from project import db, bcrypt
 from .forms import LoginForm, RegisterForm, ChangePasswordForm, ContactForm
-from pprint import pprint as pp
 
 
 ################

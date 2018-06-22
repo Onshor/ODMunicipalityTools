@@ -12,7 +12,7 @@ from project.models import Organigramme
 from project import db, app
 import json
 import os
-from pprint import pprint as pp
+
 
 ################
 #### config ####

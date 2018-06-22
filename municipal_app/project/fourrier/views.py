@@ -14,7 +14,6 @@ from project import db
 import datetime
 import csv
 import os
-from pprint import pprint as pp
 
 ################
 #### config ####

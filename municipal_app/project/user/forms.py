@@ -6,14 +6,7 @@ from flask_wtf import Form
 from wtforms import TextField, PasswordField, SelectField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 
-
 from project.models import User, Municipality
-
-
-# def validate_municipality_choice(form, field):
-#     print(field.data)
-#     if field.data == None:
-#         raise ValidationError(u'yo')
 
 
 class LoginForm(Form):
@@ -73,17 +66,3 @@ class ContactForm(Form):
     email = TextField('email', validators=[DataRequired(message=u'هذه الخانة اجباريه'), Email()])
     tel = IntegerField('tel', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
     message = TextAreaField('message')
-
-
-
-# def validate_municipal_id(form, field):
-#     panned_list = [_.municipal_id for _ in Municipality.query.all() if _.municipal_id != '1']
-#     ids = str(field.data)
-#     if not field.data:
-#         raise ValidationError(u'هذه الخانة اجبارية وبها أرقام فقط')
-#     if not ids.isdigit():
-#         raise ValidationError(u'هذه الخانة اجبارية وبها أرقام فقط')
-#     if len(str(field.data)) != 5:
-#         raise ValidationError(u'المعرف البلدي يتكون من 5 أرقام')
-#     if ids in panned_list:
-#         raise ValidationError(u'هذا المعرف لبلدية أخرى')

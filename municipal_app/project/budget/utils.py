@@ -5,10 +5,10 @@ from flask_login import current_user
 from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle
 from project import db
 from parser import decode_unicode, get_csv_file
-from pprint import pprint as pp
 
 
 ALLOWED_EXTENSIONS = set(['xml'])
+
 
 def save_budget_parametre(budget_att):
     def update_budget_param(b):
@@ -49,7 +49,14 @@ def save_budget_fee_annuelle(budget_att):
                 if check_item not in ref_check:
                     param_chech_id = b['titre'] + b['sous_paragraphe'] + b['paragraphe'] + b['article']
                     if param_chech_id == k:
+                        print 'new  new'
                         update_budget_annuel(b, v)
+                else:
+                    param_chech_id = b['titre'] + b['sous_paragraphe'] + b['paragraphe'] + b['article']
+                    if param_chech_id == k:
+                        if str(b['montant']) + b['municipal_id'] + b['reference'] + b['year'] + str(v) not in list(set([str(_.montant) + _.municipal_id + _.reference + _.year + str(_.parametre_id) for _ in Budget_annuelle.query.all()])):
+                            print 'old  old'
+                            update_budget_annuel(b, v)
     return True
 
 

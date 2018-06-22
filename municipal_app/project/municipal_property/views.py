@@ -11,7 +11,6 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import ProprietyForm
 from project import db
-from pprint import pprint as pp
 import datetime
 import csv
 import os

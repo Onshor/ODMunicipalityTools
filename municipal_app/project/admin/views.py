@@ -11,7 +11,6 @@ from flask_login import login_required, current_user
 from project.models import User, Municipality
 from .forms import ChangePwdForm, AddmunForm
 from project import db, bcrypt
-from pprint import pprint as pp
 
 
 ################

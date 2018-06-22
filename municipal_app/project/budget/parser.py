@@ -5,7 +5,6 @@ import xml.etree.ElementTree as et
 import datetime
 import csv
 from list_month import decode_month
-from pprint import pprint as pp
 import os
 
 
