@@ -75,27 +75,27 @@ def drop_db():
 @manager.command
 def create_admin():
     """Creates the admin user."""
-    # db.session.add(User(
-    #     email="med@onshor.org",
-    #     password="admin",
-    #     admin=True,
-    #     confirmed=True,
-    #     confirmed_on=datetime.datetime.now(),
-    #     name='admin',
-    #     last_name='admin',
-    #     municipal_id='1',)
-    # )
     db.session.add(User(
-        email="boltanebochra@gmail.com",
-        password='adminBochra17%%',
+        email="med@onshor.org",
+        password="medPWD17%%",
         admin=True,
         confirmed=True,
         confirmed_on=datetime.datetime.now(),
-        name='Boltane',
-        last_name='Bochra',
+        name='admin',
+        last_name='admin',
         municipal_id='1',)
     )
-    db.session.commit()
+    # db.session.add(User(
+    #     email="boltanebochra@gmail.com",
+    #     password='adminBochra17%%',
+    #     admin=True,
+    #     confirmed=True,
+    #     confirmed_on=datetime.datetime.now(),
+    #     name='Boltane',
+    #     last_name='Bochra',
+    #     municipal_id='1',)
+    # )
+    # db.session.commit()
 
 
 @manager.command
@@ -119,9 +119,14 @@ def create_municipality():
     """ Creates list of municipality """
     for m in municipalitys:
         db.session.add(Municipality(
-            municipal_id=m['municipal_id'],
-            municipal_name=m['municipal_name'],
-            municipal_state=m['municipal_state']))
+            municipal_id='1',
+            municipal_name='admin',
+            municipal_state='admin',
+            municipal_name_ar='admin',
+            municipal_long=1,
+            municipal_lat=1,
+            approved=False,
+            deleted=False))
         db.session.commit()
 
 
@@ -130,6 +135,7 @@ def update_municipality_from_file():
     """ Creates list of municipality """
     mun_list = list(set([_.municipal_id for _ in Municipality.query.all()]))
     municipalits = read_csv('clean_mun_final.csv')
+    list_approved = ['34012', '34011', '31011']
     for m in municipalits:
         if m['municipal_id'] not in mun_list:
             db.session.add(Municipality(
@@ -138,7 +144,9 @@ def update_municipality_from_file():
                 municipal_state=m['state'],
                 municipal_name_ar=m['name_ar'],
                 municipal_long=m['lng'],
-                municipal_lat=m['lat']))
+                municipal_lat=m['lat']),
+                approved=True if m['municipal_id'] in list_approved else False,
+                deleted=False)
             db.session.commit()
 
 

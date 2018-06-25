@@ -65,7 +65,7 @@ def save_budget_fee_monthly(budget_att):
         db.session.add(Budget_mensuelle(montant=b['montant'],
                                         parametre_id=param_id,
                                         month=b['month'],
-                                        year=b['year'],
+                                        year=int(b['year']),
                                         municipal_id=b['municipal_id']))
         db.session.commit()
     param_list = [{_.titre + _.sous_paragraphe + _.paragraphe + _.article: _.id} for _ in Budget_parametre.query.all()]
