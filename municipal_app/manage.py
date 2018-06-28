@@ -150,7 +150,7 @@ def update_municipality_from_file():
                 municipal_long=m['lng'],
                 municipal_lat=m['lat'],
                 approved=True if m['municipal_id'] in list_approved else False,
-                deleted=False)
+                deleted=False))
             db.session.commit()
 
 
