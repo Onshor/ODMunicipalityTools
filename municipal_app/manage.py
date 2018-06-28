@@ -85,7 +85,9 @@ def create_admin():
         last_name='admin',
         municipal_id='1',
         last_login=datetime.datetime.now(),
-        municipal_admin=False)
+	activate=True,
+        deleted=False)
+        # municipal_admin=False)
     )
     # db.session.add(User(
     #     email="boltanebochra@gmail.com",
@@ -97,7 +99,7 @@ def create_admin():
     #     last_name='Bochra',
     #     municipal_id='1',)
     # )
-    # db.session.commit()
+    db.session.commit()
 
 
 @manager.command
@@ -142,11 +144,11 @@ def update_municipality_from_file():
         if m['municipal_id'] not in mun_list:
             db.session.add(Municipality(
                 municipal_id=m['municipal_id'],
-                municipal_name=m['name'],
+                municipOBal_name=m['name'],
                 municipal_state=m['state'],
                 municipal_name_ar=m['name_ar'],
                 municipal_long=m['lng'],
-                municipal_lat=m['lat']),
+                municipal_lat=m['lat'],
                 approved=True if m['municipal_id'] in list_approved else False,
                 deleted=False)
             db.session.commit()
