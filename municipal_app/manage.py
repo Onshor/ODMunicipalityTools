@@ -83,7 +83,9 @@ def create_admin():
         confirmed_on=datetime.datetime.now(),
         name='admin',
         last_name='admin',
-        municipal_id='1',)
+        municipal_id='1',
+        last_login=datetime.datetime.now(),
+        municipal_admin=False)
     )
     # db.session.add(User(
     #     email="boltanebochra@gmail.com",
