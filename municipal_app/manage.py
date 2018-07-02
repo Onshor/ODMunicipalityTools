@@ -144,7 +144,7 @@ def update_municipality_from_file():
         if m['municipal_id'] not in mun_list:
             db.session.add(Municipality(
                 municipal_id=m['municipal_id'],
-                municipOBal_name=m['name'],
+                municipal_name=m['name'],
                 municipal_state=m['state'],
                 municipal_name_ar=m['name_ar'],
                 municipal_long=m['lng'],
