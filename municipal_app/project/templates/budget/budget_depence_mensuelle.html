@@ -41,14 +41,22 @@
                 </div>
                 <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#dpm')"/></div>
               </div>
-              <div class="line-dashed"></div>
+              <!-- <div class="line-dashed"></div> -->
+            </div>
+            {% else %}
+            <div class="container-fluid">
+              <p><code>لا توجد بيانات متعلقه باالموارد الشهرية لبلدية {{mun_name}} في قاعدة البيانات </code></p>
             </div>
             {% endif %}
+
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="panel panel-default animated fadeInUp go">
+  <div class="panel-body"><p>‫‫‪‫يتم‬ ‫إستخراج ملف  من‬ منظومة “أدب” ‫في صيغة XML من الخانة " كشف شهري للاعتمادات  تعهد/صرف/دفع " للشهر والسنة الحالية .</p></div>
+</div>
 
 {% block js %}
   <script>

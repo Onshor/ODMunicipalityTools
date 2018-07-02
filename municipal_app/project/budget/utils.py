@@ -5,6 +5,7 @@ from flask_login import current_user
 from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle
 from project import db
 from parser import decode_unicode, get_csv_file
+from pprint import pprint as pp
 
 
 ALLOWED_EXTENSIONS = set(['xml'])
@@ -100,7 +101,7 @@ def csv_annuelle_file():
     for ba in budget_annuel_simple:
         budget_param = Budget_parametre.query.filter_by(id=ba['p_id']).first()
         p_dict_simple = get_dict_param(budget_param)
-        if budget_param.type.lower() == 'recette':
+        if 'recette' in budget_param.type.lower():
             p_dict_simple.update({'Year': ba['Year'],
                                   'Budget': ba['Budget']})
             recette_annuel_simple.append(p_dict_simple)
@@ -129,7 +130,7 @@ def csv_annuelle_file():
     depecence_link_simple = get_csv_file(depense_annuel_simple, 'depense_simple_' + current_user.municipal_id, ['Year', 'Budget'])
     recette_link_per_year = get_csv_file(recette_annuel, 'recette_per_year_' + current_user.municipal_id, years_list)
     depecence_link_per_year = get_csv_file(depecence_annuel, 'depense_per_year_' + current_user.municipal_id, years_list)
-    return recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year 
+    return recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year
 
 
 def get_dict_param(b):
@@ -141,18 +142,30 @@ def get_dict_param(b):
 
 
 def csv_mensuelle_file(b_type):
-    p_id_month, final_list, order_list = [], [], []
+    p_id_month, final_list, order_list, check_list, approved_month_list = [], [], [], [], []
     budget_month = Budget_mensuelle.query.filter_by(municipal_id=current_user.municipal_id).all()
     month_list = [_.month for _ in budget_month]
     years_list = [_.year for _ in budget_month]
     p_id_list = [_.parametre_id for _ in budget_month]
     y = max(years_list)
+    list_id_type = [_.id for _ in Budget_parametre.query.all() if _.type.lower() in b_type.lower()]
+    while not check_list:
+        for id_t in list_id_type:
+            check_list.extend(Budget_mensuelle.query.filter_by(municipal_id=current_user.municipal_id, parametre_id=id_t, year=y).all())
+        if check_list:
+            pass
+        else:
+            y = y - 1
+    for ml in list(set(month_list)):
+        for id_t in list_id_type:
+            if Budget_mensuelle.query.filter_by(municipal_id=current_user.municipal_id, parametre_id=id_t, year=y, month=ml).all():
+                approved_month_list.append(ml)
     for i in list(set(p_id_list)):
         b_year = Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id, year=str(y), parametre_id=i).order_by(Budget_annuelle.numero_maj.desc()).first()
         if b_year:
             p_id_month_dict = {'Budget_' + str(y): b_year.montant,
                                'p_id': i}
-            for m in list(set(month_list)):
+            for m in list(set(approved_month_list)):
                 if Budget_mensuelle.query.filter_by(municipal_id=current_user.municipal_id, year=y, month=m).first():
                     b_month = Budget_mensuelle.query.filter_by(municipal_id=current_user.municipal_id, year=y, parametre_id=i, month=m).first()
                     b_month_montant = b_month.montant if b_month else None
@@ -174,7 +187,9 @@ def csv_mensuelle_file(b_type):
             order_list.append(k)
     order_list = sorted(order_list)
     filename = b_type + '_' + 'mensuelle' + '_' + str(y) + '_' + current_user.municipal_id
-    link = get_csv_file(final_list, filename, order_list)
+    unique = [dict(t) for t in set(tuple(sorted(d.items())) for d in final_list)]
+    unique = sorted(unique, key=lambda k: k['Article'])
+    link = get_csv_file(unique, filename, order_list)
     return link
 
 

@@ -43,13 +43,13 @@
               </div>
               <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#rcs')"/></div>
             </div>
-            <div class="line-dashed"></div>
+            <!-- <div class="line-dashed"></div> -->
             <div class="row">
               <div class="col-lg-5">
                 <label class="control-label"><strong class="text-success">الموارد حسب السنة</strong></label>
               </div>
-              </div>
-              <div class="row">
+            </div>
+            <div class="row">
 
               <div class="col-lg-9 has-success">
                 <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ dps }}", readonly/>
@@ -57,7 +57,7 @@
               </div>
               <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" value='نسخ الرابط' type="button" onclick="copyToClipboard('#dps')"></div>
             </div>
-            <div class="line-dashed"></div>
+            <!-- <div class="line-dashed"></div> -->
             <div class="row">
               <div class="col-lg-10">
                 <label class="control-label"><strong class="text-success">نفقات {{ years }}</strong></label>
@@ -71,7 +71,7 @@
               <div class="col-lg-3">
                 <input class="btn btn-primary btn-outline btn-block" onclick="copyToClipboard('#rcy')" value='نسخ الرابط' type="button" ></div>
               </div>
-              <div class="line-dashed"></div>
+              <!-- <div class="line-dashed"></div> -->
               <div class="row">
                 <div class="col-lg-10">
                   <label class="control-label"><strong class="text-success">موارد {{ years }}</strong></label>
@@ -84,16 +84,24 @@
                 </div>
                 <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#dpy')"/></div>
               </div>
-              <div class="line-dashed"></div>
+              <!-- <div class="line-dashed"></div> -->
+            </div>
+            {% else %}
+            <div class="container-fluid">
+              <p><code>لا توجد بيانات متعلقه بالميزانية السنوية لبلدية {{mun_name}} في قاعدة البيانات </code></p>
             </div>
             {% endif %}
+            
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="panel panel-default animated fadeInUp go">
+  <div class="panel-body"><p>‫‫‪‫يتم‬ ‫إستخراج ملف من‬ منظومة “أدب” ‫في صيغة XML من الخانة " كشف أو إعادة طبع تعديلات توزيع الميزانية " أو من خانة "كشف أو إعادة طبع الميزانية الأصلية" إن لم تحين.</p></div>
+</div>
 
-{% block js %}
+  {% block js %}
   <script>
   $(function() {
 

@@ -41,7 +41,11 @@
                 </div>
                 <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#rcm')"/></div>
               </div>
-              <div class="line-dashed"></div>
+              <!-- <div class="line-dashed"></div> -->
+            </div>
+            {% else %}
+            <div class="container-fluid">
+              <p><code>لا توجد بيانات متعلقه باالموارد الشهرية لبلدية {{mun_name}} في قاعدة البيانات </code></p>
             </div>
             {% endif %}
           </div>
@@ -49,6 +53,9 @@
       </div>
     </div>
   </div>
+  <div class="panel panel-default animated fadeInUp go">
+  <div class="panel-body"><p>‫‫‪‫يتم‬ ‫إستخراج  ملفين ,ملف للعنوان الأول و ملف للعنوان الثاني من‬ منظومة “أدب” ‫في صيغة XML من الخانة " المتابعة الحنيه للاعتمادات و الموارد  " للشهر والسنة الحالية .</p></div>
+</div>
 {% block js %}
   <script>
   $(function() {
