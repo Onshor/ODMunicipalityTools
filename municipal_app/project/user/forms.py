@@ -15,6 +15,8 @@ class LoginForm(Form):
 
 
 class RegisterForm(Form):
+    phone_number = IntegerField(validators=[DataRequired(message=u'هذه الخانة اجباريه')])
+    work_position = TextField(validators=[DataRequired(message=u'هذه الخانة اجباريه')])
     email = TextField(
         'email',
         validators=[DataRequired(message=u'هذه الخانة اجباريه'), Email(message=None), Length(min=6, max=40)])

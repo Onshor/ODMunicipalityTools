@@ -11,6 +11,7 @@ from flask_login import login_required, current_user
 from project.models import User, Municipality
 from .forms import ChangePwdForm, AddmunForm
 from project import db, bcrypt
+from pprint import pprint as pp
 
 
 ################
@@ -71,7 +72,9 @@ def admin():
                              'last_login': u['last_login'] if u['last_login'] else '',
                              'activate': u['activate'],
                              'admin': u['admin'],
-                             'municipal_admin': u['municipal_admin']})
+                             'municipal_admin': u['municipal_admin'],
+                             'phone_number': u['phone_number'] if u['phone_number'] else '',
+                             'work_position': u['work_position'] if u['work_position'] else ''})
     return render_template('admin/admin.html', list_user=new_list)
 
 
@@ -187,6 +190,10 @@ def edit_admin_user(id):
     if current_user.admin or current_user.municipal_admin:
         data = User.query.filter_by(id=int(id)).first()
         if 'edit' in request.values:
+            if request.values['phone_number']:
+                pp(True)
+            else:
+                pp(False)
             if check_string(request.values['name']) and check_string(request.values['last_name']):
                 if  not check_email(request.values['email']):
                     save = False
@@ -202,6 +209,8 @@ def edit_admin_user(id):
                     user.last_name = request.values['last_name']
                     user.municipal_id = request.values['municipal_id']
                     user.email = request.values['email']
+                    user.work_position = request.values['work_position'] if request.values['work_position'] else None
+                    user.phone_number = request.values['phone_number'] if request.values['phone_number'] else None
                     db.session.commit()
                     flash(u'لقد تم التحيين بنجاح ', 'success')
                     return redirect(url_for('admin.admin'))
@@ -209,9 +218,10 @@ def edit_admin_user(id):
                 flash(u'تحقق من الاسم واللقب', 'warning')
         data = User.query.filter_by(id=int(id)).first() 
         list_mun = [u.__dict__ for u in Municipality.query.all() if int(u.municipal_id) > 1]
-        data_mun = [{'value':_['municipal_id'], 'name':_['municipal_name'] + ' ' + _['municipal_name_ar']} for _ in list_mun]
+        data_mun = [{'value':_['municipal_id'], 'name':_['municipal_name'] + ' ' + _['municipal_name_ar']} for _ in list_mun if _['approved'] and not _['deleted']]
         mun = Municipality.query.filter_by(municipal_id=str(data.municipal_id)).first()
         user_mun_name = mun.municipal_name + ' ' + mun.municipal_name_ar
+        pp(data.__dict__)
         return render_template('admin/edituser.html', data=data, data_mun=data_mun, user_mun_name=user_mun_name)
     else:
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')

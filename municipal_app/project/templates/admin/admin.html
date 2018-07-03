@@ -105,8 +105,10 @@
     <thead>
       <tr>
         <th>إسم و لقب</th>
+        <th>الصفة</th>
         <th>البلدية</th>
         <th>البريد الإلكتروني</th>
+        <th>رقم الهاتف</th>
         <th>تاريخ ووقت آخر تسجيل دخول</th>
         <th>تاريخ التسجيل</th>
         <th>الدور</th>
@@ -124,8 +126,10 @@
       {% for d in  list_user%}
       <tr class="gradeA">
         <td>{{d['name']}}  {{d['last_name']}}</td>
+        <td>{{d['work_position']}}</td>
         <td>{{d['municipality']}}</td>
         <td>{{d['email']}}</td>
+        <td>{{d['phone_number']}}</td>
         <td>{{d['last_login']}}</td>
         <td>{{d['register_on']}}</td>
         <td>
@@ -164,8 +168,10 @@
         <tr class="gradeA">
           {% if current_user.municipal_id == d['municipal_id']%}
           <td>{{d['name']}}  {{d['last_name']}}</td>
+          <td></td>
           <td>{{d['municipality']}}</td>
           <td>{{d['email']}}</td>
+          <td></td>
           <td>{{d['last_login']}}</td>
           <td>{{d['register_on']}}</td>
           <td>
@@ -206,8 +212,10 @@
           <tr class="gradeA">
             {% if current_user.municipal_id == d['municipal_id']%}
             <td>{{d['name']}}  {{d['last_name']}}</td>
+            <td></td>
             <td>{{d['municipality']}}</td>
             <td>{{d['email']}}</td>
+            <td></td>
             <td>{{d['last_login']}}</td>
             <td>{{d['register_on']}}</td>
             <td>
@@ -255,7 +263,7 @@
     $(document).ready(function() {
       $('#myTable').DataTable({
            "pagingType": "full_numbers",
-           "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+           "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "الكل"]],
            "language": {
             "lengthMenu": "عرض _MENU_ مستخدم لكل صفحة",
             "zeroRecords": "لا شيء وجد",

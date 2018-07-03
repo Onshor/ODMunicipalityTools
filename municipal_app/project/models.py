@@ -47,8 +47,11 @@ class User(db.Model):
     deleted = db.Column(db.Boolean)
     activate = db.Column(db.Boolean)
     municipal_admin = db.Column(db.Boolean)
+    phone_number = db.Column(db.Integer)
+    work_position = db.Column(db.String)
 
-    def __init__(self, email, last_login, password, confirmed, name, municipal_id, last_name, deleted, activate , paid=False, admin=False, confirmed_on=None, municipal_admin=False):
+    def __init__(self, email, last_login, password, confirmed, name, municipal_id, last_name, deleted, activate, 
+                 phone_number, work_position, paid=False, admin=False, confirmed_on=None, municipal_admin=False):
         self.deleted = deleted
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
@@ -62,6 +65,8 @@ class User(db.Model):
         self.last_login = last_login
         self.activate = activate
         self.municipal_admin = municipal_admin
+        self.phone_number = phone_number
+        self.work_position = work_position
 
     def is_authenticated(self):
         return True

@@ -16,13 +16,10 @@
 					<div class="col-md-6">اللقب<div class="form-group-inner"><input type="text" class="form-control" placeholder="" id ="maj" name='last_name' value='{{data.last_name}}' readonly></div></div>
 				</div>
 				<div class="row">
-					<div class="col-md-6">البلدية
-						<select class="form-control js-example-basic-single" id="maj" name="municipal_id" placeholder="المنطقة البلدية" readonly>
-							<option value="{{data.municipal_id}}">{{user_mun_name}}</option>
-							{% for m in data_mun %}
-							<option value="{{m['value']}}">{{m['name']}}</option>
-							{% endfor %}
-						</select>
+					<div class="col-md-6">رقم الهاتف
+						<div class="form-group-inner">
+							<input type="number" class="form-control" placeholder="" id ="phone_number" name='phone_number' value='{{data.phone_number}}' readonly>
+						</div>
 					</div>
 					<div class="col-md-6">البريد الإلكتروني
 						<div class="form-group-inner">
@@ -31,6 +28,11 @@
 					</div>
 				</div>                   
 				<div class="row">
+					<div class="col-md-6">الصفة
+						<div class="form-group-inner">
+							<input class="form-control" placeholder="" name='work_position' value='{{data.work_position if data.work_position else ''}}' type='text' id ="maj" readonly/>
+						</div>
+					</div>
 					<div class="col-md-6">الدور
 						<select class="form-control" id="maj" name="role" readonly>
 							{% if current_user.admin %}
@@ -59,6 +61,16 @@
 						</select>
 					</div>
 				</div>
+				<div class='row'>
+					<div class="col-md-6">البلدية
+						<select class="form-control js-example-basic-single" id="maj" name="municipal_id" placeholder="المنطقة البلدية" readonly>
+							<option value="{{data.municipal_id}}">{{user_mun_name}}</option>
+							{% for m in data_mun %}
+							<option value="{{m['value']}}">{{m['name']}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
 			</div>
 			<div class="form-group animated fadeInUp go" id='save_encours' style="display:none">
 				<div class="col-sm-8">
@@ -75,7 +87,17 @@
 				</div>
 			</div>
 		</form>
-		<input class="btn btn-info btn-outline" name='button' id="btnEdit" type="submit" value= 'تحيين' style="display:block">
+		<div class='row'>
+			<div class="col-sm-2">
+				<input class="btn btn-info btn-outline btn-block" name='button' id="btnEdit" type="submit" value= 'تحيين' style="display:block">
+			</div>
+			<div class="col-sm-2">
+				<a href='/admin' class="btn btn-outline btn-red btn-block"  id='btnout' type="submit" style="display:block">إلغاء</a>
+			</div>
+			<div class="col-sm-8">
+
+			</div>
+		</div>
 
 	</div>
 </div>
@@ -92,9 +114,13 @@ $(document).ready(function()
 		$("input[id='Longitude']").removeAttr("readonly")
 		$("input[id='Laltitude']").removeAttr("readonly")
 		$("input[id='maj']").removeAttr("readonly")
+		$("input[id='phone_number']").removeAttr("readonly")
 		$("div[id=row_map]").removeAttr('style')
 		$("div[id=save_encours]").removeAttr('style')
 		$('#btnEdit').css({
+			'display': 'none',
+		})
+		$('#btnout').css({
 			'display': 'none',
 		});  
 	});
