@@ -138,7 +138,7 @@ def check_float(value):
 
 
 def get_csv_file(data, ref, field_list):
-    _ = ['Titre_Foncier', 'Type_du_Bien', 'Mode_Octroi', 'Type_Usage', 'Surface', 'Adresse_Localisation', 'Longitude', 'Laltitude']
+    _ = ['Titre_Foncier', 'Type_du_Bien', 'Mode_Octroi', 'Type_Usage', 'Surface', 'Adresse_Localisation', 'Longitude', 'Latitude']
     fieldnames = _ + field_list
     filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
@@ -150,7 +150,7 @@ def get_csv_file(data, ref, field_list):
 
 def get_file_content(d):
     data_dict = {'Longitude': d['Longitude'],
-                 'Laltitude': d['Laltitude'],
+                 'Latitude': d['Laltitude'],
                  'Adresse_Localisation': decode_unicode(d['Adresse_Localisation']),
                  'Mode_Octroi': decode_unicode(d['Mode_Octroi']),
                  'Surface': d['Surface'],

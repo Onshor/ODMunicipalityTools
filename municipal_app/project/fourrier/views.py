@@ -176,9 +176,9 @@ def get_fourrier_file():
                 fourrier_file.append({'Nom_Fourrier': decode_unicode(f['Name_Fourrier']),
                                       'Address_Fourrier': decode_unicode(f['Address_Fourrier']),
                                       'Longitude': f['Longitude'],
-                                      'Laltitude': f['Laltitude']})
+                                      'Latitude': f['Laltitude']})
             ref = 'list_fourrier_' + str(current_user.municipal_id)
-            field_list = ['Nom_Fourrier', 'Address_Fourrier', 'Longitude', 'Laltitude']
+            field_list = ['Nom_Fourrier', 'Address_Fourrier', 'Longitude', 'Latitude']
             fourrier_url = confirm_url + get_csv_file(fourrier_file, ref, field_list)
             return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), fourrier_url=fourrier_url, fourrier_lancher=True)
         else:
@@ -186,7 +186,7 @@ def get_fourrier_file():
                 det_lon = Fourrier.query.filter_by(id=d['fourrier_id']).first().Longitude
                 det_lat = Fourrier.query.filter_by(id=d['fourrier_id']).first().Laltitude
                 detention_file.append({'Longitude': det_lon,
-                                       'Laltitude': det_lat,
+                                       'Latitude': det_lat,
                                        'Nom_Fourrier': decode_unicode(d['Name_Fourrier']),
                                        'Date_Detention': d['Date_Detention'].strftime("%Y/%m/%d"),
                                        'Cause_Detention': decode_unicode(d['Cause_Detention']),
@@ -196,7 +196,7 @@ def get_fourrier_file():
                                        'Registration_Detention': decode_unicode(d['Registration_Detention']),
                                        'Descr_Detention': decode_unicode(d['Descr_Detention'])})
             ref = 'list_detention_' + str(current_user.municipal_id)
-            field_list = ['Date_Detention', 'Cause_Detention', 'Authority_Detention', 'Name_Owner', 'Type_Detention', 'Registration_Detention', 'Descr_Detention', 'Nom_Fourrier', 'Longitude', 'Laltitude']
+            field_list = ['Date_Detention', 'Cause_Detention', 'Authority_Detention', 'Name_Owner', 'Type_Detention', 'Registration_Detention', 'Descr_Detention', 'Nom_Fourrier', 'Longitude', 'Latitude']
             detention_url = confirm_url + get_csv_file(detention_file, ref, field_list)
             return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), detention_url=detention_url, detention_lancher=True)
     return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))

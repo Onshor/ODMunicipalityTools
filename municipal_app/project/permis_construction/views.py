@@ -235,7 +235,7 @@ def get_files():
                         'Address_travaux': decode_unicode(d['address']),
                         'Description_travaux': decode_unicode(d['desc_construct']),
                         'Longitude': d['longitude'],
-                        'Laltitude': d['laltitude'],
+                        'Latitude': d['laltitude'],
                         'Date_depot': d['date_depot'].strftime("%Y/%m/%d"),
                         'Type_construction': decode_unicode(d['type_construct'])}
         if request.values['type_file'] == 'en_cours' and d['permis_status'] == 'en_cours':
@@ -277,7 +277,7 @@ def get_files():
 
 
 def get_csv_file(data, ref, field_list):
-    _ = ['Numero_demande', 'Nom_titulaire', 'Address_travaux', 'Date_depot', 'Type_construction', 'Description_travaux', 'Longitude', 'Laltitude']
+    _ = ['Numero_demande', 'Nom_titulaire', 'Address_travaux', 'Date_depot', 'Type_construction', 'Description_travaux', 'Longitude', 'Latitude']
     fieldnames = _ + field_list
     filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
