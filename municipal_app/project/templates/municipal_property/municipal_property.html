@@ -82,8 +82,8 @@
 								<input type="text" class="form-control has-success" placeholder="{{ public_url }}", readonly/>
 							</div>
 							<div class='col-sm-3'>
-								<p id ="copy_link_encours" style="display: none;">{{ public_url }}</p>
-								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_encours')"/>
+								<p id ="copy_link_encours2" style="display: none;">{{ public_url }}</p>
+								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard2('#copy_link_encours2')"/>
 							</div>
 						</div>
 						{% endif %}
@@ -198,6 +198,15 @@ function copyToClipboard(element) {
 	document.execCommand("copy");
 	$temp.remove();
 }
+function copyToClipboard2(element) {
+	var $temp = $("<input>");
+	$("body").append($temp);
+	$temp.val($(element).text()).select();
+	document.execCommand("copy");
+	$temp.remove();
+}
+
 </script>
+
 
 {% endblock %}
