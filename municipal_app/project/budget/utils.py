@@ -202,3 +202,15 @@ def check_municipal_id(user_mun_id, file_mun_id):
         return True
     else:
         return False
+
+
+def check_monthly_data(d_type):
+    check = False
+    if Budget_mensuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
+        list_parameter = [_.id for _ in Budget_parametre.query.filter_by(type=d_type).all()]
+        check_list = [_.parametre_id for _ in Budget_mensuelle.query.filter_by(municipal_id=current_user.municipal_id).all()]
+        for i in list_parameter:
+            if i in check_list:
+                check = True
+                break
+    return check

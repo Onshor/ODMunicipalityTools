@@ -5,12 +5,12 @@
 #### imports ####
 #################
 
-from utils import save_budget_fee_annuelle, save_budget_fee_monthly, csv_annuelle_file, allowed_file, check_municipal_id, save_budget_parametre, csv_mensuelle_file
+from utils import save_budget_fee_annuelle, save_budget_fee_monthly, csv_annuelle_file, allowed_file, check_municipal_id, save_budget_parametre, csv_mensuelle_file, check_monthly_data
 from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from parser import parse_budget, parse_recette_file, parse_depence_file
-from project.models import Budget_annuelle, Municipality
+from project.models import Budget_annuelle, Municipality, Budget_mensuelle
 from pprint import pprint as pp
 
 
@@ -46,8 +46,6 @@ def budget_annuel():
         dpy = confirm_url + depecence_link_per_year
         years = Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).all()
         years = [_.year for _ in years]
-        pp(len(years))
-        pp(list(set(years)))
         year_str = ''
         for y in sorted(list(set(years))):
             year_str = year_str + ', ' + y if year_str else y
@@ -60,10 +58,11 @@ def budget_annuel():
 @check_confirmed
 def budget_depence_mensuelle():
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
-        confirm_url = url_for('main.home', _external=True) + 'static/files/'
-        dpm = csv_mensuelle_file('Depence')
-        dpm = confirm_url + dpm
-        return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True)
+        if check_monthly_data("Depence"):
+            confirm_url = url_for('main.home', _external=True) + 'static/files/'
+            dpm = csv_mensuelle_file('Depence')
+            dpm = confirm_url + dpm
+            return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True)
     return render_template('budget/budget_depence_mensuelle.html', mun_name=Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar)
 
 
@@ -72,10 +71,11 @@ def budget_depence_mensuelle():
 @check_confirmed
 def budget_recette_mensuelle():
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
-        confirm_url = url_for('main.home', _external=True) + 'static/files/'
-        rcm = csv_mensuelle_file('Recette')
-        rcm = confirm_url + rcm
-        return render_template('budget/budget_recette_mensuelle.html', rcm=rcm, parsed_rect=True)
+        if check_monthly_data("Recettes"):
+            confirm_url = url_for('main.home', _external=True) + 'static/files/'
+            rcm = csv_mensuelle_file('Recette')
+            rcm = confirm_url + rcm
+            return render_template('budget/budget_recette_mensuelle.html', rcm=rcm, parsed_rect=True)
     return render_template('budget/budget_recette_mensuelle.html')
 
 
