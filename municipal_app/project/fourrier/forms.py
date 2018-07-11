@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 
 from flask_wtf import Form
-from wtforms import TextField, SelectField, FloatField, DateField, TextAreaField
+from wtforms import TextField, SelectField, FloatField, DateField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Length
 
 
@@ -14,7 +14,7 @@ class FourrierForm(Form):
 
 
 class DetentionForm(Form):
-    choices_auth = [(None, ''), (u'الشرطة البيئية', u'الشرطة البيئية'), (u'الشرطة البلدية', u'الشرطة البلدية'), (u'البلدية', u'البلدية'), (u'شرطة المرور', u'شرطة المرور'), (u'الحرس الوطني', u'الحرس الوطني')]
+    choices_auth = [(None, ''), (u'الشرطة البيئية', u'الشرطة البيئية'), (u'الشرطة البلدية', u'الشرطة البلدية'), (u'البلدية', u'البلدية'), (u'شرطة المرور', u'شرطة المرور'), (u'الحرس الوطني', u'الحرس الوطني'), (u'عدل منفذ', u'عدل منفذ'), (u' حرس المرور', u' حرس المرور')]
     Date_Detention = DateField(u'تاريخ الحجز', validators=[DataRequired(message=u'هذه الخانة اجباريه')], format='%Y/%m/%d')
     Cause_Detention = TextField(u'أسباب الحجز', validators=[DataRequired(message=u'هذه الخانة اجباريه'), Length(max=150)])
     Descr_Detention = TextAreaField(u'وصف المحجوز', validators=[Length(max=250)])
@@ -26,6 +26,7 @@ class DetentionForm(Form):
 
 
 class ReleaseForm(Form):
-    Num_Bon = TextField(u'عدد الوصل', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
+    Num_Bon = TextField(u'عدد الوصل')
+    montant_sortie = IntegerField('', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
     Date_Release = DateField(u'تاريخ إسترجاع المحجوز', validators=[DataRequired(message=u'هذه الخانة اجباريه')], format='%Y/%m/%d')
     Note = TextAreaField(u'ملاحظات', validators=[Length(max=250)])

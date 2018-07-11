@@ -6,7 +6,7 @@
 		{% if update %}
 		<h3 class="panel-title">تحيين المحجوز</h3>
 		{% else %}
-		<h3 class="panel-title">إضافة مستودع</h3>
+		<h3 class="panel-title">إضافة محجوز</h3>
 		{% endif %}
 		<ul class="panel-tool-options"> 
 			<li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
@@ -46,7 +46,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-4">الترقيم المنجمي *<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Registration_Detention' value='{{detention_data.Registration_Detention}}' id ="maj" readonly></div></div>
+	<div class="col-md-4">الترقيم المنجمي<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='Registration_Detention' value='{{detention_data.Registration_Detention}}' id ="maj" readonly></div></div>
 	<div class="col-md-4">وصف المحجوز <div class="form-group-inner"><input type="textarea" class="form-control" placeholder="" id ="maj" name='Descr_Detention' value='{{detention_data.Descr_Detention}}' readonly></div></div>
 </div>
 </div>
@@ -61,7 +61,39 @@
 	</div>
 </div>
 </form>
-<input class="btn btn-info btn-outline btn-block" name='button' id="btnEdit" type="submit" value= 'تحيين المحجوز' style="display:block">
+<div class='row'>
+	<div class='col-md-2'>
+	</div>
+	<div class='col-md-2'>
+	</div>
+	<div class='col-md-2'>
+	</div>
+	<div class='col-md-2'>
+		
+	</div>
+	{% if detention_data.Status_Detention == 'محجوز' %}
+	<div class='col-md-2'>
+		<input class="btn btn-info btn-outline" name='button' id="btnEdit" value= 'تحيين بيانات المحجوز' style="display:block" type="submit">
+	</div>
+	
+	<div class='col-md-2'>
+		<a href="/update_detention/archiver/{{detention_data.id}}" class="btn btn-success btn-outline" type="submit" id="btnArchive" style="display:block; float:left">إسترجاع المحجوز</a>
+	</div>
+	{% else %}
+	<div class='col-md-2'>
+		
+	</div>
+	
+	<div class='col-md-2'>
+		<input class="btn btn-info btn-outline" name='button' id="btnEdit" value= 'تحيين بيانات المحجوز' style="display:block" type="submit">
+	</div>
+	{% endif %}
+</div>
+<br>
+<div class='row'>
+		<a href="/fourrier" class="btn btn-red btn-outline" type="submit" id="btnCancel" style="display:block; float:left">إلغاء</a>
+</div>
+<!-- <input class="btn btn-info btn-outline" name='button' id="btnEdit" type="submit" value= 'تحيين المحجوز' style="display:block"> -->
 </div>
 {% else %}
 <div class='panel-body'>
@@ -179,7 +211,7 @@
 {% block js %}
 
 <script>
-$("#Registration_Detention").inputmask({"mask": "9999-تونس-9999"});
+// $("#Registration_Detention").inputmask({"mask": "9999-تونس-9999"});
 $(document).ready(function()
 {
 	$('#btnEdit').click(function()
@@ -190,6 +222,12 @@ $(document).ready(function()
 		$("div[id=row_map]").removeAttr('style')
 		$("div[id=save_encours]").removeAttr('style')
 		$('#btnEdit').css({
+			'display': 'none',
+		})
+		$('#btnCancel').css({
+			'display': 'none',
+		})
+		$('#btnArchive').css({
 			'display': 'none',
 		});  
 	});

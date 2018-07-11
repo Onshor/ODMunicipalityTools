@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 
 from flask_login import current_user
-from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle
+from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle, Auto_update, File_log
 from project import db
 from parser import decode_unicode, get_csv_file
 from pprint import pprint as pp
@@ -41,6 +41,7 @@ def save_budget_fee_annuelle(budget_att):
                                        parametre_id=param_id,
                                        year=b['year']))
         db.session.commit()
+    log = False
     param_list = [{_.titre + _.sous_paragraphe + _.paragraphe + _.article: _.id} for _ in Budget_parametre.query.all()]
     ref_check = list(set([_.reference + _.numero_maj for _ in Budget_annuelle.query.all()]))
     for p in param_list:
@@ -50,15 +51,15 @@ def save_budget_fee_annuelle(budget_att):
                 if check_item not in ref_check:
                     param_chech_id = b['titre'] + b['sous_paragraphe'] + b['paragraphe'] + b['article']
                     if param_chech_id == k:
-                        print 'new  new'
                         update_budget_annuel(b, v)
+                        log = True
                 else:
                     param_chech_id = b['titre'] + b['sous_paragraphe'] + b['paragraphe'] + b['article']
                     if param_chech_id == k:
                         if str(b['montant']) + b['municipal_id'] + b['reference'] + b['year'] + str(v) not in list(set([str(_.montant) + _.municipal_id + _.reference + _.year + str(_.parametre_id) for _ in Budget_annuelle.query.all()])):
-                            print 'old  old'
                             update_budget_annuel(b, v)
-    return True
+                            log = True
+    return log
 
 
 def save_budget_fee_monthly(budget_att):
@@ -69,6 +70,7 @@ def save_budget_fee_monthly(budget_att):
                                         year=int(b['year']),
                                         municipal_id=b['municipal_id']))
         db.session.commit()
+    log = False
     param_list = [{_.titre + _.sous_paragraphe + _.paragraphe + _.article: _.id} for _ in Budget_parametre.query.all()]
     check_fee_monthly = list(set([str(_.montant) + str(_.month) + str(_.year) + str(_.municipal_id) for _ in Budget_mensuelle.query.all()]))
     for p in param_list:
@@ -78,7 +80,8 @@ def save_budget_fee_monthly(budget_att):
                 param_chech_id = b['titre'] + b['sous_paragraphe'] + b['paragraphe'] + b['article']
                 if param_chech_id == k and check_item not in check_fee_monthly:
                     update_budget_param(b, v)
-    return True
+                    log = True
+    return log
 
 
 def csv_annuelle_file():
@@ -127,9 +130,13 @@ def csv_annuelle_file():
                             p_dict.update({v: k})
             depecence_annuel.append(p_dict)
     recette_link_simple = get_csv_file(recette_annuel_simple, 'recette_simple_' + current_user.municipal_id, ['Year', 'Budget'])
+    save_auto_update(recette_link_simple)
     depecence_link_simple = get_csv_file(depense_annuel_simple, 'depense_simple_' + current_user.municipal_id, ['Year', 'Budget'])
+    save_auto_update(depecence_link_simple)
     recette_link_per_year = get_csv_file(recette_annuel, 'recette_per_year_' + current_user.municipal_id, years_list)
+    save_auto_update(recette_link_per_year)
     depecence_link_per_year = get_csv_file(depecence_annuel, 'depense_per_year_' + current_user.municipal_id, years_list)
+    save_auto_update(depecence_link_per_year)
     return recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year
 
 
@@ -186,11 +193,13 @@ def csv_mensuelle_file(b_type):
         if k.startswith('Budget'):
             order_list.append(k)
     order_list = sorted(order_list)
-    filename = b_type + '_' + 'mensuelle' + '_' + str(y) + '_' + current_user.municipal_id
+    # filename = b_type + '_' + 'mensuelle' + '_' + str(y) + '_' + current_user.municipal_id
+    filename = b_type + '_' + 'mensuelle' + '_' + current_user.municipal_id
     unique = [dict(t) for t in set(tuple(sorted(d.items())) for d in final_list)]
     unique = sorted(unique, key=lambda k: k['Article'])
     link = get_csv_file(unique, filename, order_list)
-    return link
+    save_auto_update(link)
+    return link, list(set(approved_month_list)), y
 
 
 def allowed_file(filename):
@@ -214,3 +223,27 @@ def check_monthly_data(d_type):
                 check = True
                 break
     return check
+
+
+def save_auto_update(file_name):
+    auto_data = [d.file_name for d in Auto_update.query.filter_by(municipal_id=current_user.municipal_id).all()]
+    if file_name not in auto_data:
+        db_save_auto_update(file_name)
+    return 0
+
+
+def db_save_auto_update(file_name):
+    auto_update = Auto_update(municipal_id=current_user.municipal_id,
+                              file_name=file_name)
+    db.session.add(auto_update)
+    db.session.commit()
+    db_save_log_files(auto_update.id)
+    return 0
+
+
+def db_save_log_files(file_id):
+    db.session.add(File_log(user_id=current_user.id,
+                            municipal_id=current_user.municipal_id,
+                            file_id=file_id))
+    db.session.commit()
+    return 0

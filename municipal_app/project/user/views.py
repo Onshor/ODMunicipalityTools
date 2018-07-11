@@ -9,7 +9,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from project.models import User, Municipality
 from project.email import send_email
 from project import db, bcrypt
-from .forms import LoginForm, RegisterForm, ChangePasswordForm, ContactForm
+from .forms import LoginForm, RegisterForm, ChangePasswordForm, ContactForm, ApiForm
 
 
 ################
@@ -108,6 +108,7 @@ def logout():
 @login_required
 @check_confirmed
 def profile():
+    apiform = ApiForm(request.form)
     form = ChangePasswordForm(request.form)
     mun = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar
     if form.validate_on_submit():
@@ -116,12 +117,18 @@ def profile():
         if user:
             user.password = bcrypt.generate_password_hash(form.password.data)
             db.session.commit()
-            flash('Password successfully changed.', 'success')
+            flash(u'تم تحيين  كلمة السر', 'success')
             return redirect(url_for('user.profile'))
         else:
             flash('Password change was unsuccessful.', 'danger')
             return redirect(url_for('user.profile'))
-    return render_template('user/profile.html', form=form, mun=mun)
+    if apiform.validate_on_submit():
+        user = User.query.get(current_user.id)
+        user.api_key = apiform.api_key.data
+        db.session.commit()
+        flash(u'تم اضافة / تحيين api key', 'success')
+        return redirect(url_for('main.home'))
+    return render_template('user/profile.html', form=form, mun=mun, apiform=apiform)
 
 
 @user_blueprint.route('/confirm/<token>')

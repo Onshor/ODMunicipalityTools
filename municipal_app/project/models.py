@@ -49,9 +49,10 @@ class User(db.Model):
     municipal_admin = db.Column(db.Boolean)
     phone_number = db.Column(db.Integer)
     work_position = db.Column(db.String)
+    api_key = db.Column(db.String)
 
     def __init__(self, email, last_login, password, confirmed, name, municipal_id, last_name, deleted, activate, 
-                 phone_number, work_position, paid=False, admin=False, confirmed_on=None, municipal_admin=False):
+                 phone_number, work_position, api_key=None, paid=False, admin=False, confirmed_on=None, municipal_admin=False):
         self.deleted = deleted
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
@@ -67,6 +68,7 @@ class User(db.Model):
         self.municipal_admin = municipal_admin
         self.phone_number = phone_number
         self.work_position = work_position
+        self.api_key = api_key
 
     def is_authenticated(self):
         return True
@@ -286,13 +288,12 @@ class Detention(db.Model):
     Date_Release = db.Column(db.String, nullable=True)
     Note = db.Column(db.String, nullable=True)
     Num_Bon = db.Column(db.String, nullable=True)
-
-
+    montant_sortie = db.Column(db.Integer, nullable=True)
 
     def __init__(self, municipal_id, fourrier_id, user_id, Descr_Detention, Date_Detention, Cause_Detention,
                  Name_Owner, Authority_Detention, Name_Fourrier, Type_Detention, Registration_Detention,
                  Status_Detention, Date_Release,
-                 Num_Bon, Note):
+                 Num_Bon, Note, montant_sortie=None):
         self.municipal_id = municipal_id
         self.user_id = user_id
         self.fourrier_id = fourrier_id
@@ -308,6 +309,7 @@ class Detention(db.Model):
         self.Date_Release = Date_Release
         self.Num_Bon = Num_Bon
         self.Note = Note
+        self.montant_sortie = montant_sortie
 
     def get_id(self):
         return self.id
@@ -324,6 +326,40 @@ class Organigramme(db.Model):
         self.municipal_id = municipal_id
         self.user_id = user_id
         self.organigramme_data = organigramme_data
+
+    def get_id(self):
+        return self.id
+
+
+class Auto_update(db.Model):
+    __tablename__ = "auto_update"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    file_name = db.Column(db.String, nullable=True)
+    ressource_id = db.Column(db.String, nullable=True)
+
+    def __init__(self, municipal_id, file_name, ressource_id=None):
+        self.municipal_id = municipal_id
+        self.file_name = file_name
+        self.ressource_id = ressource_id
+
+    def get_id(self):
+        return self.id
+
+
+class File_log(db.Model):
+    __tablename__ = "file_log"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    file_id = db.Column(db.Integer, db.ForeignKey('auto_update.id'))
+    datetime_log = db.Column(db.DateTime)
+
+    def __init__(self, municipal_id, user_id, file_id):
+        self.municipal_id = municipal_id
+        self.user_id = user_id
+        self.file_id = file_id
+        self.datetime_log = datetime.datetime.now()
 
     def get_id(self):
         return self.id

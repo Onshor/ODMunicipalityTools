@@ -13,6 +13,18 @@ municipalitys = [{"municipal_id": "1", "municipal_name": "Admin", "municipal_sta
                  {"municipal_id": "34014", "municipal_name": u"El krib", "municipal_state": "Siliana", "municipal_name_ar":u"الکريب", "municipal_long":"9.135818", "municipal_lat":"36.327157"},]
 
 
+decode_month_ar = {u'جانفي':'01',
+                   u'فيفري':'02',
+                   u'مارس':'03',
+                   u'أفريل':'04',
+                   u'ماي':'05',
+                   u'جوان':'06',
+                   u'جويلية':'07',
+                   u'أوت':'08',
+                   u'سبتمبر':'09',
+                   u'أكتوبر':'10',
+                   u'نوفمبر':'11',
+                   u'ديسمبر':'12'}
 
 decode_month = {'janvier': '01',
                 'fevrier': '02',

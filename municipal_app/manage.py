@@ -10,7 +10,7 @@ from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
 
 from project import app, db
-from project.models import User, Municipality
+from project.models import User, Municipality, Auto_update
 from list_municipality import municipalitys
 from project.config import DevelopmentConfig as APP_SETTINGS
 
@@ -64,6 +64,12 @@ def cov():
 def create_db():
     """Creates the db tables."""
     db.create_all()
+
+
+@manager.command
+def create_new():
+    """Creates the db tables."""
+    db.create(Auto_update)
 
 
 @manager.command

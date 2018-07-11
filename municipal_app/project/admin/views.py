@@ -190,10 +190,6 @@ def edit_admin_user(id):
     if current_user.admin or current_user.municipal_admin:
         data = User.query.filter_by(id=int(id)).first()
         if 'edit' in request.values:
-            if request.values['phone_number']:
-                pp(True)
-            else:
-                pp(False)
             if check_string(request.values['name']) and check_string(request.values['last_name']):
                 if  not check_email(request.values['email']):
                     save = False
@@ -221,7 +217,6 @@ def edit_admin_user(id):
         data_mun = [{'value':_['municipal_id'], 'name':_['municipal_name'] + ' ' + _['municipal_name_ar']} for _ in list_mun if _['approved'] and not _['deleted']]
         mun = Municipality.query.filter_by(municipal_id=str(data.municipal_id)).first()
         user_mun_name = mun.municipal_name + ' ' + mun.municipal_name_ar
-        pp(data.__dict__)
         return render_template('admin/edituser.html', data=data, data_mun=data_mun, user_mun_name=user_mun_name)
     else:
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')

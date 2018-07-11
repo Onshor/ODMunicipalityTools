@@ -11,6 +11,7 @@ from flask_login import login_required, current_user
 from .forms import FourrierForm, DetentionForm, ReleaseForm
 from project.models import Fourrier, Detention, Municipality
 from project import db
+from pprint import pprint as pp
 import datetime
 import csv
 import os
@@ -140,7 +141,7 @@ def update_detention():
     detention_data = Detention.query.filter_by(id=request.values['d_id']).first().__dict__
     save = True
     name_fourrier_option = [(str(row.id), row.Name_Fourrier) for row in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
-    authority_option = [(u'الشرطة البيئية', u'الشرطة البيئية'), (u'الشرطة البلدية', u'الشرطة البلدية'), (u'البلدية', u'البلدية'), (u'شرطة المرور', u'شرطة المرور'), (u'الحرس الوطني', u'الحرس الوطني')]
+    authority_option = [(u'الشرطة البيئية', u'الشرطة البيئية'), (u'الشرطة البلدية', u'الشرطة البلدية'), (u'البلدية', u'البلدية'), (u'شرطة المرور', u'شرطة المرور'), (u'الحرس الوطني', u'الحرس الوطني'), (u'عدل منفذ', u'عدل منفذ'), (u' حرس المرور', u' حرس المرور')]
     if len(request.values) > 3:
         if not check_date(request.values['Date_Detention']):
             flash(u'Date_Detention verified format', 'warning')
@@ -183,23 +184,44 @@ def get_fourrier_file():
             return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), fourrier_url=fourrier_url, fourrier_lancher=True)
         else:
             for d in detention_data:
-                det_lon = Fourrier.query.filter_by(id=d['fourrier_id']).first().Longitude
-                det_lat = Fourrier.query.filter_by(id=d['fourrier_id']).first().Laltitude
-                detention_file.append({'Longitude': det_lon,
-                                       'Latitude': det_lat,
-                                       'Nom_Fourrier': decode_unicode(d['Name_Fourrier']),
-                                       'Date_Detention': d['Date_Detention'].strftime("%Y/%m/%d"),
-                                       'Cause_Detention': decode_unicode(d['Cause_Detention']),
-                                       'Name_Owner': decode_unicode(d['Name_Owner']),
-                                       'Authority_Detention': decode_unicode(d['Authority_Detention']),
-                                       'Type_Detention': decode_unicode(d['Type_Detention']),
-                                       'Registration_Detention': decode_unicode(d['Registration_Detention']),
-                                       'Descr_Detention': decode_unicode(d['Descr_Detention'])})
-            ref = 'list_detention_' + str(current_user.municipal_id)
-            field_list = ['Date_Detention', 'Cause_Detention', 'Authority_Detention', 'Name_Owner', 'Type_Detention', 'Registration_Detention', 'Descr_Detention', 'Nom_Fourrier', 'Longitude', 'Latitude']
-            detention_url = confirm_url + get_csv_file(detention_file, ref, field_list)
-            return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), detention_url=detention_url, detention_lancher=True)
+                if u'محجوز' in d['Status_Detention']:
+                    det_lon = Fourrier.query.filter_by(id=d['fourrier_id']).first().Longitude
+                    det_lat = Fourrier.query.filter_by(id=d['fourrier_id']).first().Laltitude
+                    detention_file.append({'Longitude': det_lon,
+                                           'Latitude': det_lat,
+                                           'Nom_Fourrier': decode_unicode(d['Name_Fourrier']),
+                                           'Date_Detention': d['Date_Detention'].strftime("%Y/%m/%d"),
+                                           'Cause_Detention': decode_unicode(d['Cause_Detention']),
+                                           'Name_Owner': decode_unicode(d['Name_Owner']),
+                                           'Authority_Detention': decode_unicode(d['Authority_Detention']),
+                                           'Type_Detention': decode_unicode(d['Type_Detention']),
+                                           'Registration_Detention': decode_unicode(d['Registration_Detention']),
+                                           'Descr_Detention': decode_unicode(d['Descr_Detention'])})
+            if detention_file:
+                ref = 'list_detention_' + str(current_user.municipal_id)
+                field_list = ['Date_Detention', 'Cause_Detention', 'Authority_Detention', 'Name_Owner', 'Type_Detention', 'Registration_Detention', 'Descr_Detention', 'Nom_Fourrier', 'Longitude', 'Latitude']
+                detention_url = confirm_url + get_csv_file(detention_file, ref, field_list)
+                return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), detention_url=detention_url, detention_lancher=True)
+            else:
+                flash(u'ليس هنالك بيانات ', 'info')
     return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))
+
+
+@fourrier_blueprint.route('/update_detention/archiver/<id>', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def archiver_fourrier(id):
+    form = ReleaseForm(request.form)
+    if form.validate_on_submit():
+        det = Detention.query.get(int(id))
+        det.Status_Detention = u'أرشيف'
+        det.montant_sortie = form.montant_sortie.data
+        det.Date_Release = form.Date_Release.data
+        det.Note = form.Note.data
+        db.session.commit()
+        flash(u'تم تحيين', 'success')
+        return redirect(url_for('fourrier.fourrier'))
+    return render_template('fourrier/archiver.html', form=form)
 
 
 def get_csv_file(data, ref, field_list):

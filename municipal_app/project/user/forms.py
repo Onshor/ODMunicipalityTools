@@ -62,6 +62,10 @@ class ChangePasswordForm(Form):
     )
 
 
+class ApiForm(Form):
+    api_key = TextField('api_key', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
+
+
 class ContactForm(Form):
     name = TextField('name', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
     municipalite = TextField('municipalite', validators=[DataRequired(message=u'هذه الخانة اجباريه')])

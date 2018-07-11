@@ -1,43 +1,116 @@
 {% extends "_base.html" %}
 
 {% block content %}
+<div class="panel panel-default animated fadeInUp go">
+  <div class="panel-heading clearfix">
+    <h3 class="panel-title">الملف الشخصي</h3>
+    <ul class="panel-tool-options"> 
+      <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+      <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+      <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+    </ul>
+  </div>
+  <div class="panel-body">
+    <div class='row'>
+      <!-- <blockquote> -->
+      <div class='col-md-3'><h4><strong>الاسم </strong>: {{current_user.name}}</h4></div>
+      <div class='col-md-3'><h4><strong>اللقب </strong>: {{current_user.last_name}}</h4></div>
+      <div class='col-md-3'><h4><strong>البريد الالكتروني</strong>: {{current_user.email}}</h4></div>
+      <div class='col-md-3'><h4><strong>البلدية </strong>: {{mun}}</h4></div>
+      <!-- </blockquote> -->
+    </div>
+    <div class="line-dashed"></div>
+    <div class='row'>
+      <div class='col-lg-6'>
+        <div class="panel panel-default animated fadeInUp go">
+          <div class="panel-heading clearfix">
+            <h3 class="panel-title">تغير كلمة السر </h3>
+            <ul class="panel-tool-options"> 
+              <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+              <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+              <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+            </ul>
+          </div>
+          <div class="panel-body">
+          <form class="form-horizontal" role="form" method="post" action="">
+            {{ form.csrf_token }}
+            <div class="form-group">
+              <label class="col-sm-3 control-label">كلمة السر الجديدة</label> 
+              <div class="col-sm-5">
+                {{ form.password( class="form-control") }}
+                {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                <h5>هذه الخانة مطلوبه</h5>
+                {% endfor %}
+                {% endif %}
+              </div> 
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">تأكيد كلمة السر</label> 
+              <div class="col-sm-5">
+                {{ form.confirm( class="form-control") }}
+                {% if form.confirm.errors %}
+                {% for error in form.confirm.errors %}
+                <h5>هذه الخانة مطلوبه</h5>
+                {% endfor %}
+                {% endif %}
+              </div> 
+            </div>
+            <button class="btn btn-success" type="submit" style="float:left">تحيين</button>
+          </form>
+        </div>
+        </div>
+      </div>
+      <div class='col-lg-6'>
+        <div class="panel panel-default animated fadeInUp go">
+          <div class="panel-heading clearfix">
+            <h3 class="panel-title">تغير API key</h3>
+            <ul class="panel-tool-options"> 
+              <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+              <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+              <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+            </ul>
+          </div>
+          <div class="panel-body">
+            <form class="form-horizontal" role="form" method="post" action="">
+            <div class='row'>
+            {% if current_user.api_key %}
+            <div class="form-group">
+              <label class="col-sm-3 control-label">API key</label> 
+              <div class="col-sm-8">
+                <input type='text' class="form-control" name='user_api' value='{{current_user.api_key}}' readonly/>
+              </div>
+            </div>
+            {% else %}
+            <div class="container-fluid">
+              <p><code>لا يوجد لديك API key</code></p>
+            </div>
+            {% endif %}
+          </div>
+            <div class='row'>
+            <form class="form-horizontal" role="form" method="post" action="">
+              {{ apiform.csrf_token }}
+            <div class="form-group">
+              <label class="col-sm-3 control-label">إضافة أو تحيين API key</label> 
+              <div class="col-sm-8">
+                {{ apiform.api_key(class="form-control") }}
+                {% if apiform.api_key.errors %}
+                {% for error in apiform.api_key.errors %}
+                <p style='color:red'>{{ error }}</p>
+                {% endfor %}
+                {% endif %}
+              </div>            
+            </div>
+            <button class="btn btn-success" type="submit" style="float:left">تحيين</button>
+            
+          </div>
+          </form>
+          </div>
+        </div>
 
-<h1>الملف الشخصي</h1>
-<br>
-
-{% if current_user.is_authenticated() %}
-  <p>البريد الالكتروني: {{current_user.email}}</p>
-  <p>الاسم : {{current_user.name}}</p>
-  <p>اللقب : {{current_user.last_name}}</p>
-  <p>البلدية : {{mun}}</p>
-{% endif %}
-
-<h2>تغير كلمة السر</h2>
-<br>
-<form class="form-reset" role="form" method="post" action="">
-  {{ form.csrf_token }}
-  <p>
-    {{ form.password(placeholder="كلمة السر الجديدة") }}
-    <span class="error">
-      {% if form.password.errors %}
-        {% for error in form.password.errors %}
-          <p style='color:red'>{{ error }}</p>
-        {% endfor %}
-      {% endif %}
-    </span>
-  </p>
-  <p>
-  {{ form.confirm(placeholder="تأكيد كلمة السر") }}
-    <span class="error">
-      {% if form.confirm.errors %}
-        {% for error in form.confirm.errors %}
-          <p style='color:red'>{{ error }}</p>
-        {% endfor %}
-      {% endif %}
-    </span>
-  </p>
-  <button class="btn btn-success" type="submit">Update</button>
-</form>
-
-
+      </div>
+    </div>
+    <a href='/' class="btn btn-red" type="submit" style="float:left">إلغاء</a>
+  </div>
+</div>
 {% endblock %}
