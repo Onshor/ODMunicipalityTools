@@ -111,6 +111,7 @@ def update_permisconst(status=None):
                 save = False
             if save:
                 permis = Permisconstruct.query.get(int(permis_id))
+                permis.num_cin = request.values['num_cin']
                 permis.nom_titulaire = request.values['nom_titulaire']
                 permis.latitude = float(request.values['laltitude'])
                 permis.num_demande = request.values['num_demande']
@@ -120,6 +121,14 @@ def update_permisconst(status=None):
                 permis.desc_construct = request.values['desc_construct']
                 permis.surface = request.values['surface']
                 permis.type_construct = request.values['type_construct']
+                if request.values['permis_status'] in 'refused':
+                    permis.date_refuse = request.values['date_refuse']
+                    permis.refuse_note = request.values['refuse_note']
+                if request.values['permis_status'] in "approved":
+                    permis.date_attribution = request.values['date_attribution']
+                    permis.date_expiration = request.values['date_expiration']
+                    permis.num_permis = request.values['num_permis']
+                    permis.mont_total = calculer_montant(float(request.values['surface']))
                 db.session.commit()
                 flash(u'تم تحيين الرخصة', 'success')
                 return redirect(url_for('permis_construction.consult_permisconst'))
