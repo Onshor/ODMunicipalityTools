@@ -50,6 +50,7 @@ from project.main.views import main_blueprint
 from project.user.views import user_blueprint
 from project.admin.views import admin_blueprint
 from project.municipal_property.views import municipal_property_blueprint
+from project.ressource_manager.views import ressource_blueprint
 app.register_blueprint(main_blueprint)
 app.register_blueprint(user_blueprint)
 app.register_blueprint(admin_blueprint)
@@ -59,6 +60,8 @@ app.register_blueprint(organigram_blueprint)
 app.register_blueprint(passmarch_blueprint)
 app.register_blueprint(permisconst_blueprint)
 app.register_blueprint(municipal_property_blueprint)
+app.register_blueprint(ressource_blueprint)
+
 
 
 ####################

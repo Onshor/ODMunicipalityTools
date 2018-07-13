@@ -236,12 +236,12 @@ def get_files():
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
     encours_list, approved_list, refused_list = [], [], []
     field_refused_list = ['date_refuse']
-    field_approved_list = ['date_attribution', 'date_expiration', 'montant_charge_fix', 'montant_charge_ascendant', 'montant_cloture', 'montant_decision', 'montant_total']
+    field_approved_list = ['date_attribution', 'date_expiration']# , 'montant_charge_fix', 'montant_charge_ascendant', 'montant_cloture', 'montant_decision', 'montant_total']
     for d in data:
         numero_demande = decode_unicode(d['num_demande']) if d['num_demande'] != '' else None
         initial_dict = {'Numero_demande': numero_demande,
                         'Nom_titulaire': decode_unicode(d['nom_titulaire']),
-                        'Address_travaux': decode_unicode(d['address']),
+                        'Addresse_travaux': decode_unicode(d['address']),
                         'Description_travaux': decode_unicode(d['desc_construct']),
                         'Longitude': d['longitude'],
                         'Latitude': d['laltitude'],
@@ -254,11 +254,11 @@ def get_files():
             ref_approved = 'permis_construction_approuver' + '_' + current_user.municipal_id
             initial_dict['date_attribution'] = d['date_attribution'].strftime("%Y/%m/%d")
             initial_dict['date_expiration'] = d['date_expiration'].strftime("%Y/%m/%d")
-            initial_dict['montant_charge_fix'] = d['mont_charge_fix']
-            initial_dict['montant_charge_ascendant'] = d['mont_charge_ascend']
-            initial_dict['montant_cloture'] = d['mont_cloture']
-            initial_dict['montant_decision'] = d['mont_decision']
-            initial_dict['montant_total'] = d['mont_total']
+            # initial_dict['montant_charge_fix'] = d['mont_charge_fix']
+            # initial_dict['montant_charge_ascendant'] = d['mont_charge_ascend']
+            # initial_dict['montant_cloture'] = d['mont_cloture']
+            # initial_dict['montant_decision'] = d['mont_decision']
+            # initial_dict['montant_total'] = d['mont_total']
             approved_list.append(initial_dict)
         elif request.values['type_file'] == 'refused' and d['permis_status'] == 'refused':
             ref_refused = 'permis_construction_refused' + '_' + current_user.municipal_id
@@ -286,7 +286,7 @@ def get_files():
 
 
 def get_csv_file(data, ref, field_list):
-    _ = ['Numero_demande', 'Nom_titulaire', 'Address_travaux', 'Date_depot', 'Type_construction', 'Description_travaux', 'Longitude', 'Latitude']
+    _ = ['Numero_demande', 'Nom_titulaire', 'Addresse_travaux', 'Date_depot', 'Type_construction', 'Description_travaux', 'Longitude', 'Latitude']
     fieldnames = _ + field_list
     filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
