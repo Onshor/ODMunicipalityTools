@@ -241,7 +241,7 @@ def get_files():
         numero_demande = decode_unicode(d['num_demande']) if d['num_demande'] != '' else None
         initial_dict = {'Numero_demande': numero_demande,
                         'Nom_titulaire': decode_unicode(d['nom_titulaire']),
-                        'Addresse_travaux': decode_unicode(d['address']),
+                        'Adresse_travaux': decode_unicode(d['address']),
                         'Description_travaux': decode_unicode(d['desc_construct']),
                         'Longitude': d['longitude'],
                         'Latitude': d['laltitude'],
@@ -286,7 +286,7 @@ def get_files():
 
 
 def get_csv_file(data, ref, field_list):
-    _ = ['Numero_demande', 'Nom_titulaire', 'Addresse_travaux', 'Date_depot', 'Type_construction', 'Description_travaux', 'Longitude', 'Latitude']
+    _ = ['Numero_demande', 'Date_depot', 'Nom_titulaire', 'Adresse_travaux', 'Type_construction', 'Description_travaux', 'Longitude', 'Latitude']
     fieldnames = _ + field_list
     filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
