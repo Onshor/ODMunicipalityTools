@@ -14,29 +14,24 @@
     <table class="table table-striped table-bordered table-hover dataTables-example datatbl" id="myTable">
       <thead>
         <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
+          <th>إسم الملف</th>
+          <th>البلدية</th>
+          <th>Ressources Id</th>
         </tr>
       </thead>
       <tbody>
+        {% for d in data%}
         <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{d['file_name']}}</td>
+        <td>{{d['municipal_id']}}</td>
+        <td>{% if d['ressource_id'] %}
+            d['ressource_id']
+            {% else %}
+            <button>add ressource_id</button>
+            {% endif %}
+        </td>
     	</tr>
+      {% endfor %}
   </tbody>
   <tfoot>
     <tr>

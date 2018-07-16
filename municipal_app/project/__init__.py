@@ -82,7 +82,7 @@ def load_user(user_id):
 ########################
 #### error handlers ####
 ########################
-"""
+
 @app.errorhandler(403)
 def forbidden_page(error):
     return render_template("errors/403.html"), 403
@@ -96,4 +96,3 @@ def page_not_found(error):
 @app.errorhandler(500)
 def server_error_page(error):
     return render_template("errors/500.html"), 500
-"""
