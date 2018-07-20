@@ -31,76 +31,57 @@
         <div class="col-12 col-md-8">
           {% if parsed_annuel %}
           <div class="container-fluid">
+            {% for d in data %}
             <div class="row">
               <div class="col-lg-5">
-                <label class="control-label"><strong class="text-success">الموارد حسب السنة</strong></label>
+                <label class="control-label"><strong class="text-success">{{d['text']}}</strong></label>
               </div>
             </div>
             <div class='row'>
-              <div class="col-lg-9 has-success">
-                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ rcs }}", readonly/>
-                <p id ="rcs" style="display: none;">{{ rcs }}</p>
+              <div class="col-lg-5 has-success">
+                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ d['link'] }}", readonly/>
+                <p id ="{{ d['id'] }}" style="display: none;">{{ d['link'] }}</p>
               </div>
-              <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#rcs')"/></div>
-            </div>
-            <!-- <div class="line-dashed"></div> -->
-            <div class="row">
-              <div class="col-lg-5">
-                <label class="control-label"><strong class="text-success">النفقات حسب السنة </strong></label>
-              </div>
-            </div>
-            <div class="row">
 
-              <div class="col-lg-9 has-success">
-                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ dps }}", readonly/>
-                <p id ="dps" style="display: none;">{{ dps }}</p>
+              <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#{{ d['id'] }}')"/></div>
+              {% if d['check_r_id'] and d['api_key'] %}
+              <div class="col-lg-4">
+              <form action = "/budget_annuel" method = "POST" enctype = "multipart/form-data">
+                <input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+                <input type="hidden" name="r_id" value="{{d['id']}}">
+                <input type="hidden" name="file_type" value="{{d['type']}}">
+                <input type="hidden" name="link" value="{{d['link']}}">
+                
+              </form>
               </div>
-              <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" value='نسخ الرابط' type="button" onclick="copyToClipboard('#dps')"></div>
+              {% elif d['check_r_id'] %}
+              <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+              {% elif d['api_key'] %}
+              <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_annuel/{{d['id']}}">هنا</a></p> 
+              {% else %}
+              <div class="col-lg-4">
+              <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+              <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources">هنا</a></p>
             </div>
-            <!-- <div class="line-dashed"></div> -->
-            <div class="row">
-              <div class="col-lg-10">
-                <label class="control-label"><strong class="text-success">موارد  {{ years }}</strong></label>
-              </div>
+              {% endif %}
             </div>
-            <div class="row">
-              <div class="col-lg-9 has-success">
-                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ rcy }}", readonly/>
-                <p id ="rcy" style="display: none;">{{ rcy }}</p>
-              </div>
-              <div class="col-lg-3">
-                <input class="btn btn-primary btn-outline btn-block" onclick="copyToClipboard('#rcy')" value='نسخ الرابط' type="button" ></div>
-              </div>
-              <!-- <div class="line-dashed"></div> -->
-              <div class="row">
-                <div class="col-lg-10">
-                  <label class="control-label"><strong class="text-success">نفقات {{ years }}</strong></label>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-9 has-success">
-                  <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ dpy }}", readonly/>
-                  <p id ="dpy" style="display: none;">{{ dpy }}</p>
-                </div>
-                <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#dpy')"/></div>
-              </div>
-              <!-- <div class="line-dashed"></div> -->
+            
+            {% endfor %}
             </div>
             {% else %}
             <div class="container-fluid">
               <p><code>لا توجد بيانات متعلقه بالميزانية السنوية لبلدية {{mun_name}} في قاعدة البيانات </code></p>
             </div>
-            {% endif %}
-            
+            {% endif %}            
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="panel panel-default animated fadeInUp go">
-  <div class="panel-body"><p>‫‫‪‫يتم‬ ‫إستخراج ملف من‬ منظومة “أدب” ‫في صيغة XML من الخانة " كشف أو إعادة طبع تعديلات توزيع الميزانية " أو من خانة "كشف أو إعادة طبع الميزانية الأصلية" إن لم تحين.</p></div>
-</div>
-
+    <div class="panel-body"><p>‫‫‪‫يتم‬ ‫إستخراج ملف من‬ منظومة “أدب” ‫في صيغة XML من الخانة " كشف أو إعادة طبع تعديلات توزيع الميزانية " أو من خانة "كشف أو إعادة طبع الميزانية الأصلية" إن لم تحين.</p></div>
+  </div>
+  {% endblock %}
   {% block js %}
   <script>
   $(function() {
@@ -139,5 +120,5 @@
     alert("تم النسخ الرابط");
   }
   </script>
-  {% endblock %}
+  
   {% endblock %}
