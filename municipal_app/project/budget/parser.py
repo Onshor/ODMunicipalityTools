@@ -192,6 +192,17 @@ def get_csv_file(data, ref, year_list):
     return ref + '.csv'
 
 
+def get_excel_file(data, ref, year_list):
+    _ = ['Titre', 'Article', 'Paragraphe', 'Sous_paragraphe', 'Imputation']
+    fieldnames = _ + year_list
+    filepath = get_file_path() + ref + '.xls'
+    with open(filepath, 'wb') as output_file:
+        dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+        dict_writer.writeheader()
+        dict_writer.writerows(data)
+    return ref + '.xls'
+
+
 def get_file_path():
     if os.path.isdir('project/static/files/'):
         return 'project/static/files/'

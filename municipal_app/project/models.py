@@ -337,11 +337,13 @@ class Auto_update(db.Model):
     municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
     file_name = db.Column(db.String, nullable=True)
     ressource_id = db.Column(db.String, nullable=True)
+    category = db.Column(db.String)
 
-    def __init__(self, municipal_id, file_name, ressource_id=None):
+    def __init__(self, municipal_id, file_name, category, ressource_id=None):
         self.municipal_id = municipal_id
         self.file_name = file_name
         self.ressource_id = ressource_id
+        self.category = category
 
     def get_id(self):
         return self.id

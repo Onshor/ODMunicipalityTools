@@ -10,6 +10,7 @@ from project.models import Permisconstruct, Municipality
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
+from project.util import save_auto_update, push_api, get_auto_update_data
 from project import db
 import os
 import datetime
@@ -228,6 +229,15 @@ def accept_permisconst():
     return render_template('permis_construction/form_permis_construction.html', form=form, update=True, accept=True, check=True, permis_id=permis_id, name=name, permis_data=reforme(permis_data.__dict__), mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
+@permisconst_blueprint.route('/get_files/api', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def api():
+    push_api(request.values)
+    data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
+    return render_template('permis_construction/permis_construction.html', data=data)
+
+
 @permisconst_blueprint.route('/get_files', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
@@ -266,20 +276,29 @@ def get_files():
             refused_list.append(initial_dict)
     if request.values['type_file'] == 'en_cours':
         if encours_list:
-            encour_url = confirm_url + get_csv_file(encours_list, ref_encours, [])
-            return render_template('permis_construction/permis_construction.html', data=data, encours=True, encour_url=encour_url)
+            en_cour_file = get_csv_file(encours_list, ref_encours, [])
+            save_auto_update(en_cour_file, 'Permis du construction')
+            encour_url = confirm_url + en_cour_file
+            encour_data = get_auto_update_data({'file_name': en_cour_file, 'link': encour_url, 'type': 'pc_en_cours'})
+            return render_template('permis_construction/permis_construction.html', data=data, encours=True, encour_data=encour_data)
         else:
             flash(u'ليست هنالك بيانات حول    التراخيص بصدد الدرس', 'warning')
     elif request.values['type_file'] == 'approved':
         if approved_list:
-            approved_url = confirm_url + get_csv_file(approved_list, ref_approved, field_approved_list)
-            return render_template('permis_construction/permis_construction.html', data=data, approved=True, approved_url=approved_url)
+            approved_file = get_csv_file(approved_list, ref_approved, field_approved_list)
+            save_auto_update(approved_file, 'Permis du construction')
+            approved_url = confirm_url + approved_file
+            approved_data = get_auto_update_data({'file_name': approved_file, 'link': approved_url, 'type': 'pc_approved'})
+            return render_template('permis_construction/permis_construction.html', data=data, approved=True, approved_data=approved_data)
         else:
             flash(u'ليست هنالك بيانات حول    التراخيص المقبولة', 'warning')
     elif request.values['type_file'] == 'refused':
         if refused_list:
-            refused_url = confirm_url + get_csv_file(refused_list, ref_refused, field_refused_list)
-            return render_template('permis_construction/permis_construction.html', data=data, refused=True, refused_url=refused_url)
+            refuse_file = get_csv_file(refused_list, ref_refused, field_refused_list)
+            save_auto_update(refuse_file, 'Permis du construction')
+            refused_url = confirm_url + refuse_file
+            refused_data = get_auto_update_data({'file_name': refuse_file, 'link': refused_url, 'type': 'pc_refused'})
+            return render_template('permis_construction/permis_construction.html', data=data, refused=True, refused_data=refused_data)
         else:
             flash(u'ليست هنالك بيانات حول     التراخيص المرفوضة', 'warning')
     return render_template('permis_construction/permis_construction.html', data=data)

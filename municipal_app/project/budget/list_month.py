@@ -42,3 +42,16 @@ decode_month_ar = {u'جانفي':'01',
                    u'أكتوبر':'10',
                    u'نوفمبر':'11',
                    u'ديسمبر':'12'}
+
+decode_month_fr = {'Janvier': '01',
+                  u'Février': '02',
+                  u'Mars': '03',
+                   'Avril': '04',
+                   'Mai': '05',
+                   'Juin': '06',
+                   'Juillet': '07',
+                   'Aout': '08',
+                   'Septembre': '09',
+                   'Octobre': '10',
+                   'Novembre': '11',
+                  u'Décembre': '12'}

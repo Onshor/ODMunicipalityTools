@@ -63,12 +63,32 @@
 									<strong>الملك الخاص</strong>
 								</label>
 							</div>
-							<div class='col-sm-7'>
-								<input type="text" class="form-control has-success" placeholder="{{ private_url }}", readonly/>
+							<div class='col-sm-5'>
+								<input type="text" class="form-control has-success" placeholder="{{ private_data['link'] }}", readonly/>
+							</div>
+							<div class='col-sm-2'>
+								<p id ="copy_link_encours" style="display: none;">{{ private_data['link'] }}</p>
+								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_encours')"/>
 							</div>
 							<div class='col-sm-3'>
-								<p id ="copy_link_encours" style="display: none;">{{ private_url }}</p>
-								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_encours')"/>
+								{% if private_data['check_r_id'] and private_data['api_key'] %}
+								<form action = "/get_property_file/api" method = "POST" enctype = "multipart/form-data">
+									<input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+									<input type="hidden" name="r_id" value="{{private_data['id']}}">
+									<input type="hidden" name="file_type" value="{{private_data['type']}}">
+									<input type="hidden" name="link" value="{{private_data['link']}}">
+
+								</form>
+								{% elif private_data['check_r_id'] %}
+								<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+								{% elif private_data['api_key'] %}
+								<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_municipal_property/{{private_data['id']}}">هنا</a></p> 
+								{% else %}
+								<div class="col-lg-4">
+									<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+									<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_municipal_property/{{private_data['id']}}">هنا</a></p>
+								</div>
+								{% endif %}
 							</div>
 						</div>
 						<div class="line-dashed"></div>
@@ -78,12 +98,32 @@
 									<strong>الملك العام</strong>
 								</label>
 							</div>
-							<div class='col-sm-7'>
-								<input type="text" class="form-control has-success" placeholder="{{ public_url }}", readonly/>
+							<div class='col-sm-5'>
+								<input type="text" class="form-control has-success" placeholder="{{ public_data['link'] }}", readonly/>
+							</div>
+							<div class='col-sm-2'>
+								<p id ="copy_link_encours2" style="display: none;">{{ public_data['link'] }}</p>
+								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard2('#copy_link_encours2')"/>
 							</div>
 							<div class='col-sm-3'>
-								<p id ="copy_link_encours2" style="display: none;">{{ public_url }}</p>
-								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard2('#copy_link_encours2')"/>
+								{% if public_data['check_r_id'] and public_data['api_key'] %}
+								<form action = "/get_property_file/api" method = "POST" enctype = "multipart/form-data">
+									<input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+									<input type="hidden" name="r_id" value="{{public_data['id']}}">
+									<input type="hidden" name="file_type" value="{{public_data['type']}}">
+									<input type="hidden" name="link" value="{{public_data['link']}}">
+
+								</form>
+								{% elif public_data['check_r_id'] %}
+								<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+								{% elif public_data['api_key'] %}
+								<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_municipal_property/{{public_data['id']}}">هنا</a></p> 
+								{% else %}
+								<div class="col-lg-4">
+									<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+									<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_municipal_property/{{public_data['id']}}">هنا</a></p>
+								</div>
+								{% endif %}
 							</div>
 						</div>
 						{% endif %}

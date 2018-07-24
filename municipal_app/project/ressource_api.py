@@ -5,21 +5,11 @@
 import ckanapi
 import requests
 import json
-from pprint import pprint as pp
-
 
 
 def update_ressource_api(key, data):
     ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey=key)
     resource_dict = get_resource_dict(data)
-    # resource_dict = {"id": id,
-    #                  "description": " barrages mises à jour",
-    #                  "name_ar": u"موارد 2013 upd",
-    #                  "description_ar": u"موارد 2013, 2014, 2015, 2016, 2017, 2018 ",
-    #                  "name_fr": u" barrages",
-    #                  "name": u"test api",
-    #                  "url": url,
-    #                  "format": "csv"}
     api_dict = ckan.action.resource_update(**resource_dict)
     return api_dict
 
@@ -64,18 +54,60 @@ def get_resource_dict(data):
                           "name": u"Budget annuel des dépenses selon une présentation verticale depuis " + data['last_year']})
   elif data['type'] == 'men_dep':
     resource_dict.update({"description": u"Evolution mensuelle des dépenses à la municipalité de " + data['name_mun_fr'] + u" jusqu’au " + data['last_month'] + ' ' + data['last_year'],
-                          "name_ar": u"النفقات الشهرية إلى حدود " + data['last_month_ar'] + ' ' + data['last_year'],
-                          "description_ar": u"تطوّر النفقات الشهريّة إلى حدود" + data['last_month_ar'] + ' ' + data['last_year'] + u" ببلديّة " + data['name_mun_ar'],
+                          "name_ar": u"النفقات الشهرية لى " + data['last_month_ar'] + ' ' + data['last_year'],
+                          "description_ar": u"تطوّر النفقات الشهريّة لى " + data['last_month_ar'] + ' ' + data['last_year'] + u" ببلديّة " + data['name_mun_ar'],
                           "name_fr": u"Dépenses mensuelles jusqu’au " + data['last_month'] + ' ' + data['last_year'],
                           "name": u"Dépenses mensuelles jusqu’au " + data['last_month'] + ' ' + data['last_year']})
   elif data['type'] == 'men_rec':
-    resource_dict.update({"description": u"Evolution mensuelle des ressources à la municipalité de  " + data['name_mun_fr'] + + u" jusqu’au " + data['last_month'] + ' ' + data['last_year'],
-                          "name_ar": u"الموارد الشهرية إلى حدود " + data['last_month_ar'] + ' ' + data['last_year'],
-                          "description_ar": u"تطوّر الموارد الشهريّة إلى حدود " + data['last_month_ar'] + ' ' + data['last_year'] + u" ببلديّة " + data['name_mun_ar'],
+    resource_dict.update({"description": u"Evolution mensuelle des ressources à la municipalité de  " + data['name_mun_fr'] + u" jusqu’au " + data['last_month'] + ' ' + data['last_year'],
+                          "name_ar": u"الموارد الشهرية لى  " + data['last_month_ar'] + ' ' + data['last_year'],
+                          "description_ar": u"تطوّر الموارد الشهريّة لى " + data['last_month_ar'] + ' ' + data['last_year'] + u" ببلديّة " + data['name_mun_ar'],
                           "name_fr": u"Recettes mensuelles jusqu’au " + data['last_month'] + ' ' + data['last_year'],
                           "name": u"Recettes mensuelles jusqu’au " + data['last_month'] + ' ' + data['last_year']})
-
+  elif data['type'] == 'pc_approved':
+    resource_dict.update({"description": u'Les permis de construire approuvés par la municipalité de %s' % data['name_mun_fr'],
+                          "name_ar": u'رخص البناء المصادق عليه',
+                          "description_ar": u'قائمة رخص البناء المصادق عليها من قبل بلدية %s' % data['name_mun_ar'],
+                          "name_fr": u"Permis de construire approuvés",
+                          "name": u"Permis de construire approuvés"})
+  elif data['type'] == 'pc_en_cours':
+    resource_dict.update({"description": u'Liste permissions de construction en cours de traitement à la municipalité de %s' % data['name_mun_fr'],
+                          "name_ar": u'رخص البناء بصدد الدرس',
+                          "description_ar": u'قائمة رخص البناء بصدد الدرس ببلدية %s' % data['name_mun_ar'],
+                          "name_fr": u"Permis de construire en cours de traitement",
+                          "name": u"Permis de construire en cours de traitement"})
+  elif data['type'] == 'pc_refused':
+    resource_dict.update({"description": u"Liste des demandes d'autorisations de bâtir refusées à la municipalité de  %s" % data['name_mun_fr'],
+                          "name_ar": u'رخص البناء المرفوضة',
+                          "description_ar": u'قائمة رخص البناء المرفوضة ببلدية %s' % data['name_mun_ar'],
+                          "name_fr": u"Permis de construire refusés",
+                          "name": u"Permis de construire refusés"})
+  elif data['type'] == 'mp_private':
+    resource_dict.update({"description": u'Liste des propriétés municipales privées à la municipalité de %s' % data['name_mun_fr'],
+                          "name_ar": u'الملك البلدي الخاص',
+                          "description_ar": u'القائمة كاملة للملك البلدي الخاص ببلديّة %s' % data['name_mun_ar'],
+                          "name_fr": u"Propriétés municipales privées",
+                          "name": u"Propriétés municipales privées"})
+  elif data['type'] == 'mp_public':
+    resource_dict.update({"description": u'Liste complète des propriétés municipales publiques à la municipalité de %s' % data['name_mun_fr'],
+                          "name_ar": u'الملك البلدي العام',
+                          "description_ar": u'القائمة كاملة للملك البلدي العام ببلديّة %s' % data['name_mun_ar'],
+                          "name_fr": u"Propriétés municipales publiques",
+                          "name": u"Propriétés municipales publiques"})
+  elif data['type'] == 'fourriere':
+    resource_dict.update({"description": u'Liste complète des fourrières municipales avec les coordonnées géographiques.',
+                          "name_ar": u'قائمة مستودعات الحجز البلد',
+                          "description_ar": u'قائمة مستودعات الحجز البلدي ببلديّة بوعرادة مع تحديد موقعها الجغرافي.',
+                          "name_fr": u"Liste des fourrières municipales",
+                          "name": u"Liste des fourrières municipales"})
+  elif data['type'] == 'detention':
+    resource_dict.update({"description": u'Liste des objets détenus dans la fourrière municipale de la commune de %s' % data['name_mun_fr'],
+                          "name_ar": u'سجّل الحجز البلدي',
+                          "description_ar": u'قائمة المحجوزات بمستودعات الحجز البلدي ببلديّة %s' % data['name_mun_ar'],
+                          "name_fr": u"Registre de mise en fourrière",
+                          "name": u"Registre de mise en fourrière"})
   return resource_dict
+
 
 def update_ressource_api_request():
     r = requests.post('http://openbaladiati.tn/api/action/resource_update',

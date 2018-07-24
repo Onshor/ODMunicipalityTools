@@ -11,7 +11,7 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from parser import parse_budget, parse_recette_file, parse_depence_file
 from project.models import Budget_annuelle, Municipality, Auto_update
-from list_month import decode_month_ar
+from list_month import decode_month_ar, decode_month_fr
 from project.ressource_api import update_ressource_api, update_ressource_api_request, package_exists
 from pprint import pprint as pp
 
@@ -73,10 +73,20 @@ def budget_depence_mensuelle():
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         if check_monthly_data("Depence"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
-            dpm, months, year = csv_mensuelle_file('Depence')
+            file_name, months, year = csv_mensuelle_file('Depence')
             month_list = decode_mm_ar(months)
-            dpm = confirm_url + dpm
-            return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True, month_list=month_list, year=year)
+            month_list_fr = decode_mm_fr(months)
+            dpm = confirm_url + file_name
+            data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
+            data = get_auto_update_data(data)
+            if 'open_api' in request.values:
+                api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
+                try:
+                    update_ressource_api(current_user.api_key, api_data)
+                    flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
+                except:
+                    flash(u'الرجاء التثبت في api_key','warning')
+            return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True, month_list=month_list, year=year , data=data)
     return render_template('budget/budget_depence_mensuelle.html', mun_name=Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar)
 
 
@@ -87,10 +97,20 @@ def budget_recette_mensuelle():
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         if check_monthly_data("Recettes"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
-            rcm, months, year = csv_mensuelle_file('Recette')
+            file_name, months, year = csv_mensuelle_file('Recette')
             month_list = decode_mm_ar(months)
-            rcm = confirm_url + rcm
-            return render_template('budget/budget_recette_mensuelle.html', rcm=rcm, parsed_rect=True, month_list=month_list, year=year)
+            month_list_fr = decode_mm_fr(months)
+            rcm = confirm_url + file_name
+            data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
+            data = get_auto_update_data(data)
+            if 'open_api' in request.values:
+                api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
+                try:
+                    update_ressource_api(current_user.api_key, api_data)
+                    flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
+                except:
+                    flash(u'الرجاء التثبت في api_key','warning')
+            return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
     return render_template('budget/budget_recette_mensuelle.html')
 
 
@@ -155,12 +175,23 @@ def upload_file():
                         save_budget_parametre(b)
                         log = save_budget_fee_monthly(b)
                         flash(u'تم حفظها في قاعدة البيانات', 'success') if log else flash(u'لقد تم تحميل هذا الملف من قبل', 'info')
-                        dpm, months, year = csv_mensuelle_file('Depence')
+                        file_name, months, year = csv_mensuelle_file('Depence')
                         if log:
                             save_log([dpm])
+                        
                         month_list = decode_mm_ar(months)
-                        dpm = confirm_url + dpm
-                        return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True, month_list=month_list, year=year)
+                        month_list_fr = decode_mm_fr(months)
+                        dpm = confirm_url + file_name
+                        data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
+                        data = get_auto_update_data(data)
+                        if 'open_api' in request.values:
+                            api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
+                            try:
+                                update_ressource_api(current_user.api_key, api_data)
+                                flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
+                            except:
+                                flash(u'الرجاء التثبت في api_key','warning')
+                        return render_template('budget/budget_depence_mensuelle.html', parsed_dep=True, data=data)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
                         return redirect(url_for('budget.budget_depence_mensuelle'))
@@ -174,16 +205,22 @@ def upload_file():
                     if check:
                         save_budget_parametre(b)
                         log = save_budget_fee_monthly(b)
-                        rcm, months, year = csv_mensuelle_file('Recette')
+                        file_name, months, year = csv_mensuelle_file('Recette')
                         if log:
                             save_log([rcm])
                         month_list = decode_mm_ar(months)
-                        rcm = confirm_url + rcm
-                        flash(u'تم حفظها في قاعدة البيانات', 'success') if log else flash(u'لقد تم تحميل هذا الملف من قبل', 'info')
-                        return render_template('budget/budget_recette_mensuelle.html', rcm=rcm, parsed_rect=True, month_list=month_list, year=year)
-                    else:
-                        flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
-                        return redirect(url_for('budget.budget_recette_mensuelle'))
+                        month_list_fr = decode_mm_fr(months)
+                        rcm = confirm_url + file_name
+                        data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
+                        data = get_auto_update_data(data)
+                        if 'open_api' in request.values:
+                            api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
+                            try:
+                                update_ressource_api(current_user.api_key, api_data)
+                                flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
+                            except:
+                                flash(u'الرجاء التثبت في api_key','warning')
+                        return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')
                     return redirect(url_for('budget.budget_recette_mensuelle'))
@@ -215,6 +252,16 @@ def decode_mm_ar(months):
         month_str = month_str + ', ' + mm if month_str else mm
     return month_str
 
+
+def decode_mm_fr(months):
+    list_month, month_str = [], []
+    for m in months:
+        for k, v in decode_month_fr.iteritems():
+            if int(v) == m:
+                list_month.append(k)
+    for mm in list_month:
+        month_str = month_str + ', ' + mm if month_str else mm
+    return month_str
 
 def save_log(list_file):
     for f in list_file:

@@ -11,7 +11,8 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import ProprietyForm
 from project import db
-import datetime
+from project.util import save_auto_update, push_api, get_auto_update_data
+from pprint import pprint as pp
 import csv
 import os
 
@@ -64,7 +65,7 @@ def consult_municipal_property():
         mun_property = Proprietemunicipal.query.get(int(request.values['type']))
         db.session.delete(mun_property)
         db.session.commit()
-        flash(u'تم حذف الملك البلدي' , 'success')
+        flash(u'تم حذف الملك البلدي', 'success')
         return redirect(url_for('municipal_property.consult_municipal_property'))
     return render_template('municipal_property/municipal_property.html', data=data)
 
@@ -106,6 +107,15 @@ def update_municipal_property():
     return render_template('municipal_property/forms_municipal_property.html', update=True, property_data=property_data.__dict__, mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
+@municipal_property_blueprint.route('/get_property_file/api', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def api():
+    push_api(request.values)
+    data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
+    return render_template('municipal_property/municipal_property.html', data=data)
+
+
 @municipal_property_blueprint.route('/get_property_file', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
@@ -124,9 +134,15 @@ def get_property_file():
             public_list.append(get_file_content(d))
     public_ref = 'properte_municipal_public_' + str(current_user.municipal_id)
     private_ref = 'properte_municipal_private_' + str(current_user.municipal_id)
-    public_url = confirm_url + get_csv_file(public_list, public_ref, [])
-    private_url = confirm_url + get_csv_file(private_list, private_ref, [])
-    return render_template('municipal_property/municipal_property.html', data=data, file=True, public_url=public_url, private_url=private_url)
+    public_file = get_csv_file(public_list, public_ref, [])
+    private_file = get_csv_file(private_list, private_ref, [])
+    save_auto_update(public_file, 'Propriete municipale')
+    save_auto_update(private_file, 'Propriete municipale')
+    public_url = confirm_url + public_file
+    private_url = confirm_url + private_file
+    public_data = get_auto_update_data({'file_name': public_file, 'link': public_url, 'type': 'mp_public'})
+    private_data = get_auto_update_data({'file_name': private_file, 'link': private_url, 'type': 'mp_private'})
+    return render_template('municipal_property/municipal_property.html', data=data, file=True, public_data=public_data, private_data=private_data)
 
 
 def check_float(value):

@@ -22,6 +22,7 @@
             {% if current_user.admin %}
             <th>البلدية</th>
             {% endif %}
+            <th>الفئة</th>
             <th>معرف ملف</th>
           </tr>
         </thead>
@@ -32,6 +33,7 @@
             {% if current_user.admin %}
             <td>{{d['municipal_id']}}</td>
             {% endif %}
+            <td>{{d['category']}}</td>
             <td>
               <div class='row'>
                 <div class='col-md-6'>

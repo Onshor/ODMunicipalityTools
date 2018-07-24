@@ -31,19 +31,42 @@
           <div class="col-12 col-md-8">
             {% if parsed_dep %}
             <div class="container-fluid">
-              <div class="row">
-                <div class="col-lg-10">
-                  <label class="control-label"><strong class="text-success">نفقات أشهر {{ month_list }} للسنة {{ year }} </strong></label>
-                </div>
+            {% for d in data %}
+            <div class="row">
+              <div class="col-lg-5">
+                <label class="control-label"><strong class="text-success">{{d['text']}}</strong></label>
               </div>
-                <div class="row">
-                <div class="col-lg-8 has-success">
-                  <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ dpm }}", readonly/>
-                  <p id ="dpm" style="display: none;">{{ dpm }}</p>
-                </div>
-                <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#dpm')"/></div>
+            </div>
+            <div class='row'>
+              <div class="col-lg-5 has-success">
+                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ d['link'] }}", readonly/>
+                <p id ="{{ d['id'] }}" style="display: none;">{{ d['link'] }}</p>
               </div>
-              <!-- <div class="line-dashed"></div> -->
+
+              <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#{{ d['id'] }}')"/></div>
+              {% if d['check_r_id'] and d['api_key'] %}
+              <div class="col-lg-4">
+              <form action = "/budget_depence_mensuelle" method = "POST" enctype = "multipart/form-data">
+                <input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+                <input type="hidden" name="r_id" value="{{d['id']}}">
+                <input type="hidden" name="file_type" value="{{d['type']}}">
+                <input type="hidden" name="link" value="{{d['link']}}">
+                
+              </form>
+              </div>
+              {% elif d['check_r_id'] %}
+              <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+              {% elif d['api_key'] %}
+              <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_depence_mensuelle/{{d['id']}}">هنا</a></p> 
+              {% else %}
+              <div class="col-lg-4">
+              <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
+              <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_depence_mensuelle/{{d['id']}}">هنا</a></p>
+            </div>
+              {% endif %}
+            </div>
+            
+            {% endfor %}
             </div>
             {% else %}
             <div class="container-fluid">

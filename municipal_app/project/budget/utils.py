@@ -4,7 +4,7 @@
 from flask_login import current_user
 from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle, Auto_update, File_log
 from project import db
-from parser import decode_unicode, get_csv_file
+from parser import decode_unicode, get_csv_file, get_excel_file
 from pprint import pprint as pp
 
 
@@ -130,12 +130,16 @@ def csv_annuelle_file():
                             p_dict.update({v: k})
             depecence_annuel.append(p_dict)
     recette_link_simple = get_csv_file(recette_annuel_simple, 'recette_simple_' + current_user.municipal_id, ['Year', 'Budget'])
+    get_excel_file(recette_annuel_simple, 'recette_simple_' + current_user.municipal_id, ['Year', 'Budget'])
     save_auto_update(recette_link_simple)
     depecence_link_simple = get_csv_file(depense_annuel_simple, 'depense_simple_' + current_user.municipal_id, ['Year', 'Budget'])
+    get_excel_file(depense_annuel_simple, 'depense_simple_' + current_user.municipal_id, ['Year', 'Budget'])
     save_auto_update(depecence_link_simple)
     recette_link_per_year = get_csv_file(recette_annuel, 'recette_per_year_' + current_user.municipal_id, years_list)
+    get_excel_file(recette_annuel, 'recette_per_year_' + current_user.municipal_id, years_list)
     save_auto_update(recette_link_per_year)
     depecence_link_per_year = get_csv_file(depecence_annuel, 'depense_per_year_' + current_user.municipal_id, years_list)
+    get_excel_file(depecence_annuel, 'depense_per_year_' + current_user.municipal_id, years_list)
     save_auto_update(depecence_link_per_year)
     return recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year
 
@@ -234,7 +238,8 @@ def save_auto_update(file_name):
 
 def db_save_auto_update(file_name):
     auto_update = Auto_update(municipal_id=current_user.municipal_id,
-                              file_name=file_name)
+                              file_name=file_name,
+                              category='Budget')
     db.session.add(auto_update)
     db.session.commit()
     db_save_log_files(auto_update.id)
