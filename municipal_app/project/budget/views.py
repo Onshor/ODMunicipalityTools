@@ -95,7 +95,7 @@ def budget_depence_mensuelle():
 @check_confirmed
 def budget_recette_mensuelle():
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
-        if check_monthly_data("Recettes"):
+        if check_monthly_data("Recette"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
             file_name, months, year = csv_mensuelle_file('Recette')
             month_list = decode_mm_ar(months)
