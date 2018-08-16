@@ -13,3 +13,13 @@ def send_email(to, subject, template):
         sender=app.config['MAIL_DEFAULT_SENDER']
     )
     mail.send(msg)
+
+
+def send_log_email(subject, template):
+    msg = Message(
+        subject,
+        recipients=['med@onshor.org'],
+        html=template,
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)

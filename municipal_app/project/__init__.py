@@ -6,13 +6,16 @@
 #################
 
 import os
-
+import logging
+import sys
+import datetime
 from flask import Flask, render_template
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_bcrypt import Bcrypt
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.debug import get_current_traceback
 from config import ProductionConfig as APP_SETTINGS
 
 ################
@@ -79,9 +82,18 @@ def load_user(user_id):
     return User.query.filter(User.id == int(user_id)).first()
 
 
+def send_log_email(subject, template):
+    msg = Message(
+        subject,
+        html=template,
+        recipients=['med@onshor.org'],
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
 ########################
 #### error handlers ####
 ########################
+
 
 @app.errorhandler(403)
 def forbidden_page(error):
@@ -95,4 +107,7 @@ def page_not_found(error):
 
 @app.errorhandler(500)
 def server_error_page(error):
+    track = get_current_traceback(skip=1, show_hidden_frames=True, ignore_system_exceptions=False)
+    html = render_template("errors/error_mail.html", stacktrace=str(track.plaintext))
+    send_log_email(current_user.name + ' ' + current_user.last_name + ' ' + current_user.municipal_id + ' ' + str(datetime.datetime.now()), html)
     return render_template("errors/500.html"), 500

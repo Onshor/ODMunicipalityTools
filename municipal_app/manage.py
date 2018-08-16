@@ -23,7 +23,8 @@ manager = Manager(app)
 
 # migrations
 manager.add_command('db', MigrateCommand)
-manager.add_command("runserver", Server(use_debugger=True, use_reloader=True))
+# manager.add_command("runserver", Server(use_debugger=True, use_reloader=True))
+manager.add_command("runserver", Server(use_reloader=True))
 
 
 def read_csv(file):
