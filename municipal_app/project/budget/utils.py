@@ -4,8 +4,8 @@
 from flask_login import current_user
 from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle, Auto_update, File_log
 from project import db
+from flask import flash
 from parser import decode_unicode, get_csv_file, get_excel_file
-from pprint import pprint as pp
 
 
 ALLOWED_EXTENSIONS = set(['xml'])
@@ -159,6 +159,10 @@ def csv_mensuelle_file(b_type):
     years_list = [_.year for _ in budget_month]
     p_id_list = [_.parametre_id for _ in budget_month]
     y = max(years_list)
+    y_annuel = int(max([_.year for _ in Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).all()]))
+    if y_annuel != y:
+        flash(u'الرجاء تحميل الميزانية السنوية لسنة ' + str(y), 'warning')
+        y = y_annuel
     list_id_type = [_.id for _ in Budget_parametre.query.all() if _.type.lower() in b_type.lower()]
     while not check_list:
         for id_t in list_id_type:
