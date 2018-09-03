@@ -6,6 +6,7 @@ import datetime
 import csv
 from list_month import decode_month
 import os
+from pprint import pprint as pp
 
 
 def decode_unicode(v):
@@ -137,7 +138,8 @@ def parse_recette_file(xml_file):
                 for list_g_rec in g1.findall("G_REC_ARTICL"):
                     budget_mensuelle_recette.append({'type': 'Recette',
                                                      'month': int(month),
-                                                     'montant': int(list_g_rec.find('FINAL').text),
+                                                     #  'montant': int(list_g_rec.find('FINAL').text),
+                                                     'montant': int(list_g_rec.find('NET_REALISE').text),
                                                      'paragraphe': list_g_rec.find('REC_PARAGR').text,
                                                      'sous_paragraphe': list_g_rec.find('REC_SPARAG').text,
                                                      'article': list_g_rec.find('REC_ARTICL').text,
