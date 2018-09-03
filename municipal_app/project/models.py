@@ -16,8 +16,10 @@ class Municipality(db.Model):
     municipal_lat = db.Column(db.Float, nullable=True)
     approved = db.Column(db.Boolean, nullable=False)
     deleted = db.Column(db.Boolean, nullable=False)
+    ckan_id = db.Column(db.String)
+    marssad_id = db.Column(db.String)
 
-    def __init__(self, municipal_id, deleted, municipal_name, municipal_state, municipal_name_ar, municipal_long, municipal_lat, approved):
+    def __init__(self, municipal_id, deleted, municipal_name, municipal_state, municipal_name_ar, municipal_long, municipal_lat, approved, ckan_id=None, marssad_id=None):
         self.municipal_id = municipal_id
         self.municipal_name = municipal_name
         self.municipal_state = municipal_state
@@ -26,6 +28,8 @@ class Municipality(db.Model):
         self.municipal_lat = municipal_lat
         self.approved = approved
         self.deleted = deleted
+        self.ckan_id = ckan_id
+        self.marssad_id = marssad_id
 
     def get_municipal_id(self):
         return self.municipal_id
@@ -50,9 +54,10 @@ class User(db.Model):
     phone_number = db.Column(db.Integer)
     work_position = db.Column(db.String)
     api_key = db.Column(db.String)
+    ckan_id = db.Column(db.String)
 
     def __init__(self, email, last_login, password, confirmed, name, municipal_id, last_name, deleted, activate, 
-                 phone_number, work_position, api_key=None, paid=False, admin=False, confirmed_on=None, municipal_admin=False):
+                 phone_number, work_position, ckan_id, api_key=None, paid=False, admin=False, confirmed_on=None, municipal_admin=False):
         self.deleted = deleted
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
@@ -69,6 +74,7 @@ class User(db.Model):
         self.phone_number = phone_number
         self.work_position = work_position
         self.api_key = api_key
+        self.ckan_id = ckan_id
 
     def is_authenticated(self):
         return True

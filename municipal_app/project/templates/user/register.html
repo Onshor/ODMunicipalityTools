@@ -87,17 +87,17 @@
               {% endfor %}
               {% endif %}
             </div>
-            <div class="form-group">
-              {{ form.municipal_id(type="text" ,placeholder="المنطقة البلدية", class="form-control js-example-basic-single",  style='height: 39px') }}
-              {% if form.municipal_id.errors %}
-              {% for error in form.municipal_id.errors %}
-              <p style='color:red'>{{ error }}</p>
+            <div class='form-group'>
+              <select class="form-control js-example-basic-single" id="maj" name="municipal_id" placeholder="المنطقة البلدية" readonly>
+              {% for m in choices %}
+              <option value="{{m['value']}}">{{m['name']}}</option>
               {% endfor %}
-              {% endif %}
+              </select>
             </div>
             <div class='form-group'>
               <p>إذا لم تجد منطقتك البلدية الرجاء الضغط <a href='/contact'>هنا</a></p>
             </div>
+            
             <div class="form-group">
               {{ form.password(type="password" ,placeholder="كلمة المرور", class="form-control") }}
               {% if form.password.errors %}

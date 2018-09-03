@@ -5,6 +5,7 @@
 from flask_wtf import Form
 from wtforms import TextField, PasswordField, SelectField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
+from pprint import pprint as pp
 
 from project.models import User, Municipality
 
@@ -33,9 +34,11 @@ class RegisterForm(Form):
     )
     name = TextField('First Name', validators=[DataRequired(message=u'هذه الخانة اجباريه'), Length(max=15)])
     last_name = TextField('Last Name', validators=[DataRequired(message=u'هذه الخانة اجباريه'), Length(max=80)])
-    choices = [(None, u'المنطقة البلدية')]
-    choices.extend([(_.municipal_id, _.municipal_name_ar + ' ' + _.municipal_name) for _ in Municipality.query.filter_by(approved=True).all() if _.municipal_id != '1'])
-    municipal_id = SelectField('Municipality name', validators=[DataRequired(message=u'هذه الخانة اجباريه')], choices=sorted(choices, key=lambda tup: tup[0]))
+    municipal_id = TextField('Municipality name', validators=[DataRequired(message=u'هذه الخانة اجباريه'), Length(max=80)])
+    # choices = [(None, u'المنطقة البلدية')]
+    # choices.extend([(_.municipal_id, _.municipal_name_ar + ' ' + _.municipal_name) for _ in Municipality.query.filter_by(approved=True).all() if _.municipal_id != '1'])
+    # pp(choices)
+    # municipal_id = SelectField('Municipality name', validators=[DataRequired(message=u'هذه الخانة اجباريه')], choices=sorted(choices, key=lambda tup: tup[0]))
 
     def validate(self):
         initial_validation = super(RegisterForm, self).validate()

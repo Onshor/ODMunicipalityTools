@@ -11,6 +11,7 @@ from flask_login import login_required, current_user
 from project.models import User, Municipality
 from .forms import ChangePwdForm, AddmunForm
 from project import db, bcrypt
+import ckanapi
 from pprint import pprint as pp
 
 
@@ -117,10 +118,16 @@ def admin_mun():
         if 'mun_act' in request.values:
             mun_id = request.values['id']
             mun = Municipality.query.get(str(mun_id))
-            mun_name = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name_ar
+            mun_name_ar = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name_ar
+            mun_name_fr = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name
             mun.approved = True
+            api_dict = {"name" : mun_name_fr.lower().replace(' ','_').replace(u'\u200e', '').replace(u'\xe9', '') + '_01', "title": u'بلدية ' + mun_name_ar}
+            if not Municipality.query.filter_by(municipal_id=str(mun_id)).first().ckan_id:
+                pp(api_dict)
+                api = create_organization_ckan(api_dict)
+                mun.ckan_id = api['id']
             db.session.commit()
-            flash(u'تم إضافة بلدية' + mun_name + u' إلى موقعين','success')
+            flash(u'تم إضافة بلدية' + mun_name_ar + u' إلى موقعين','success')
             return redirect(url_for('admin.admin_mun'))
         if 'mun_dact' in request.values:
             mun_id = request.values['id']
@@ -277,3 +284,9 @@ def mail_exist(mail, user_email):
         return False
     else:
         return True
+
+
+def create_organization_ckan(data):
+    ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey='545dd248-0887-47c5-ae65-248c2772a53b')
+    b = ckan.action.organization_create(**data)
+    return b

@@ -10,6 +10,8 @@ from project.models import User, Municipality
 from project.email import send_email
 from project import db, bcrypt
 from .forms import LoginForm, RegisterForm, ChangePasswordForm, ContactForm, ApiForm
+from pprint import pprint as pp
+import ckanapi
 
 
 ################
@@ -43,33 +45,45 @@ def contact():
 
 @user_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
+    choices = [{'value': None, 'name': u'المنطقة البلدية'}]
+    choices.extend([{'value': _.municipal_id, 'name': _.municipal_name_ar + ' ' + _.municipal_name} for _ in Municipality.query.filter_by(approved=True).all() if _.municipal_id != '1'])
     form = RegisterForm(request.form)
     if form.validate_on_submit():
-        user = User(
-            email=form.email.data,
-            password=form.password.data,
-            name=form.name.data,
-            last_name=form.last_name.data,
-            municipal_id=form.municipal_id.data,
-            confirmed=False,
-            deleted=False,
-            activate=False,
-            last_login=datetime.datetime.now(),
-            phone_number=form.phone_number.data,
-            work_position=form.work_position.data
-        )
-        db.session.add(user)
-        db.session.commit()
-        token = generate_confirmation_token(user.email)
-        confirm_url = url_for('user.confirm_email', token=token, _external=True)
-        mun_name = Municipality.query.filter_by(municipal_id=str(form.municipal_id.data)).first().municipal_name
-        html = render_template('user/activate.html', confirm_url=confirm_url, name=form.name.data, last_name=form.last_name.data, last_login=datetime.datetime.now(), mun_name=mun_name)
-        subject = u"برجاء تأكيد بريدك الالكترونى"
-        send_email(user.email, subject, html)
-        login_user(user)
-        # flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
-        return redirect(url_for("user.unconfirmed"))
-    return render_template('user/register.html', form=form)
+        if form.municipal_id.data != 'None':
+            name = (form.email.data.split('@')[0] + '_' + form.municipal_id.data).replace('.', '').replace('-', '')
+            password = form.password.data
+            fullname = form.name.data + ' ' + form.last_name.data
+            email = form.email.data
+            api_dict = create_user_ckan(name, password, fullname, email)
+            user = User(
+                email=form.email.data,
+                password=form.password.data,
+                name=form.name.data,
+                last_name=form.last_name.data,
+                municipal_id=form.municipal_id.data,
+                confirmed=False,
+                deleted=False,
+                activate=False,
+                last_login=datetime.datetime.now(),
+                phone_number=form.phone_number.data,
+                work_position=form.work_position.data,
+                api_key=api_dict['apikey'],
+                ckan_id=api_dict['id']
+            )
+            db.session.add(user)
+            db.session.commit()
+            token = generate_confirmation_token(user.email)
+            confirm_url = url_for('user.confirm_email', token=token, _external=True)
+            mun_name = Municipality.query.filter_by(municipal_id=str(form.municipal_id.data)).first().municipal_name
+            html = render_template('user/activate.html', confirm_url=confirm_url, name=form.name.data, last_name=form.last_name.data, last_login=datetime.datetime.now(), mun_name=mun_name)
+            subject = u"برجاء تأكيد بريدك الالكترونى"
+            send_email(user.email, subject, html)
+            login_user(user)
+            # flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
+            return redirect(url_for("user.unconfirmed"))
+        else:
+            flash(u'خانة المنطقة البلدية اجبارية', 'warning')
+    return render_template('user/register.html', form=form, choices=choices)
 
 
 @user_blueprint.route('/login', methods=['GET', 'POST'])
@@ -170,3 +184,10 @@ def resend_confirmation():
     send_email(current_user.email, subject, html)
     flash(u'تم إرسال رسالة تأكيد إلكترونية جديدة.', 'success')
     return redirect(url_for('user.unconfirmed'))
+
+
+def create_user_ckan(name, password, fullname, email):
+    ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey='545dd248-0887-47c5-ae65-248c2772a53b')
+    user_dict = {'name': name, 'password': password, 'email': email, 'fullname': fullname}
+    api_dict = ckan.action.user_create(**user_dict)
+    return api_dict
