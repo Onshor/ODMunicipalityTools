@@ -6,6 +6,9 @@ from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle, 
 from project import db
 from flask import flash
 from parser import decode_unicode, get_csv_file, get_excel_file
+from pprint import pprint as pp
+import os
+import datetime
 
 
 ALLOWED_EXTENSIONS = set(['xml'])
@@ -256,3 +259,18 @@ def db_save_log_files(file_id):
                             file_id=file_id))
     db.session.commit()
     return 0
+
+
+def save_xml_file(f, type):
+    path = get_file_path() + str(current_user.municipal_id) + '/'
+    if not os.path.exists(path):
+        os.makedirs(path)
+    filename = type + '_' + str(current_user.municipal_id) + '_' + str(datetime.datetime.now().strftime("%s"))
+    f.save(os.path.join(path, filename))
+
+
+def get_file_path():
+    if os.path.isdir('project/static/xml_files/'):
+        return 'project/static/xml_files/'
+    else:
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/xml_files/"

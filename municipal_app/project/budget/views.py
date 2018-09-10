@@ -5,7 +5,7 @@
 #### imports ####
 #################
 
-from utils import save_budget_fee_annuelle, save_budget_fee_monthly, csv_annuelle_file, allowed_file, check_municipal_id, save_budget_parametre, csv_mensuelle_file, check_monthly_data, db_save_log_files
+from utils import *
 from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
@@ -142,6 +142,7 @@ def upload_file():
                         rcy = confirm_url + recette_link_per_year
                         dpy = confirm_url + depecence_link_per_year
                         if log:
+                            save_xml_file(f, 'b_annuel')
                             save_log([recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year])
                         years = Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).all()
                         years = [_.year for _ in years]
@@ -180,6 +181,7 @@ def upload_file():
                         month_list_fr = decode_mm_fr(months)
                         dpm = confirm_url + file_name
                         if log:
+                            save_xml_file(f, 'b_depence_mensuelle')
                             save_log([file_name])
                         data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
                         data = get_auto_update_data(data)
@@ -198,7 +200,7 @@ def upload_file():
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSITMNS )', 'danger')
                     return redirect(url_for('budget.budget_depence_mensuelle'))
             else:
-                #try:
+                try:
                     b, file_mun_id = parse_recette_file(f)
                     check = check_municipal_id(current_user.municipal_id, file_mun_id)
                     if check:
@@ -210,6 +212,7 @@ def upload_file():
                         month_list_fr = decode_mm_fr(months)
                         rcm = confirm_url + file_name
                         if log:
+                            save_xml_file(f, 'b_recette_mensuelle')
                             save_log([file_name])
                         data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
                         data = get_auto_update_data(data)
@@ -221,9 +224,9 @@ def upload_file():
                             except:
                                 flash(u'الرجاء التثبت في api_key','warning')
                         return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
-                #except:
-                    #flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')
-                    #return redirect(url_for('budget.budget_recette_mensuelle'))
+                except:
+                    flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')
+                    return redirect(url_for('budget.budget_recette_mensuelle'))
     return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
 
 
