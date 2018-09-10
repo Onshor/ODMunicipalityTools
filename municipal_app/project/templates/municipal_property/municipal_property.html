@@ -73,7 +73,7 @@
 							<div class='col-sm-3'>
 								{% if private_data['check_r_id'] and private_data['api_key'] %}
 								<form action = "/get_property_file/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
 									<input type="hidden" name="r_id" value="{{private_data['id']}}">
 									<input type="hidden" name="file_type" value="{{private_data['type']}}">
 									<input type="hidden" name="link" value="{{private_data['link']}}">
@@ -108,7 +108,7 @@
 							<div class='col-sm-3'>
 								{% if public_data['check_r_id'] and public_data['api_key'] %}
 								<form action = "/get_property_file/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
 									<input type="hidden" name="r_id" value="{{public_data['id']}}">
 									<input type="hidden" name="file_type" value="{{public_data['type']}}">
 									<input type="hidden" name="link" value="{{public_data['link']}}">

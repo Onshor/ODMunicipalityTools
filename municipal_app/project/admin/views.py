@@ -10,8 +10,10 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from project.models import User, Municipality
 from .forms import ChangePwdForm, AddmunForm
-from project import db, bcrypt
+from project import db, bcrypt, app
+from project.email import send_admin_email, send_confirm_email
 import ckanapi
+import unidecode
 from pprint import pprint as pp
 
 
@@ -38,7 +40,10 @@ def admin():
         user_id = request.values['id']
         user = User.query.get(int(user_id))
         user.confirmed = True
+        user.activate = True
+        add_role_user(user)
         db.session.commit()
+        flash(u'تم إعتماد و تفعيل حساب ' + user.name + ' ' + user.last_name,'success')
         return redirect(url_for('admin.admin'))
     elif 'cancel_user' in request.values:
         user_id = request.values['id']
@@ -121,9 +126,12 @@ def admin_mun():
             mun_name_ar = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name_ar
             mun_name_fr = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name
             mun.approved = True
-            api_dict = {"name" : mun_name_fr.lower().replace(' ','_').replace(u'\u200e', '').replace(u'\xe9', '') + '_01', "title": u'بلدية ' + mun_name_ar}
             if not Municipality.query.filter_by(municipal_id=str(mun_id)).first().ckan_id:
-                pp(api_dict)
+                if name in get_ckan_organization_list():
+                    api_name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_') + '_01'
+                else:
+                    api_name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_')
+                api_dict = {"name" : api_name, "title": u'بلدية ' + mun_name_ar}
                 api = create_organization_ckan(api_dict)
                 mun.ckan_id = api['id']
             db.session.commit()
@@ -290,3 +298,29 @@ def create_organization_ckan(data):
     ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey='545dd248-0887-47c5-ae65-248c2772a53b')
     b = ckan.action.organization_create(**data)
     return b
+
+
+def add_role_user(user):
+    ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
+    if user.ckan_id:
+        municipality = Municipality.query.get(user.municipal_id)
+        if municipality.ckan_id:
+            dicti={'id': municipality.ckan_id, 'username': user.ckan_id, 'role': 'editor'}
+            ckan.action.organization_member_create(**dicti)
+            flash(u'تم إضافة %s %s إلى بلدية %s' %(user.name, user.last_name, municipality.municipal_name_ar), 'success')
+            subject = 'confirmation for user'
+            msg = 'confirm msg to user'
+        else:
+            flash(u'بلدية  هذا مستخدم ليس لديها معرف    CKAN', 'warning')
+            subject = "Municipal don't have ckan_id"
+            template = render_template('admin/alert_admin_email.html', user=user)
+            send_admin_email(subject, template)
+    else:
+        flash(u'هذا مستخدم ليس لديه معرف  CKAN', 'warning')
+        subject = "user does't have ckan_id"
+        template = render_template('admin/alert_admin_email.html', user=user)
+        send_admin_email(subject, template)
+
+def get_ckan_organization_list():
+    ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
+    return ckan.action.organization_list()

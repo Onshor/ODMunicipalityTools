@@ -15,10 +15,20 @@ def send_email(to, subject, template):
     mail.send(msg)
 
 
-def send_log_email(subject, template):
+def send_admin_email(subject, template):
     msg = Message(
         subject,
-        recipients=['med@onshor.org'],
+        recipients=['med@onshor.org'] + ['kamel.mellah@gmail.com'],
+        html=template,
+        sender=app.config['MAIL_DEFAULT_SENDER']
+    )
+    mail.send(msg)
+
+
+def send_confirm_email(to, subject, template):
+    msg = Message(
+        subject,
+        recipients=to + ['contact@onshor.org'],
         html=template,
         sender=app.config['MAIL_DEFAULT_SENDER']
     )

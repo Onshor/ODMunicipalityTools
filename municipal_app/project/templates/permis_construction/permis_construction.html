@@ -65,7 +65,7 @@
 								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_encours')"/>
 								{% if encour_data['check_r_id'] and encour_data['api_key'] %}
 								<form action = "/get_files/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
 									<input type="hidden" name="r_id" value="{{encour_data['id']}}">
 									<input type="hidden" name="file_type" value="{{encour_data['type']}}">
 									<input type="hidden" name="link" value="{{encour_data['link']}}">
@@ -94,7 +94,7 @@
 								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_approved')"/>
 								{% if approved_data['check_r_id'] and approved_data['api_key'] %}
 								<form action = "/get_files/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
 									<input type="hidden" name="r_id" value="{{approved_data['id']}}">
 									<input type="hidden" name="file_type" value="{{approved_data['type']}}">
 									<input type="hidden" name="link" value="{{approved_data['link']}}">
@@ -123,7 +123,7 @@
 								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_refused')"/>
 								{% if refused_data['check_r_id'] and refused_data['api_key'] %}
 								<form action = "/get_files/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر فالمنصة' type="submit" name='open_api'>
+									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
 									<input type="hidden" name="r_id" value="{{refused_data['id']}}">
 									<input type="hidden" name="file_type" value="{{refused_data['type']}}">
 									<input type="hidden" name="link" value="{{refused_data['link']}}">

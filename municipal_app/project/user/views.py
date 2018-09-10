@@ -54,7 +54,14 @@ def register():
             password = form.password.data
             fullname = form.name.data + ' ' + form.last_name.data
             email = form.email.data
-            api_dict = create_user_ckan(name, password, fullname, email)
+            list_ckan_user = get_list_user()
+            ckan_email_list = [_['email'] for _ in list_ckan_user]
+            if email in ckan_email_list:
+                for e in list_ckan_user:
+                    if e['email'] == email:
+                        api_dict = e
+            else:
+                api_dict = create_user_ckan(name, password, fullname, email)
             user = User(
                 email=form.email.data,
                 password=form.password.data,
@@ -79,7 +86,7 @@ def register():
             subject = u"برجاء تأكيد بريدك الالكترونى"
             send_email(user.email, subject, html)
             login_user(user)
-            # flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
+            flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
             return redirect(url_for("user.unconfirmed"))
         else:
             flash(u'خانة المنطقة البلدية اجبارية', 'warning')
@@ -191,3 +198,8 @@ def create_user_ckan(name, password, fullname, email):
     user_dict = {'name': name, 'password': password, 'email': email, 'fullname': fullname}
     api_dict = ckan.action.user_create(**user_dict)
     return api_dict
+
+
+def get_list_user():
+    ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey='545dd248-0887-47c5-ae65-248c2772a53b')
+    return ckan.action.user_list()

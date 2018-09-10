@@ -29,14 +29,18 @@ class BaseConfig(object):
     # mail accounts
     MAIL_DEFAULT_SENDER = 'onshor.mail.contact@gmail.com'
 
+    # ckan_config
+    CKAN_URL = 'http://openbaladiati.tn/'
+    CKAN_API_KEY = '545dd248-0887-47c5-ae65-248c2772a53b'
+
 
 class DevelopmentConfig(BaseConfig):
     """Production configuration."""
     SECRET_KEY = 'my_precious'
     DEBUG = False
     SECURITY_PASSWORD_SALT = "saltsercretmunicipal%%onshor"
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/municipal_db_test2_0"
-    # SQLALCHEMY_DATABASE_URI = "postgresql://municipality:municipality@localhost/municipal_db"
+    # SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/municipal_db_test2_0"
+    SQLALCHEMY_DATABASE_URI = "postgresql://municipality:municipality@localhost/municipal_db"
     DEBUG_TB_ENABLED = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     STRIPE_SECRET_KEY = 'foo'
@@ -57,8 +61,8 @@ class ProductionConfig(BaseConfig):
     SECRET_KEY = 'my_precious'
     DEBUG = False
     SECURITY_PASSWORD_SALT = "saltsercretmunicipal%%onshor"
-    # SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/municipal_db_test2_0"
-    SQLALCHEMY_DATABASE_URI = "postgresql://municipality:municipality@localhost/municipal_db"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/municipal_db_test2_0"
+    # SQLALCHEMY_DATABASE_URI = "postgresql://municipality:municipality@localhost/municipal_db"
     DEBUG_TB_ENABLED = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     STRIPE_SECRET_KEY = 'foo'

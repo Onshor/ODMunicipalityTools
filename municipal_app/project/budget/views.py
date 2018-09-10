@@ -50,10 +50,10 @@ def budget_annuel():
         year_str = ''
         for y in sorted(list(set(years))):
             year_str = year_str + ', ' + y if year_str else y
-        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'الموارد حسب السنة', 'type':'an_rec_h'},
-                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'موارد' + ' ' + year_str, 'type':'an_rec_v'},
-                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'النفقات حسب السنة', 'type':'an_dep_h'},
-                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'نفقات' + ' ' + year_str, 'type':'an_dep_v'}]
+        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'الموارد تقديم أفقي لسنوات ' +  year_str, 'type':'an_rec_h'},
+                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'موارد تقديم عمودي لسنوات ' +  year_str, 'type':'an_rec_v'},
+                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'النفقات تقديم أفقي لسنوات '+  year_str, 'type':'an_dep_h'},
+                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'نفقات تقديم عمودي لسنوات ' +  year_str, 'type':'an_dep_v'}]
         data = get_auto_update_data(auto_list)
         if 'open_api' in request.values:
             api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(max(years)), None, None)
@@ -101,7 +101,7 @@ def budget_recette_mensuelle():
             month_list = decode_mm_ar(months)
             month_list_fr = decode_mm_fr(months)
             rcm = confirm_url + file_name
-            data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
+            data = [{'link': rcm, 'file_name': file_name, 'text': u'موارد أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
             data = get_auto_update_data(data)
             if 'open_api' in request.values:
                 api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
