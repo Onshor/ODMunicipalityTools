@@ -127,6 +127,7 @@ def admin_mun():
             mun_name_fr = Municipality.query.filter_by(municipal_id=str(mun_id)).first().municipal_name
             mun.approved = True
             if not Municipality.query.filter_by(municipal_id=str(mun_id)).first().ckan_id:
+                name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_')
                 if name in get_ckan_organization_list():
                     api_name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_') + '_01'
                 else:
