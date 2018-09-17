@@ -86,7 +86,7 @@ def register():
             subject = u"برجاء تأكيد بريدك الالكترونى"
             send_email(user.email, subject, html)
             login_user(user)
-            flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
+            # flash(u'تم إرسال رسالة تأكيد عبر البريد الإلكتروني.', 'success')
             return redirect(url_for("user.unconfirmed"))
         else:
             flash(u'خانة المنطقة البلدية اجبارية', 'warning')

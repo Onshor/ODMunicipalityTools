@@ -308,8 +308,10 @@ def add_role_user(user):
             dicti={'id': municipality.ckan_id, 'username': user.ckan_id, 'role': 'editor'}
             ckan.action.organization_member_create(**dicti)
             flash(u'تم إضافة %s %s إلى بلدية %s' %(user.name, user.last_name, municipality.municipal_name_ar), 'success')
-            subject = 'confirmation for user'
-            msg = 'confirm msg to user'
+            subject = u'تفعيل حساب  %s  %s' %(user.name, user.last_name) 
+            template = render_template('admin/confirm_user_email.html', user=user)
+            pp(user.email)
+            send_confirm_email([user.email], subject, template)
         else:
             flash(u'بلدية  هذا مستخدم ليس لديها معرف    CKAN', 'warning')
             subject = "Municipal don't have ckan_id"

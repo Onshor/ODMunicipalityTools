@@ -54,14 +54,16 @@
 
 			<!-- Main navigation -->
 			<ul id="side-nav" class="main-menu navbar-collapse collapse">
+				{% if current_user.admin %}
 				<li class="has-sub"><a href="#"><i class="icon-layout"></i><span class="title">مشرف التطبيق</span></a>
 					<ul class="nav collapse">
 						<li><a href="/admin"><span class="title">قائمة المستخدمين</span></a></li>
-						{% if current_user.admin %}
+						
 						<li><a href="/admin/admin_mun"><span class="title">قائمة البلديات</span></a></li>
-						{% endif %}
+						
 					</ul>
 				</li>
+				{% endif %}
 				<li class="has-sub"><a href="#"><i class="fa fa-money"></i><span class="title">الميزانية</span></a>
 					<ul class="nav collapse">
 						<li><a href="/budget_annuel"><span class="title">الميزانية السنوية</span></a></li>
