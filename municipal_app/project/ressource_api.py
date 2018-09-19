@@ -30,25 +30,25 @@ def get_resource_dict(data):
                    "format": "csv"}
   if data['type'] == 'an_rec_v':
     resource_dict.update({"description": u"Suivi annuel du budget des recettes de la Municipalité " + data['name_mun_fr'] + u" une présentation verticale qui consiste à regrouper les budgets annuel des recettes dans une seule colonne (les montants les uns en dessous des autres selon les années).",
-                          "name_ar": u"الميزانيّة السنويّة للموارد حسب تقديم عمودي منذ سنة " + data['last_year'],
+                          "name_ar": u"الميزانيّة السنويّة للموارد حسب تقديم عمودي إلى حد سنة " + data['last_year'],
                           "description_ar": u"المتابعة السنويّة لميزانيّة الموارد ببلديّة " + data['name_mun_ar'] + u" حسب تقديم عمودي يعتمد على تجميع ميزانيّات الموارد عموديّا  (الميزانيّة السنويّة الواحدة تحت الأخرى حسب السنوات).",
                           "name_fr": u"Budget annuel des recettes selon une présentation verticale depuis " + data['last_year'],
                           "name": u"Budget annuel des recettes selon une présentation verticale depuis " + data['last_year']})
   elif data['type'] == 'an_dep_h':
     resource_dict.update({"description": u"Suivi annuel du budget des dépenses de la Municipalité de " + data['name_mun_fr'] + u" selon une présentation horizontale qui consiste à aligner le budget annuel des dépenses (les montants les uns à la suite des autres selon les années) sur toute la longueur du fichier contenant les données.",
-                          "name_ar": u"الميزانيّة السنويّة للنفقات حسب تقديم أفقي منذ سنة " + data['last_year'],
+                          "name_ar": u"الميزانيّة السنويّة للنفقات حسب تقديم أفقي إلى حد سنة " + data['last_year'],
                           "description_ar": u"المتابعة السنويّة لميزانيّة النفقات ببلديّة " + data['name_mun_ar'] + u" حسب تقديم أفقي يعتمد على تصفيف ميزانيّات النفقات أفقيّا (الميزانيّة السنويّة الواحدة إلى  جانب الأخرى) على امتداد كامل الملّف الذي يحتوي على البيانات.",
                           "name_fr": u"Budget annuel des dépenses selon une présentation horizontale depuis " + data['last_year'],
                           "name": u"Budget annuel des dépenses selon une présentation horizontale depuis " + data['last_year']})
   elif data['type'] == 'an_rec_h':
     resource_dict.update({"description": u"Suivi annuel du budget des recettes de la Municipalité de " + data['name_mun_fr'] + u" selon une présentation horizontale qui consiste à aligner le budget annuel des recettes (les montants les uns à la suite des autres selon les années) sur toute la longueur du fichier contenant les données.",
-                          "name_ar": u"الميزانيّة السنويّة للموارد حسب تقديم أفقي منذ سنة" + data['last_year'],
+                          "name_ar": u"الميزانيّة السنويّة للموارد حسب تقديم أفقي إلى حد سنة" + data['last_year'],
                           "description_ar": u"لمتابعة السنويّة لميزانيّة الموارد ببلديّة " + data['name_mun_ar'] + u" حسب تقديم أفقي يعتمد على تصفيف ميزانيّات الموارد أفقيّا (الميزانيّة السنويّة الواحدة إلى جانب الأخرى) على امتداد كامل الملّف الذي يحتوي على البيانات.",
                           "name_fr": u"Budget annuel des recettes selon une présentation horizontale " + data['last_year'],
                           "name": u"Budget annuel des recettes selon une présentation horizontale " + data['last_year']})
   elif data['type'] == 'an_dep_v':
     resource_dict.update({"description": u"Suivi annuel du budget des dépenses de la Municipalité de  " + data['name_mun_fr'] + u" selon une présentation verticale qui consiste à regrouper les budgets annuel des dépenses dans une seule colonne (les montants les uns en dessous des autres selon les années).",
-                          "name_ar": u"الميزانيّة السنويّة للنفقات حسب تقديم عمودي منذ سنة " + data['last_year'],
+                          "name_ar": u"الميزانيّة السنويّة للنفقات حسب تقديم عمودي إلى حد سنة " + data['last_year'],
                           "description_ar": u" المتابعة السنويّة لميزانيّة النفقات ببلديّة " + data['name_mun_ar'] + u" حسب تقديم عمودي يعتمد على تجميع ميزانيّات النفقات عموديّا  (الميزانيّة السنويّة الواحدة تحت الأخرى حسب السنوات).",
                           "name_fr": u"Budget annuel des dépenses selon une présentation verticale depuis " + data['last_year'],
                           "name": u"Budget annuel des dépenses selon une présentation verticale depuis " + data['last_year']})
