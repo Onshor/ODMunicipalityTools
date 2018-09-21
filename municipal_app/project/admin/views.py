@@ -128,12 +128,16 @@ def admin_mun():
             mun.approved = True
             if not Municipality.query.filter_by(municipal_id=str(mun_id)).first().ckan_id:
                 name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_')
-                if name in get_ckan_organization_list():
-                    api_name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_') + '_01'
-                else:
-                    api_name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_')
-                api_dict = {"name" : api_name, "title": u'بلدية ' + mun_name_ar}
-                api = create_organization_ckan(api_dict)
+                try:
+                    if name in get_ckan_organization_list():
+                        api_name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_') + '_01'
+                    else:
+                        api_name = unidecode.unidecode(mun_name_fr).lower().replace(' ','_')
+                    api_dict = {"name" : api_name, "title": u'بلدية ' + mun_name_ar}
+                    api = create_organization_ckan(api_dict)
+                except:
+                    api_dict = {"name" : unidecode.unidecode(mun_name_fr).lower().replace(' ','_') + '_0001', "title": u'بلدية ' + mun_name_ar}
+                    api = create_organization_ckan(api_dict)
                 mun.ckan_id = api['id']
             db.session.commit()
             flash(u'تم إضافة بلدية' + mun_name_ar + u' إلى موقعين','success')
