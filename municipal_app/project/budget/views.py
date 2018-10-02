@@ -31,9 +31,26 @@ budget_blueprint = Blueprint('budget', __name__,)
 ################
 
 
-
-@budget_blueprint.route('/budget')
+@budget_blueprint.route('/budget/<types>')
 @login_required
 @check_confirmed
-def budget():
-    return render_template('budget/budget_annuel.html')
+def budget(types):
+    if types in 'annuel':
+        if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
+            data = get_budget_files()
+            if request.method == 'POST':
+                if 'file' not in request.files:
+                    flash('No selected file')
+                    return redirect(request.url)
+                f = request.files['file']
+                if f.filename == '':
+                    flash('No selected file')
+                    return redirect(request.url)
+                if f and allowed_file(f.filename):
+                    pp()
+            return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True)
+        return render_template('budget/budget_annuel.html')
+    elif types in 'depence_mensuelle':
+        return render_template('budget/budget_depence_mensuelle.html')
+    else:
+        return render_template('budget/budget_recette_mensuelle.html')

@@ -4,7 +4,7 @@
 from flask_login import current_user
 from project.models import Budget_parametre, Budget_annuelle, Budget_mensuelle, Auto_update, File_log
 from project import db
-from flask import flash, url_for
+from flask import flash
 from parser import decode_unicode, get_csv_file, get_excel_file
 from pprint import pprint as pp
 import os
@@ -12,39 +12,6 @@ import datetime
 
 
 ALLOWED_EXTENSIONS = set(['xml'])
-
-
-def get_auto_update_data(list_files):
-    list_data = []
-    for f in list_files:
-        id = Auto_update.query.filter_by(municipal_id=current_user.municipal_id, file_name=f['file_name']).first().id
-        if Auto_update.query.filter_by(municipal_id=current_user.municipal_id, file_name=f['file_name']).first().ressource_id:
-            check_r_id = True
-        else:
-            check_r_id = False
-        list_data.append({'id': id, 'check_r_id': check_r_id, 'link': f['link'], 'text': f['text'], 'api_key': current_user.api_key, 'type': f['type']})
-    return list_data
-
-
-def get_budget_files():
-    confirm_url = url_for('main.home', _external=True) + 'static/files/'
-    depecence_link_simple, recette_link_simple, recette_link_per_year, depecence_link_per_year = 'depense_simple_' + current_user.municipal_id + '.csv', 'recette_simple_' + current_user.municipal_id + '.csv', 'recette_per_year_' + current_user.municipal_id + '.csv', 'depense_per_year_' + current_user.municipal_id + '.csv'
-    path = get_file_path('/files/')
-    if not (os.path.isfile(path + recette_link_simple) and os.path.isfile(path + depecence_link_simple)):
-        csv_annuelle_file()
-    rcs = confirm_url + recette_link_simple
-    dps = confirm_url + depecence_link_simple
-    rcy = confirm_url + recette_link_per_year
-    dpy = confirm_url + depecence_link_per_year
-    years = sorted(list(set([b.year for b in Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).all()])))
-    year_str = ''
-    for y in years:
-        year_str = year_str + ', ' + y if year_str else y
-    auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'الموارد تقديم أفقي لسنوات ' + year_str, 'type': 'an_rec_h'},
-                 {'file_name': recette_link_per_year, 'link': rcy, 'text': u'الموارد تقديم عمودي لسنوات ' + year_str, 'type': 'an_rec_v'},
-                 {'file_name': depecence_link_simple, 'link': dps, 'text': u'النفقات تقديم أفقي لسنوات ' + year_str, 'type': 'an_dep_h'},
-                 {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'النفقات تقديم عمودي لسنوات ' + year_str, 'type': 'an_dep_v'}]
-    return get_auto_update_data(auto_list)
 
 
 def save_budget_parametre(budget_att):
@@ -124,24 +91,31 @@ def csv_annuelle_file():
     depecence_annuel, recette_annuel, years_list, p_id_list, budget_annuel_list = [], [], [], [], []
     depense_annuel_simple, recette_annuel_simple, budget_annuel_simple = [], [], []
     budget_annuel = Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).all()
-    years_list = sorted(list(set([ba.year for ba in budget_annuel])), key=int)
-    p_id_list = list(set([ba.parametre_id for ba in budget_annuel]))
-    for y in years_list:
-        for i in p_id_list:
+    for ba in budget_annuel:
+        years_list.append(ba.year)
+        p_id_list.append(ba.parametre_id)
+    years_list = sorted(list(set(years_list)), key=int)
+    for y in list(set(years_list)):
+        for i in list(set(p_id_list)):
             b_year = Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id, year=y, parametre_id=i).order_by(Budget_annuelle.numero_maj.desc()).first()
             mont = b_year.montant if b_year else None
-            budget_annuel_list.append({'p_id': i, y: mont})
-            budget_annuel_simple.append({'p_id': i, 'Year': y, 'Budget': mont})
+            budget_annuel_list.append({'p_id': i,
+                                       y: mont})
+            budget_annuel_simple.append({'p_id': i,
+                                         'Year': y,
+                                         'Budget': mont})
     for ba in budget_annuel_simple:
         budget_param = Budget_parametre.query.filter_by(id=ba['p_id']).first()
         p_dict_simple = get_dict_param(budget_param)
         if 'recette' in budget_param.type.lower():
-            p_dict_simple.update({'Year': ba['Year'], 'Budget': ba['Budget']})
+            p_dict_simple.update({'Year': ba['Year'],
+                                  'Budget': ba['Budget']})
             recette_annuel_simple.append(p_dict_simple)
         else:
-            p_dict_simple.update({'Year': ba['Year'], 'Budget': ba['Budget']})
+            p_dict_simple.update({'Year': ba['Year'],
+                                  'Budget': ba['Budget']})
             depense_annuel_simple.append(p_dict_simple)
-    for i in p_id_list:
+    for i in list(set(p_id_list)):
         budget_param = Budget_parametre.query.filter_by(id=i).first()
         p_dict = get_dict_param(budget_param)
         if 'recette' in budget_param.type.lower():
@@ -170,7 +144,7 @@ def csv_annuelle_file():
     depecence_link_per_year = get_csv_file(depecence_annuel, 'depense_per_year_' + current_user.municipal_id, years_list)
     get_excel_file(depecence_annuel, 'depense_per_year_' + current_user.municipal_id, years_list)
     save_auto_update(depecence_link_per_year)
-    return 0
+    return recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year
 
 
 def get_dict_param(b):
@@ -288,15 +262,15 @@ def db_save_log_files(file_id):
 
 
 def save_xml_file(f, type):
-    path = get_file_path('/xml_files/') + str(current_user.municipal_id) + '/'
+    path = get_file_path() + str(current_user.municipal_id) + '/'
     if not os.path.exists(path):
         os.makedirs(path)
     filename = type + '_' + str(current_user.municipal_id) + '_' + str(datetime.datetime.now().strftime("%s"))
     f.save(os.path.join(path, filename))
 
 
-def get_file_path(rep):
-    if os.path.isdir('project/static' + rep):
-        return 'project/static' + rep
+def get_file_path():
+    if os.path.isdir('project/static/xml_files/'):
+        return 'project/static/xml_files/'
     else:
-        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static" + rep
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/static/xml_files/"
