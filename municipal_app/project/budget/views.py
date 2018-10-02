@@ -129,7 +129,7 @@ def upload_file():
         if f and allowed_file(f.filename):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
             if request.values['file_type'] == 'annuel':
-                try:
+                # try:
                     b, file_mun_id, update = parse_budget(f)
                     check = check_municipal_id(current_user.municipal_id, file_mun_id)
                     if check:
@@ -165,9 +165,9 @@ def upload_file():
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
                         return redirect(url_for('budget.budget_annuel'))
-                except:
-                    flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( AREPLFTMUN أو AREPMLFMUN)', 'danger')
-                    return redirect(url_for('budget.budget_annuel'))
+                # except:
+                    # flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( AREPLFTMUN أو AREPMLFMUN)', 'danger')
+                    # return redirect(url_for('budget.budget_annuel'))
             elif request.values['file_type'] == 'dep_month':
                 try:
                     b, file_mun_id = parse_depence_file(f)
