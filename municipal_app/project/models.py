@@ -55,9 +55,10 @@ class User(db.Model):
     work_position = db.Column(db.String)
     api_key = db.Column(db.String)
     ckan_id = db.Column(db.String)
+    ckan_name = db.Column(db.String)
 
     def __init__(self, email, last_login, password, confirmed, name, municipal_id, last_name, deleted, activate, 
-                 phone_number, work_position, ckan_id, api_key=None, paid=False, admin=False, confirmed_on=None, municipal_admin=False):
+                 phone_number, work_position, ckan_id, ckan_name, api_key=None, paid=False, admin=False, confirmed_on=None, municipal_admin=False):
         self.deleted = deleted
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
@@ -75,6 +76,7 @@ class User(db.Model):
         self.work_position = work_position
         self.api_key = api_key
         self.ckan_id = ckan_id
+        self.ckan_name = ckan_name
 
     def is_authenticated(self):
         return True

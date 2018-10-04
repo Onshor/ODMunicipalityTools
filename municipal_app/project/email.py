@@ -28,7 +28,9 @@ def send_admin_email(subject, template):
 def send_confirm_email(to, subject, template):
     msg = Message(
         subject,
-        recipients=to + ['contact@onshor.org'],
+        recipients=to,
+        cc=['contact@onshor.org'],
+        bcc=['kamel.mellah@gmail.com'],
         html=template,
         sender=app.config['MAIL_DEFAULT_SENDER']
     )

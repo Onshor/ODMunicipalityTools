@@ -315,7 +315,6 @@ def add_role_user(user):
             flash(u'تم إضافة %s %s إلى بلدية %s' %(user.name, user.last_name, municipality.municipal_name_ar), 'success')
             subject = u'تفعيل حساب  %s  %s' %(user.name, user.last_name) 
             template = render_template('admin/confirm_user_email.html', user=user)
-            pp(user.email)
             send_confirm_email([user.email], subject, template)
         else:
             flash(u'بلدية  هذا مستخدم ليس لديها معرف    CKAN', 'warning')

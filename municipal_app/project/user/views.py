@@ -45,12 +45,14 @@ def contact():
 
 @user_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
+    for d in get_list_user():
+        pp(d)
     choices = [{'value': None, 'name': u'المنطقة البلدية'}]
     choices.extend([{'value': _.municipal_id, 'name': _.municipal_name_ar + ' ' + _.municipal_name} for _ in Municipality.query.filter_by(approved=True).all() if _.municipal_id != '1'])
     form = RegisterForm(request.form)
     if form.validate_on_submit():
         if form.municipal_id.data != 'None':
-            name = (form.email.data.split('@')[0] + '_' + form.municipal_id.data).replace('.', '').replace('-', '')
+            ckan_name = (form.email.data.split('@')[0] + '_' + form.municipal_id.data).replace('.', '').replace('-', '')
             password = form.password.data
             fullname = form.name.data + ' ' + form.last_name.data
             email = form.email.data
@@ -60,8 +62,9 @@ def register():
                 for e in list_ckan_user:
                     if e['email'] == email:
                         api_dict = e
+                        ckan_name = e['name']
             else:
-                api_dict = create_user_ckan(name, password, fullname, email)
+                api_dict = create_user_ckan(ckan_name, password, fullname, email)
             user = User(
                 email=form.email.data,
                 password=form.password.data,
@@ -75,7 +78,8 @@ def register():
                 phone_number=form.phone_number.data,
                 work_position=form.work_position.data,
                 api_key=api_dict['apikey'],
-                ckan_id=api_dict['id']
+                ckan_id=api_dict['id'],
+                ckan_name=ckan_name
             )
             db.session.add(user)
             db.session.commit()
