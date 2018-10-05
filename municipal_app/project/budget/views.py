@@ -50,10 +50,10 @@ def budget_annuel():
         year_str = ''
         for y in sorted(list(set(years))):
             year_str = year_str + ', ' + y if year_str else y
-        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'الموارد تقديم أفقي لسنوات ' +  year_str, 'type': 'an_rec_h'},
-                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'موارد تقديم عمودي لسنوات ' +  year_str, 'type': 'an_rec_v'},
-                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'النفقات تقديم أفقي لسنوات '+  year_str, 'type': 'an_dep_h'},
-                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'نفقات تقديم عمودي لسنوات ' +  year_str, 'type': 'an_dep_v'}]
+        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'النفقات تقديم أفقي لسنوات ' +  year_str, 'type': 'an_rec_h'},
+                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'نفقات تقديم عمودي لسنوات ' +  year_str, 'type': 'an_rec_v'},
+                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'الموارد تقديم أفقي لسنوات '+  year_str, 'type': 'an_dep_h'},
+                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'موارد تقديم عمودي لسنوات ' +  year_str, 'type': 'an_dep_v'}]
         data = get_auto_update_data(auto_list)
         if 'open_api' in request.values:
             api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(max(years)), None, None)
