@@ -16,8 +16,8 @@
       <div class="panel-body">
         <div class="col-6 col-md-4">
           <div class="dropzone-previews">
-            <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
-              <input type="hidden" name="file_type" value='annuel'/>
+            <form action = "" method = "POST" enctype = "multipart/form-data",>
+              <input type="hidden" name="file_types" value='annuel'/>
               <div class="input-group" >
                 <input type="text"  readonly/>
                 <label class="btn btn btn-primary">
@@ -46,7 +46,7 @@
               <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#{{ d['id'] }}')"/></div>
               {% if d['check_r_id'] and d['api_key'] %}
               <div class="col-lg-4">
-              <form action = "/budget_annuel" method = "POST" enctype = "multipart/form-data">
+              <form action = "" method = "POST" enctype = "multipart/form-data">
                 <input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
                 <input type="hidden" name="r_id" value="{{d['id']}}">
                 <input type="hidden" name="file_type" value="{{d['type']}}">

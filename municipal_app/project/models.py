@@ -373,3 +373,32 @@ class File_log(db.Model):
 
     def get_id(self):
         return self.id
+
+
+class Budget_annuel_views(db.Model):
+    __tablename__ = "budget_annuel_reader"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    montant = db.Column(db.Integer)
+    year = db.Column(db.String)
+    type = db.Column(db.String)
+    article = db.Column(db.String)
+    paragraphe = db.Column(db.String)
+    sous_paragraphe = db.Column(db.String)
+    titre = db.Column(db.String)
+    label = db.Column(db.String)
+
+
+    def __init__(self, municipal_id, montant, article, type, paragraphe, sous_paragraphe, titre, label):
+        self.municipal_id = municipal_id
+        self.user_id = montant
+        self.type = type
+        self.article = article
+        self.paragraphe = paragraphe
+        self.sous_paragraphe = sous_paragraphe
+        self.titre = titre
+        self.label = label
+
+
+    def get_id(self):
+        return self.id
