@@ -85,8 +85,8 @@ def budget_depence_mensuelle():
             month_list = decode_mm_ar(months)
             month_list_fr = decode_mm_fr(months)
             dpm = confirm_url + file_name
-            data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
-            data = get_auto_update_data(data)
+            auto_data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
+            data = get_auto_update_data(auto_data)
             if 'open_api' in request.values:
                 api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
                 try:
@@ -98,6 +98,7 @@ def budget_depence_mensuelle():
                 id_list = package_exists(request.values['r_url'], None)
                 if id_list:
                     update_ressource(request.values['add_r_id'], id_list[0])
+                    data = get_auto_update_data(auto_data)
                 else:
                     flash(u'لايوجد ملف بيانات على منصه ', 'warning')
             return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True, month_list=month_list, year=year , data=data)
@@ -115,8 +116,8 @@ def budget_recette_mensuelle():
             month_list = decode_mm_ar(months)
             month_list_fr = decode_mm_fr(months)
             rcm = confirm_url + file_name
-            data = [{'link': rcm, 'file_name': file_name, 'text': u'موارد أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
-            data = get_auto_update_data(data)
+            auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'موارد أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
+            data = get_auto_update_data(auto_data)
             if 'open_api' in request.values:
                 api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
                 try:
@@ -128,6 +129,7 @@ def budget_recette_mensuelle():
                 id_list = package_exists(request.values['r_url'], None)
                 if id_list:
                     update_ressource(request.values['add_r_id'], id_list[0])
+                    data = get_auto_update_data(auto_data)
                 else:
                     flash(u'لايوجد ملف بيانات على منصه ', 'warning')
             return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
@@ -185,6 +187,7 @@ def upload_file():
                             id_list = package_exists(request.values['r_url'], None)
                             if id_list:
                                 update_ressource(request.values['add_r_id'], id_list[0])
+                                data = get_auto_update_data(auto_list)
                             else:
                                 flash(u'لايوجد ملف بيانات على منصه ', 'warning')
                         return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True)
@@ -209,8 +212,8 @@ def upload_file():
                         if log:
                             save_xml_file(f, 'b_depence_mensuelle')
                             save_log([file_name])
-                        data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
-                        data = get_auto_update_data(data)
+                        auto_data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
+                        data = get_auto_update_data(auto_data)
                         if 'open_api' in request.values:
                             api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
                             try:
@@ -222,6 +225,7 @@ def upload_file():
                             id_list = package_exists(request.values['r_url'], None)
                             if id_list:
                                 update_ressource(request.values['add_r_id'], id_list[0])
+                                data = get_auto_update_data(auto_data)
                             else:
                                 flash(u'لايوجد ملف بيانات على منصه ', 'warning')
                         return render_template('budget/budget_depence_mensuelle.html', parsed_dep=True, data=data)
@@ -246,8 +250,8 @@ def upload_file():
                         if log:
                             save_xml_file(f, 'b_recette_mensuelle')
                             save_log([file_name])
-                        data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
-                        data = get_auto_update_data(data)
+                        auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
+                        data = get_auto_update_data(auto_data)
                         if 'open_api' in request.values:
                             api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
                             try:
@@ -259,6 +263,7 @@ def upload_file():
                             id_list = package_exists(request.values['r_url'], None)
                             if id_list:
                                 update_ressource(request.values['add_r_id'], id_list[0])
+                                data = get_auto_update_data(auto_data)
                             else:
                                 flash(u'لايوجد ملف بيانات على منصه ', 'warning')
                         return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
