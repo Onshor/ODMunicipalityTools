@@ -39,11 +39,6 @@ def budget():
 @login_required
 @check_confirmed
 def budget_annuel():
-    id_list = package_exists('http://app.openbaladiati.tn/static/files/permis_construction_approuver_33019.csv', None)
-    if id_list:
-        pp(True)
-    else:
-        pp(False)
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         confirm_url = url_for('main.home', _external=True) + 'static/files/'
         recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year = csv_annuelle_file()
@@ -72,6 +67,7 @@ def budget_annuel():
             id_list = package_exists(request.values['r_url'], None)
             if id_list:
                 update_ressource(request.values['add_r_id'], id_list[0])
+                data = get_auto_update_data(auto_list)
             else:
                 flash(u'لايوجد ملف بيانات على منصه ', 'warning')
         return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True)
