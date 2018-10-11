@@ -57,12 +57,24 @@
               {% elif d['check_r_id'] %}
               <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
               {% elif d['api_key'] %}
-              <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_depence_mensuelle/{{d['id']}}">هنا</a></p> 
+              <div class="col-lg-4">
+                <div class='col-md-6'>
+                  <p><code>ليس هنالك معرف الملف </code></p>
+                </div>
+                <div class='col-md-6'>
+              <form action = "/budget_depence_mensuelle" method = "POST" enctype = "multipart/form-data">
+                <input class="btn btn-default btn-outline btn-block" value='تحيين ' type="submit" name='get_r_id'>
+                <input type="hidden" name="add_r_id" value="{{d['id']}}">
+                <input type="hidden" name="r_url" value="{{d['link']}}">                
+              </form>
+            </div>
+            </div>
+              <!-- <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_depence_mensuelle/{{d['id']}}">هنا</a></p> --> 
               {% else %}
               <div class="col-lg-4">
               <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-              <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_depence_mensuelle/{{d['id']}}">هنا</a></p>
-            </div>
+              <!-- <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_depence_mensuelle/{{d['id']}}">هنا</a></p>
+            </div> -->
               {% endif %}
             </div>
             

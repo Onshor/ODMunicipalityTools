@@ -14,6 +14,7 @@ from project.models import Budget_annuelle, Municipality, Auto_update
 from list_month import decode_month_ar, decode_month_fr
 from project.ressource_api import update_ressource_api, update_ressource_api_request, package_exists
 from pprint import pprint as pp
+from project.ressource_api import package_exists
 
 
 ################
@@ -38,6 +39,11 @@ def budget():
 @login_required
 @check_confirmed
 def budget_annuel():
+    id_list = package_exists('http://app.openbaladiati.tn/static/files/permis_construction_approuver_33019.csv', None)
+    if id_list:
+        pp(True)
+    else:
+        pp(False)
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         confirm_url = url_for('main.home', _external=True) + 'static/files/'
         recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year = csv_annuelle_file()
@@ -62,6 +68,12 @@ def budget_annuel():
                 flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
             except:
                 flash(u'الرجاء التثبت في api_key','warning')
+        if 'get_r_id' in request.values:
+            id_list = package_exists(request.values['r_url'], None)
+            if id_list:
+                update_ressource(request.values['add_r_id'], id_list[0])
+            else:
+                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
         return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True)
     return render_template('budget/budget_annuel.html', mun_name=Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar)
 
@@ -86,6 +98,12 @@ def budget_depence_mensuelle():
                     flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
                 except:
                     flash(u'الرجاء التثبت في api_key','warning')
+            if 'get_r_id' in request.values:
+                id_list = package_exists(request.values['r_url'], None)
+                if id_list:
+                    update_ressource(request.values['add_r_id'], id_list[0])
+                else:
+                    flash(u'لايوجد ملف بيانات على منصه ', 'warning')
             return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True, month_list=month_list, year=year , data=data)
     return render_template('budget/budget_depence_mensuelle.html', mun_name=Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar)
 
@@ -110,6 +128,12 @@ def budget_recette_mensuelle():
                     flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
                 except:
                     flash(u'الرجاء التثبت في api_key','warning')
+            if 'get_r_id' in request.values:
+                id_list = package_exists(request.values['r_url'], None)
+                if id_list:
+                    update_ressource(request.values['add_r_id'], id_list[0])
+                else:
+                    flash(u'لايوجد ملف بيانات على منصه ', 'warning')
             return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
     return render_template('budget/budget_recette_mensuelle.html')
 
@@ -161,6 +185,12 @@ def upload_file():
                                 flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
                             except:
                                 flash(u'الرجاء التثبت في api_key','warning')
+                        if 'get_r_id' in request.values:
+                            id_list = package_exists(request.values['r_url'], None)
+                            if id_list:
+                                update_ressource(request.values['add_r_id'], id_list[0])
+                            else:
+                                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
                         return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
@@ -192,6 +222,12 @@ def upload_file():
                                 flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
                             except:
                                 flash(u'الرجاء التثبت في api_key','warning')
+                        if 'get_r_id' in request.values:
+                            id_list = package_exists(request.values['r_url'], None)
+                            if id_list:
+                                update_ressource(request.values['add_r_id'], id_list[0])
+                            else:
+                                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
                         return render_template('budget/budget_depence_mensuelle.html', parsed_dep=True, data=data)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
@@ -223,6 +259,12 @@ def upload_file():
                                 flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
                             except:
                                 flash(u'الرجاء التثبت في api_key','warning')
+                        if 'get_r_id' in request.values:
+                            id_list = package_exists(request.values['r_url'], None)
+                            if id_list:
+                                update_ressource(request.values['add_r_id'], id_list[0])
+                            else:
+                                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
                         return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')
@@ -294,3 +336,11 @@ def get_api_data(r_id, type, url, y, m_fr, m_ar):
             'last_year': y,
             'last_month': m_fr,
             'last_month_ar': m_ar}
+
+
+def update_ressource(a_id, r_id):
+    auto = Auto_update.query.get(int(a_id))
+    auto.ressource_id = r_id
+    db.session.commit()
+    flash(u'تم تحيين / الاضافة', 'success')
+    return 0
