@@ -14,6 +14,7 @@ from project import db, bcrypt, app
 from project.email import send_admin_email, send_confirm_email
 import ckanapi
 import unidecode
+import time
 from pprint import pprint as pp
 
 
@@ -81,7 +82,7 @@ def admin():
                              'municipal_admin': u['municipal_admin'],
                              'phone_number': u['phone_number'] if u['phone_number'] else '',
                              'work_position': u['work_position'] if u['work_position'] else ''})
-    return render_template('admin/admin.html', list_user=new_list)
+    return render_template('admin/admin.html', list_user=sorted(new_list,key=lambda k: k["register_on"]))
 
 
 @admin_blueprint.route('/admin/editpwd/<id>', methods=['GET', 'POST'])
