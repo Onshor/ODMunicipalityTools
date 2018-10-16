@@ -12,7 +12,6 @@ from .forms import FourrierForm, DetentionForm, ReleaseForm
 from project.models import Fourrier, Detention, Municipality
 from project import db
 from project.util import save_auto_update, push_api, get_auto_update_data
-from pprint import pprint as pp
 import datetime
 import csv
 import os
@@ -183,15 +182,14 @@ def get_fourrier_file():
     fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
     detention_data = [u.__dict__ for u in Detention.query.filter_by(municipal_id=current_user.municipal_id).all()]
     if 'type_file' in request.values:
-        pp(request.values)
         if request.values['type_file'] == 'list_fourrier':
             for f in fourrier_data:
-                fourrier_file.append({'Nom_Fourrier': decode_unicode(f['Name_Fourrier']),
-                                      'Address_Fourrier': decode_unicode(f['Address_Fourrier']),
+                fourrier_file.append({'Nom_Fourrierre': decode_unicode(f['Name_Fourrier']),
+                                      'Address_Fourrierre': decode_unicode(f['Address_Fourrier']),
                                       'Longitude': f['Longitude'],
                                       'Latitude': f['Laltitude']})
             ref = 'list_fourrierre_' + str(current_user.municipal_id)
-            field_list = ['Nom_Fourrier', 'Address_Fourrier', 'Longitude', 'Latitude']
+            field_list = ['Nom_Fourrierre', 'Address_Fourrierre', 'Longitude', 'Latitude']
             fourrier_f = get_csv_file(fourrier_file, ref, field_list)
             save_auto_update(fourrier_f, 'Fourriere')
             fourrier_url = confirm_url + fourrier_f
@@ -204,17 +202,20 @@ def get_fourrier_file():
                     det_lat = Fourrier.query.filter_by(id=d['fourrier_id']).first().Laltitude
                     detention_file.append({'Longitude': det_lon,
                                            'Latitude': det_lat,
-                                           'Nom_Fourrier': decode_unicode(d['Name_Fourrier']),
-                                           'Date_Detention': d['Date_Detention'].strftime("%Y/%m/%d"),
-                                           'Cause_Detention': decode_unicode(d['Cause_Detention']),
-                                           'Name_Owner': decode_unicode(d['Name_Owner']),
-                                           'Authority_Detention': decode_unicode(d['Authority_Detention']),
-                                           'Type_Detention': decode_unicode(d['Type_Detention']),
-                                           'Registration_Detention': decode_unicode(d['Registration_Detention']),
-                                           'Descr_Detention': decode_unicode(d['Descr_Detention'])})
+                                           'Lieu_fourriere': decode_unicode(d['Name_Fourrier']),
+                                           'Date_enlevement': d['Date_Detention'].strftime("%Y/%m/%d"),
+                                           'Cause_enlevement': decode_unicode(d['Cause_Detention']),
+                                           'Nom_proprietaire': decode_unicode(d['Name_Owner']),
+                                           'Autorite_origine_de_detention': decode_unicode(d['Authority_Detention']),
+                                           'Type_objets_detenues': decode_unicode(d['Type_Detention']),
+                                           'Imatriculation': decode_unicode(d['Registration_Detention']),
+                                           'Desc_objets_detenues': decode_unicode(d['Descr_Detention']),
+                                           'Date_restitution': d['Date_Release'],
+                                           'Num_recu': d['Num_Bon'],
+                                           'Amende': d['montant_sortie']})
             if detention_file:
                 ref = 'list_archive_' + str(current_user.municipal_id)
-                field_list = ['Date_Detention', 'Cause_Detention', 'Authority_Detention', 'Name_Owner', 'Type_Detention', 'Registration_Detention', 'Descr_Detention', 'Nom_Fourrier', 'Longitude', 'Latitude']
+                field_list = ['Date_enlevement', 'Cause_enlevement', 'Autorite_origine_de_detention', 'Nom_proprietaire', 'Type_objets_detenues', 'Imatriculation', 'Desc_objets_detenues', 'Lieu_fourriere', 'Longitude', 'Latitude', 'Date_restitution', 'Num_recu', 'Amende']
                 detention_f = get_csv_file(detention_file, ref, field_list)
                 save_auto_update(detention_f, 'Fourriere')
                 detention_url = confirm_url + detention_f
@@ -229,17 +230,15 @@ def get_fourrier_file():
                     det_lat = Fourrier.query.filter_by(id=d['fourrier_id']).first().Laltitude
                     detention_file.append({'Longitude': det_lon,
                                            'Latitude': det_lat,
-                                           'Nom_Fourrier': decode_unicode(d['Name_Fourrier']),
-                                           'Date_Detention': d['Date_Detention'].strftime("%Y/%m/%d"),
-                                           'Cause_Detention': decode_unicode(d['Cause_Detention']),
-                                           'Name_Owner': decode_unicode(d['Name_Owner']),
-                                           'Authority_Detention': decode_unicode(d['Authority_Detention']),
-                                           'Type_Detention': decode_unicode(d['Type_Detention']),
-                                           'Registration_Detention': decode_unicode(d['Registration_Detention']),
-                                           'Descr_Detention': decode_unicode(d['Descr_Detention'])})
+                                           'Lieu_fourriere': decode_unicode(d['Name_Fourrier']),
+                                           'Date_enlevement': d['Date_Detention'].strftime("%Y/%m/%d"),
+                                           'Autorite_origine_de_detention': decode_unicode(d['Authority_Detention']),
+                                           'Type_objets_detenues': decode_unicode(d['Type_Detention']),
+                                           'Imatriculation': decode_unicode(d['Registration_Detention']),
+                                           'Desc_objets_detenues': decode_unicode(d['Descr_Detention'])})
             if detention_file:
                 ref = 'list_detention_' + str(current_user.municipal_id)
-                field_list = ['Date_Detention', 'Cause_Detention', 'Authority_Detention', 'Name_Owner', 'Type_Detention', 'Registration_Detention', 'Descr_Detention', 'Nom_Fourrier', 'Longitude', 'Latitude']
+                field_list = ['Date_enlevement', 'Autorite_origine_de_detention', 'Type_objets_detenues', 'Imatriculation', 'Desc_objets_detenues', 'Lieu_fourriere', 'Longitude', 'Latitude']
                 detention_f = get_csv_file(detention_file, ref, field_list)
                 save_auto_update(detention_f, 'Fourriere')
                 detention_url = confirm_url + detention_f
