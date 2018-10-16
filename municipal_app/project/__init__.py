@@ -97,12 +97,14 @@ def send_log_email(subject, template):
 
 @app.errorhandler(403)
 def forbidden_page(error):
-    return render_template("errors/403.html"), 403
+    auth = True if current_user.__dict__ else False
+    return render_template("errors/403.html", auth=auth), 403
 
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template("errors/404.html"), 404
+    auth = True if current_user.__dict__ else False
+    return render_template("errors/404.html", auth=auth), 404
 
 
 @app.errorhandler(500)

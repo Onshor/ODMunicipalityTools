@@ -6,7 +6,42 @@
 <p><em>رجوع للصفحة  <a href="{{url_for('main.home')}}">الرئيسية</a></em></p>
 {% endblock %}
 {% else %}
-<h1>500</h1>
-<p>هناك خطأ! <br>سوف نقوم بتصحيحها.</p>
-<p><em>رجوع للصفحة  <a href="{{url_for('main.home')}}">الرئيسية</a></em></p>
+<!DOCTYPE html>
+<html>   
+<head>
+      <!-- meta -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Municipalit tools for open data">
+      <link rel="shortcut icon" type="image/x-icon" href="http://onshor.org/wp-content/uploads/2017/10/icon.png">
+      <meta name="keywords" content="Responsive, HTML5, Municipality, Tunisia, Opendata">
+      <title>Municipal app</title>
+      <meta name="author" content="med dahas">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <!-- styles -->
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-forms.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/entypo.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-core.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-rtl.min.css' ) }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/mouldifi-rtl-core.css' ) }}">     
+</head>
+<body class="login-page">
+      <div class="login-pag-inner">
+            <div class="animatedParent animateOnce z-index-50">
+                  <div class="login-container animated growIn slower">
+                        <div class="login-content">
+                              <div class="login-branding">
+                                    <a href="http://onshor.org/"><img src="http://openbaladiati.tn/img/openbaladiati_tn.png" alt="Onshor" title="Onshor"></a>
+                              </div>
+                              <h1>500</h1>
+                              <p>هناك خطأ! <br>سوف نقوم بتصحيحها.</p>
+                              <p><em>رجوع للصفحة  <a href="{{url_for('main.home')}}">الرئيسية</a></em></p>
+                        </div>
+                  </div>
+            </div>
+      </div>
+</body>
 {% endif %}
