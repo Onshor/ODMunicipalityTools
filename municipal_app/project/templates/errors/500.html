@@ -1,7 +1,12 @@
-
+{% if current_user.is_authenticated() %}
 {% extends "_base.html" %}
 {% block content %}
 <h1>500</h1>
 <p>هناك خطأ! <br>سوف نقوم بتصحيحها.</p>
 <p><em>رجوع للصفحة  <a href="{{url_for('main.home')}}">الرئيسية</a></em></p>
 {% endblock %}
+{% else %}
+<h1>500</h1>
+<p>هناك خطأ! <br>سوف نقوم بتصحيحها.</p>
+<p><em>رجوع للصفحة  <a href="{{url_for('main.home')}}">الرئيسية</a></em></p>
+{% endif %}

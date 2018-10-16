@@ -1,6 +1,11 @@
+{% if current_user.is_authenticated() %}
 {% extends "_base.html" %}
 {% block content %}
 <h1>404</h1>
 <p>صفحة غير موجودة</p>
 <p><em>رجوع للصفحة  <a href="{{url_for('main.home')}}">الرئيسية</a></em></p>
 {% endblock %}
+{% else %}
+<p>صفحة غير موجودة</p>
+<p><em>رجوع للصفحة  <a href="{{url_for('main.home')}}">الرئيسية</a></em></p>
+{% endif %}
