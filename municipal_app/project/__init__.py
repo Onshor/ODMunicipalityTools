@@ -109,5 +109,8 @@ def page_not_found(error):
 def server_error_page(error):
     track = get_current_traceback(skip=1, show_hidden_frames=True, ignore_system_exceptions=False)
     html = render_template("errors/error_mail.html", stacktrace=str(track.plaintext))
-    send_log_email(current_user.name + ' ' + current_user.last_name + ' ' + current_user.municipal_id + ' ' + str(datetime.datetime.now()), html)
+    try:
+        send_log_email(current_user.name + ' ' + current_user.last_name + ' ' + current_user.municipal_id + ' ' + str(datetime.datetime.now()), html)
+    except:
+        send_log_email('server_error', html)
     return render_template("errors/500.html"), 500
