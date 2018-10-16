@@ -45,8 +45,6 @@ def contact():
 
 @user_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    for d in get_list_user():
-        pp(d)
     choices = [{'value': None, 'name': u'المنطقة البلدية'}]
     choices.extend([{'value': _.municipal_id, 'name': _.municipal_name_ar + ' ' + _.municipal_name} for _ in Municipality.query.filter_by(approved=True).all() if _.municipal_id != '1'])
     form = RegisterForm(request.form)
