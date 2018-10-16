@@ -111,6 +111,8 @@ def server_error_page(error):
     html = render_template("errors/error_mail.html", stacktrace=str(track.plaintext))
     try:
         send_log_email(current_user.name + ' ' + current_user.last_name + ' ' + current_user.municipal_id + ' ' + str(datetime.datetime.now()), html)
+        auth = True
     except:
         send_log_email('server_error', html)
-    return render_template("errors/500.html"), 500
+        auth = False
+    return render_template("errors/500.html", auth=auth), 500
