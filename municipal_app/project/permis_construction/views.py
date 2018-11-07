@@ -12,6 +12,7 @@ from flask_login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
 from project.util import save_auto_update, push_api, get_auto_update_data
 from project import db
+from project.util import check_role
 import os
 import datetime
 import csv
@@ -22,16 +23,20 @@ import csv
 ################
 
 permisconst_blueprint = Blueprint('permis_construction', __name__,)
-
+module_id = 2
 
 ################
 #### routes ####
 ################
 
+
 @permisconst_blueprint.route('/permisconst', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
 def permisconst():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -73,6 +78,9 @@ def permisconst():
 @login_required
 @check_confirmed
 def consult_permisconst():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     if 'delete_row' in request.values:
         p_id = Permisconstruct.query.get(int(request.values['type']))
         db.session.delete(p_id)
@@ -88,6 +96,9 @@ def consult_permisconst():
 @login_required
 @check_confirmed
 def update_permisconst(status=None):
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -180,6 +191,9 @@ def update_permisconst(status=None):
 @login_required
 @check_confirmed
 def refuse_permisconst():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -203,6 +217,9 @@ def refuse_permisconst():
 @login_required
 @check_confirmed
 def accept_permisconst():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -233,6 +250,9 @@ def accept_permisconst():
 @login_required
 @check_confirmed
 def api():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     push_api(request.values)
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
     return render_template('permis_construction/permis_construction.html', data=data)
@@ -242,11 +262,14 @@ def api():
 @login_required
 @check_confirmed
 def get_files():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     confirm_url = url_for('main.home', _external=True) + 'static/files/'
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
     encours_list, approved_list, refused_list = [], [], []
     field_refused_list = ['date_refuse']
-    field_approved_list = ['date_attribution', 'date_expiration']# , 'montant_charge_fix', 'montant_charge_ascendant', 'montant_cloture', 'montant_decision', 'montant_total']
+    field_approved_list = ['date_attribution', 'date_expiration']  # , 'montant_charge_fix', 'montant_charge_ascendant', 'montant_cloture', 'montant_decision', 'montant_total']
     for d in data:
         numero_demande = decode_unicode(d['num_demande']) if d['num_demande'] != '' else None
         initial_dict = {'Numero_demande': numero_demande,

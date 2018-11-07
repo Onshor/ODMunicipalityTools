@@ -15,6 +15,7 @@ from list_month import decode_month_ar, decode_month_fr
 from project.ressource_api import update_ressource_api, update_ressource_api_request, package_exists
 from pprint import pprint as pp
 from project.ressource_api import package_exists
+from project.util import check_role
 
 
 ################
@@ -22,7 +23,7 @@ from project.ressource_api import package_exists
 ################
 
 budget_blueprint = Blueprint('budget', __name__,)
-
+module_id = 1
 
 ################
 #### routes ####
@@ -39,6 +40,9 @@ def budget():
 @login_required
 @check_confirmed
 def budget_annuel():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         confirm_url = url_for('main.home', _external=True) + 'static/files/'
         recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year = csv_annuelle_file()
@@ -78,6 +82,9 @@ def budget_annuel():
 @login_required
 @check_confirmed
 def budget_depence_mensuelle():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         if check_monthly_data("Depence"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
@@ -109,6 +116,9 @@ def budget_depence_mensuelle():
 @login_required
 @check_confirmed
 def budget_recette_mensuelle():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         if check_monthly_data("Recette"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
@@ -140,6 +150,9 @@ def budget_recette_mensuelle():
 @login_required
 @check_confirmed
 def upload_file():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No selected file')
@@ -273,19 +286,19 @@ def upload_file():
     return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
 
 
-@budget_blueprint.route('/download_file', methods=['GET', 'POST'])
-@login_required
-@check_confirmed
-def download_file():
-    if request.method == 'GET':
-        confirm_url = url_for('main.home', _external=True) + 'static/files/'
-        recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year = csv_annuelle_file()
-        rcs = confirm_url + recette_link_simple
-        dps = confirm_url + depecence_link_simple
-        rcy = confirm_url + recette_link_per_year
-        dpy = confirm_url + depecence_link_per_year
-        return render_template('budget/budget.html', rcs=rcs, dps=dps, rcy=rcy, dpy=dpy, parsed_annuel=True)
-    return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
+# @budget_blueprint.route('/download_file', methods=['GET', 'POST'])
+# @login_required
+# @check_confirmed
+# def download_file():
+#     if request.method == 'GET':
+#         confirm_url = url_for('main.home', _external=True) + 'static/files/'
+#         recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year = csv_annuelle_file()
+#         rcs = confirm_url + recette_link_simple
+#         dps = confirm_url + depecence_link_simple
+#         rcy = confirm_url + recette_link_per_year
+#         dpy = confirm_url + depecence_link_per_year
+#         return render_template('budget/budget.html', rcs=rcs, dps=dps, rcy=rcy, dpy=dpy, parsed_annuel=True)
+#     return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
 
 
 def decode_mm_ar(months):

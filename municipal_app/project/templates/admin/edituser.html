@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					<div class="col-md-6">الدور
-						<select class="form-control" id="maj" name="role" readonly>
+						<select class="form-control" id="maj" name="fonction" readonly>
 							{% if current_user.admin %}
 							{% if data.admin %}
 							<option value="0">مشرف على منظومة</option>
@@ -51,22 +51,36 @@
 							{% endif %}
 							{% else %}
 							{% if data.municipal_admin %}
-							<option value="2">مشرف على البلدية</option>
-							<option value="1">مستخدم بلدي عادي</option>
+							<option value="1">مشرف على البلدية</option>
+							<option value="2">مستخدم بلدي عادي</option>
 							{% else %}
-							<option value="1">مستخدم بلدي عادي</option>
-							<option value="2">مشرف على البلدية</option>
+							<option value="2">مستخدم بلدي عادي</option>
+							<option value="1">مشرف على البلدية</option>
 							{% endif %}
 							{% endif %}
 						</select>
 					</div>
 				</div>
 				<div class='row'>
+					{% if current_user.admin %}
 					<div class="col-md-6">البلدية
 						<select class="form-control js-example-basic-single" id="maj" name="municipal_id" placeholder="المنطقة البلدية" readonly>
 							<option value="{{data.municipal_id}}">{{user_mun_name}}</option>
 							{% for m in data_mun %}
 							<option value="{{m['value']}}">{{m['name']}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					{% endif %}
+					<div class="col-md-6">المهام
+						<select name="role" class="select2 form-control" data-placeholder="" multiple>
+							<!-- <option value="125" aria-selected="true">Select states</option> -->
+							{% for m in list_modules%}
+							{% if m['role'] %}
+							<option value="{{m['id']}}" selected="True">{{m['name_ar']}}</option>
+							{% else %}
+							<option value="{{m['id']}}">{{m['name_ar']}}</option>
+							{% endif %}
 							{% endfor %}
 						</select>
 					</div>
@@ -124,6 +138,11 @@ $(document).ready(function()
 			'display': 'none',
 		});  
 	});
+
+});
+$(".select2").select2();
+$(".select2-placeholer").select2({
+	allowClear: true
 
 });
 </script>

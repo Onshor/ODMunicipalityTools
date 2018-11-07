@@ -138,7 +138,7 @@
           {% elif d['municipal_admin'] %}
           مشرف على البلدية
           {% else %}
-          مستخدم بلدي عادي
+          {{d['roles']}}
           {% endif %}
         </td>
         <td>{% if d['confirmed'] %}
@@ -181,7 +181,7 @@
             {% elif d['municipal_admin'] %}
             مشرف على البلدية
             {% else %}
-            مستخدم بلدي عادي
+            {{ d['roles'] }}
             {% endif %}
           </td>
           <td>{% if d['confirmed'] %}
@@ -225,7 +225,7 @@
               {% elif d['municipal_admin'] %}
               مشرف على البلدية
               {% else %}
-              مستخدم بلدي عادي
+              {{ d['roles'] }}
               {% endif %}
             </td>
             <td>{% if d['confirmed'] %}

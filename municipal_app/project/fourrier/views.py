@@ -13,6 +13,7 @@ from project.models import Fourrier, Detention, Municipality
 from project import db
 from project.util import save_auto_update, push_api, get_auto_update_data
 import datetime
+from project.util import check_role
 import csv
 import os
 
@@ -21,16 +22,20 @@ import os
 ################
 
 fourrier_blueprint = Blueprint('fourrier', __name__,)
-
+module_id = 3
 
 ################
 #### routes ####
 ################
 
+
 @fourrier_blueprint.route('/add_fourrier', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
 def add_fourrier():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -55,6 +60,9 @@ def add_fourrier():
 @login_required
 @check_confirmed
 def add_detention():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     form = DetentionForm(request.form)
     form.Name_Fourrier2.choices = [(None, '')]
     form.Name_Fourrier2.choices.extend([(str(row.id), row.Name_Fourrier) for row in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()])
@@ -86,6 +94,9 @@ def add_detention():
 @login_required
 @check_confirmed
 def fourrier():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
     fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
     detention_data = [u.__dict__ for u in Detention.query.filter_by(municipal_id=current_user.municipal_id).all()]
     if 'delete_row' in request.values:
@@ -108,6 +119,9 @@ def fourrier():
 @login_required
 @check_confirmed
 def update_fourrier():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -138,6 +152,9 @@ def update_fourrier():
 @login_required
 @check_confirmed
 def update_detention():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
     detention_data = Detention.query.filter_by(id=request.values['d_id']).first().__dict__
     save = True
     name_fourrier_option = [(str(row.id), row.Name_Fourrier) for row in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
@@ -167,6 +184,9 @@ def update_detention():
 @login_required
 @check_confirmed
 def api():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
     push_api(request.values)
     fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
     detention_data = [u.__dict__ for u in Detention.query.filter_by(municipal_id=current_user.municipal_id).all()]
@@ -177,6 +197,9 @@ def api():
 @login_required
 @check_confirmed
 def get_fourrier_file():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     confirm_url = url_for('main.home', _external=True) + 'static/files/'
     fourrier_file, detention_file = [], []
     fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
@@ -253,6 +276,9 @@ def get_fourrier_file():
 @login_required
 @check_confirmed
 def archiver_fourrier(id):
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
     form = ReleaseForm(request.form)
     if form.validate_on_submit():
         det = Detention.query.get(int(id))

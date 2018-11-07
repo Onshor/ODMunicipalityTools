@@ -1,4 +1,5 @@
 # manage.py
+# -*- coding: utf-8 -*
 
 import datetime
 import os
@@ -10,7 +11,7 @@ from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
 
 from project import app, db
-from project.models import User, Municipality, Auto_update
+from project.models import User, Municipality, Auto_update, Modules, Users_Models
 from list_municipality import municipalitys
 from project.config import DevelopmentConfig as APP_SETTINGS
 
@@ -80,6 +81,20 @@ def drop_db():
 
 
 @manager.command
+def modules_db():
+    """Create list module."""
+    mod = [{'name': 'Budget', 'name_ar': u'الميزانية'},
+           {'name': 'Permis_du_construction', 'name_ar': u'تراخيص البناء'},
+           {'name': 'Fourriere', 'name_ar': u'الحجز البلدي'},
+           {'name': 'Property_municipal', 'name_ar': u'الملك البلدي'}]
+    for m in mod:
+        db.session.add(Modules(
+            name=m['name'],
+            name_ar=m['name_ar']))
+        db.session.commit()
+
+
+@manager.command
 def create_admin():
     """Creates the admin user."""
     db.session.add(User(
@@ -92,7 +107,7 @@ def create_admin():
         last_name='admin',
         municipal_id='1',
         last_login=datetime.datetime.now(),
-	activate=True,
+	    activate=True,
         deleted=False)
         # municipal_admin=False)
     )
@@ -139,6 +154,20 @@ def create_municipality():
             approved=False,
             deleted=False))
         db.session.commit()
+
+
+@manager.command
+def user_module_set():
+    list_user = [_.id for _ in User.query.all()]
+    list_modules = [_.id for _ in Modules.query.all()]
+    for u in list_user:
+        for m in list_modules:
+            if not Users_Models.query.filter_by(user_id=u, modules_id=m).first():
+                db.session.add(Users_Models(
+                    user_id=u,
+                    modules_id=m))
+                db.session.commit()
+    return 0
 
 
 @manager.command

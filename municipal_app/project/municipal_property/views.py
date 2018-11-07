@@ -12,7 +12,7 @@ from flask_login import login_required, current_user
 from .forms import ProprietyForm
 from project import db
 from project.util import save_auto_update, push_api, get_auto_update_data
-from pprint import pprint as pp
+from project.util import check_role
 import csv
 import os
 
@@ -21,7 +21,7 @@ import os
 ################
 
 municipal_property_blueprint = Blueprint('municipal_property', __name__,)
-
+module_id = 4
 
 ################
 #### routes ####
@@ -31,6 +31,9 @@ municipal_property_blueprint = Blueprint('municipal_property', __name__,)
 @login_required
 @check_confirmed
 def add_municipal_property():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     form = ProprietyForm(request.form)
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
@@ -60,6 +63,9 @@ def add_municipal_property():
 @login_required
 @check_confirmed
 def consult_municipal_property():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
     if 'delete_row' in request.values:
         mun_property = Proprietemunicipal.query.get(int(request.values['type']))
@@ -74,6 +80,9 @@ def consult_municipal_property():
 @login_required
 @check_confirmed
 def update_municipal_property():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -111,6 +120,9 @@ def update_municipal_property():
 @login_required
 @check_confirmed
 def api():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home')) 
     push_api(request.values)
     data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
     return render_template('municipal_property/municipal_property.html', data=data)
@@ -120,6 +132,9 @@ def api():
 @login_required
 @check_confirmed
 def get_property_file():
+    if not check_role(module_id):
+        flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
+        return redirect(url_for('main.home'))
     private_list, public_list = [], []
     if 'project' in url_for('main.home', _external=True) + 'static/files/':
         confirm_url = url_for('main.home', _external=True) + 'static/files/'

@@ -373,3 +373,31 @@ class File_log(db.Model):
 
     def get_id(self):
         return self.id
+
+
+class Modules(db.Model):
+    __tablename__ = "modules"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    name_ar = db.Column(db.String)
+
+    def __init__(self, name, name_ar):
+        self.name = name
+        self.name_ar = name_ar
+
+    def get_id(self):
+        return self.id
+
+
+class Users_Models(db.Model):
+    __tablename__ = "users_modules"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    modules_id = db.Column(db.Integer, db.ForeignKey('modules.id'))
+
+    def __init__(self, user_id, modules_id):
+        self.user_id = user_id
+        self.modules_id = modules_id
+
+    def get_id(self):
+        return self.id

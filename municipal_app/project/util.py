@@ -2,11 +2,17 @@
 # -*- coding: utf-8 -*
 
 from project import db
-from project.models import Auto_update, Municipality
+from project.models import Auto_update, Municipality, Users_Models
 from flask_login import current_user
 from project.ressource_api import update_ressource_api, update_ressource_api_request, package_exists
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 
+
+def check_role(module_id):
+    if Users_Models.query.filter_by(user_id=current_user.id, modules_id=module_id).first() or current_user.admin or current_user.municipal_admin:
+        return True
+    else:
+        return False
 
 def save_auto_update(file_name, category):
     auto_data = [d.file_name for d in Auto_update.query.filter_by(municipal_id=current_user.municipal_id).all()]

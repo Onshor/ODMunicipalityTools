@@ -8,11 +8,12 @@
 from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
-from project.models import User, Municipality
+from project.models import User, Municipality, Modules, Users_Models
 from .forms import ChangePwdForm, AddmunForm
 from project import db, bcrypt, app
 from project.email import send_admin_email, send_confirm_email
 import ckanapi
+import json
 import unidecode
 import time
 from pprint import pprint as pp
@@ -62,27 +63,30 @@ def admin():
             flash(u'هذا المستعمل غير معتمد ، الرجاء اعتماده قبل تفعيله','warning')
         return redirect(url_for('admin.admin'))
     new_list = []
-    list_user = [u.__dict__ for u in User.query.all()]
+    list_user = [u.__dict__ for u in User.query.all()] if current_user.admin else [u.__dict__ for u in User.query.filter_by(municipal_id=current_user.municipal_id).all()]
     for u in list_user:
         if not u['deleted'] and int(u['municipal_id']) != 1:
+            list_id = [_.modules_id for _ in Users_Models.query.filter_by(user_id=u['id']).all()]
+            roles = ' ,'.join([Modules.query.get(i).name_ar for i in list_id])
             mun_name_ar = Municipality.query.filter_by(municipal_id=u['municipal_id']).first().municipal_name_ar  if int(u['municipal_id']) != 1 else 'Super Admin'
             mun_name = mun_name_ar + ' ' + Municipality.query.filter_by(municipal_id=u['municipal_id']).first().municipal_name  if int(u['municipal_id']) != 1 else 'Super Admin'
             new_list.append({'confirmed': u['confirmed'],
                              'confirmed_on': u['confirmed_on'].strftime("%d/%m/%Y") if u['confirmed'] and u['confirmed_on'] else None,
                              'name': u['name'],
+                             'roles': roles, 
                              'id': u['id'],
                              'email': u['email'],
                              'last_name': u['last_name'],
                              'municipal_id': u['municipal_id'],
                              'municipality': mun_name,
                              'register_on': u['registered_on'].strftime("%d/%m/%Y"),
-                             'last_login': u['last_login'] if u['last_login'] else '',
+                             'last_login': u['last_login'] if u['last_login'] else None,
                              'activate': u['activate'],
                              'admin': u['admin'],
                              'municipal_admin': u['municipal_admin'],
                              'phone_number': u['phone_number'] if u['phone_number'] else '',
                              'work_position': u['work_position'] if u['work_position'] else ''})
-    return render_template('admin/admin.html', list_user=sorted(new_list,key=lambda k: k["register_on"]))
+    return render_template('admin/admin.html', list_user=sorted(new_list,key=lambda k: k["last_login"], reverse=True))
 
 
 @admin_blueprint.route('/admin/editpwd/<id>', methods=['GET', 'POST'])
@@ -207,9 +211,16 @@ def edit_admin_mun(id):
 @login_required
 @check_confirmed
 def edit_admin_user(id):
-    save = True
-    if current_user.admin or current_user.municipal_admin:
+    save, list_modules_user = True, []
+    if current_user.admin or (current_user.municipal_admin and current_user.municipal_id == User.query.get(int(id)).municipal_id):
         data = User.query.filter_by(id=int(id)).first()
+        list_modules = [m.__dict__ for m in Modules.query.all()]
+        for r in list_modules:
+            if Users_Models.query.filter_by(user_id=int(id), modules_id=int(r['id'])).first():
+                r.update({'role': True})
+            else:
+                r.update({'role': False})
+            list_modules_user.append(r)
         if 'edit' in request.values:
             if check_string(request.values['name']) and check_string(request.values['last_name']):
                 if  not check_email(request.values['email']):
@@ -219,12 +230,13 @@ def edit_admin_user(id):
                     save = False
                     flash(u'البريد الإلكتروني موجود', 'danger')
                 if save:
+                    get_role(request, int(id))
                     user = User.query.get(int(request.values['id']))
                     user.name = request.values['name']
-                    user.admin = get_role(request.values['role'])['admin']
-                    user.municipal_admin = get_role(request.values['role'])['municipal_admin']
+                    user.admin = get_post(request.values['fonction'])['admin']
+                    user.municipal_admin = get_post(request.values['fonction'])['municipal_admin']
                     user.last_name = request.values['last_name']
-                    user.municipal_id = request.values['municipal_id']
+                    user.municipal_id = request.values['municipal_id'] if current_user.admin else user.municipal_id
                     user.email = request.values['email']
                     user.work_position = request.values['work_position'] if request.values['work_position'] else None
                     user.phone_number = request.values['phone_number'] if request.values['phone_number'] else None
@@ -238,7 +250,7 @@ def edit_admin_user(id):
         data_mun = [{'value':_['municipal_id'], 'name':_['municipal_name'] + ' ' + _['municipal_name_ar']} for _ in list_mun if _['approved'] and not _['deleted']]
         mun = Municipality.query.filter_by(municipal_id=str(data.municipal_id)).first()
         user_mun_name = mun.municipal_name + ' ' + mun.municipal_name_ar
-        return render_template('admin/edituser.html', data=data, data_mun=data_mun, user_mun_name=user_mun_name)
+        return render_template('admin/edituser.html', data=data, data_mun=data_mun, user_mun_name=user_mun_name, list_modules=list_modules_user)
     else:
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
         return redirect(url_for('main.home'))
@@ -264,7 +276,20 @@ def add_admin_mun():
     return render_template('admin/add_mun.html', form=form)
 
 
-def get_role(role):
+def get_role(request, user_id):
+    role_list = request.values.getlist('role')
+    list_id = [_.id for _ in Users_Models.query.filter_by(user_id=user_id).all()]
+    for m_id in list_id:
+        db.session.delete(Users_Models.query.get(m_id))
+    if role_list:
+        for r in role_list:
+            db.session.add(Users_Models(
+                    user_id=user_id,
+                    modules_id=int(r)))
+            db.session.commit()    
+
+
+def get_post(role):
     if int(role) == 0:
         return {'admin': True, 'municipal_admin': False}
     elif int(role) == 1:
