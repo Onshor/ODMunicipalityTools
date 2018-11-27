@@ -101,6 +101,18 @@
     </div>
     <div class="line-dashed"></div>
     <div class="form-group"> 
+      <label class="col-sm-3 control-label">المهندس المعماري *</label> 
+      <div class="col-sm-5"> 
+        {{ form.nom_architect( class="form-control") }}
+        {% if form.nom_architect.errors %}
+        {% for error in form.nom_architect.errors %}
+        <h5>هذه الخانة مطلوبه</h5>
+        {% endfor %}
+        {% endif %}
+      </div> 
+    </div>
+    <div class="line-dashed"></div>
+    <div class="form-group"> 
       <label class="col-sm-3 control-label">المساحة *</label> 
       <div class="col-sm-5"> 
         {{ form.surface( class="form-control") }}

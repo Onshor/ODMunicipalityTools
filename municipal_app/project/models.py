@@ -189,11 +189,12 @@ class Permisconstruct(db.Model):
     mont_decision = db.Column(db.Integer, nullable=True)
     mont_total = db.Column(db.Integer, nullable=True)
     refuse_note = db.Column(db.String, nullable=True)
-
+    nom_architect = db.Column(db.String, nullable=True)
+    reserve_note = db.Column(db.String, nullable=True)
 
     def __init__(self, municipal_id, user_id, num_demande, date_depot, nom_titulaire, num_cin, type_construct, permis_status,
                  mont_cloture, mont_charge_ascend, mont_charge_fix, date_refuse, num_permis, zone_municipal, address, desc_construct,
-                 date_attribution, date_expiration, longitude, laltitude, mont_decision, mont_total, surface, refuse_note):
+                 date_attribution, date_expiration, longitude, laltitude, mont_decision, mont_total, surface, refuse_note, nom_architect=None, reserve_note=None):
         self.municipal_id = municipal_id
         self.user_id = user_id
         self.num_demande = num_demande
@@ -218,6 +219,8 @@ class Permisconstruct(db.Model):
         self.mont_decision = mont_decision
         self.mont_total = mont_total
         self.refuse_note = refuse_note
+        self.nom_architect = nom_architect
+        self.reserve_note = reserve_note
 
     def get_id(self):
         return self.id

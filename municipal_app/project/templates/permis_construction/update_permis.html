@@ -11,7 +11,11 @@
 	</div>
 	<div class="panel-body">
 		<div class='row'>
+			{% if approved_with %}
+			<form action="/update_permisconst/accept_with" method="POST">
+			{% else %}
 			<form action="/update_permisconst/accept" method="POST">
+			{% endif %}
 				<div class="row">
 					<div class="col-md-6">عدد قرار رخصة البناء * 
 						<input type="number" class="form-control" placeholder="" name='num_permis' value=''>							
@@ -35,6 +39,12 @@
 					<div class="col-md-6">المساحة 
 						<input type="text" class="form-control" placeholder="" name='surface' value='{{permis_data.surface}}' readonly>							
 					</div>
+					{% if approved_with %}
+					<div class="col-md-6">ملاحظات التحفظ *
+						<textarea type="textarea" class="form-control" placeholder="" name='reserve_note' value=''>
+						</textarea>
+					</div>
+					{% endif %}
 				</div>
 				<div class='row'>
 					<div class="col-md-6">
@@ -145,15 +155,22 @@
 								</div>
 								<div class="col-md-3">رقم المطلب<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='num_demande' value='{{permis_data.num_demande}}' id ="maj" readonly></div></div>
 								<div class="col-md-3">رقم بطاقة التعريف أو بطاقة الاقامة <div class="form-group-inner"><input type="number" name='num_cin' class="form-control" placeholder="" id ="maj" value='{{permis_data.num_cin}}' readonly></div></div>
-								<div class="col-md-3">العنوان<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='address' value='{{permis_data.address}}' id ="maj" readonly></div></div>
+								{% if permis_data.nom_architect %}
+								<div class="col-md-3">المهندس المعماري<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='nom_architect' value='{{permis_data.nom_architect}}' id ="maj" readonly></div></div>
+								{% else %}
+								<div class="col-md-3">المهندس المعماري<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='nom_architect' value='' id ="maj" readonly></div></div>
+								{% endif %}
 							</div>                    
 							<div class="row">
+								<div class="col-md-3">العنوان<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='address' value='{{permis_data.address}}' id ="maj" readonly></div></div>
 								<div class="col-md-3">نوع البناء<div class="form-group-inner"><input type="text" class="form-control" name='type_construct' placeholder="" value='{{permis_data.type_construct}}' id ="maj" readonly></div></div>
 								<div class="col-md-3">المساحة<div class="form-group-inner"><input type="text" class="form-control" placeholder="" name='surface' value='{{permis_data.surface}}' id ="maj" readonly></div></div>
-								<div class="col-md-3">إسم و لقب صاحب الرخصة<div class="form-group-inner"><input type="text" class="form-control"  placeholder="" name='nom_titulaire' value='{{permis_data.nom_titulaire}}' id ="maj" readonly></div></div>					
-								<div class="col-md-3">وصف الأشغال<div class="form-group"><textarea type="textarea" class="form-control"  name='desc_construct' value='{{permis_data.desc_construct}}' id ="maj" readonly>{{permis_data.desc_construct}}</textarea></div></div>
+								<div class="col-md-3">إسم و لقب صاحب الرخصة<div class="form-group-inner"><input type="text" class="form-control"  placeholder="" name='nom_titulaire' value='{{permis_data.nom_titulaire}}' id ="maj" readonly></div></div>
 							</div>
-							{% if permis_data.permis_status == 'approved' %}
+							<div class="row">
+								<div class="col-md-6">وصف الأشغال<div class="form-group"><textarea type="textarea" class="form-control"  name='desc_construct' value='{{permis_data.desc_construct}}' id ="maj" readonly>{{permis_data.desc_construct}}</textarea></div></div>
+							</div>
+							{% if permis_data.permis_status == 'approved' or permis_data.permis_status == 'approved_with'%}
 							<div class="row">
 								<div class="col-md-3">تاريخ اسناد الرخصة
 									<div id="date-popup2" class="input-group date">
@@ -178,6 +195,17 @@
 									</div>
 								</div>
 							</div>
+							{% if permis_data.permis_status == 'approved_with'%}
+							<div class="row">
+								<div class="col-md-6">ملاحظات التحفظ<div class="form-group"><textarea type="textarea" class="form-control"  name='reserve_note' value='{{permis_data.reserve_note}}' id ="maj" readonly>{{permis_data.reserve_note}}</textarea></div></div>
+								<!-- <div class='col-md-2'>
+									<div class="form-group">&nbsp
+										<button class="btn btn-success form-control" type="submit">قبول الرخصة بدون تحفظ</button>
+										<input type="hidden" name="to_approved" value="yoooooooooooo">
+									</div>
+								</div> -->
+							</div>
+							{% endif %}
 							{% endif %}
 							{% if permis_data.permis_status == 'refused' %}
 							<div class="row">
@@ -203,8 +231,6 @@
 									</div>
 								</div>
 								<div class='col-md-8'>
-									<!-- <div id="mapid" style="width: 500px; height: 500px; position: relative; outline: none;" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0">
-									</div> -->
 								</div>
 							</div>
 
@@ -242,18 +268,49 @@
 				<div class='col-md-2'>
 					<div class="btn-group" id='btnEditaccept'>
 						<button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<i class="icon-down-dir"></i>
-							تغير الوضعيّة
+							<i class="icon-down-dir"></i>تغير الوضعيّة
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							{% if permis_data.permis_status != 'approved' %}
+							{% if permis_data.permis_status == 'refused' %}
 							<form action="/update_permisconst/accept" method="POST"> 
 								<input href='/update_permisconst/accept' id='btnEditaccept' type="submit" class="btn btn-success btn-outline btn-block" name='button' value= 'قبول الرخصة'>
 								<input type="hidden" name="type" value="{{permis_id}}">
 								<input type="hidden" name="name" value="{{name}}">
 							</form>
-							{% endif %}
-							{% if permis_data.permis_status != 'refused' %} 
+							<form action="/update_permisconst/accept_with" method="POST"> 
+								<input href='/update_permisconst/accept' id='btnEditaccept' type="submit" class="btn btn-success btn-outline btn-block" name='button' value= 'قبول الرخصة بتحفظ'>
+								<input type="hidden" name="type" value="{{permis_id}}">
+								<input type="hidden" name="name" value="{{name}}">
+							</form>
+							{% elif permis_data.permis_status == 'approved' %} 
+							<form action="/update_permisconst/refuse" method="POST">
+								<input id='btnEditrefuse' class="btn btn-red btn-outline btn-block" type='submit' name='button' value='رفض الرخصة'>
+								<input type="hidden" name="type" value="{{permis_id}}">
+								<input type="hidden" name="name" value="{{name}}">
+							</form>
+							{% elif permis_data.permis_status == 'approved_with' %}
+							<form action="/consult_permisconst" method="POST"> 
+								<input href='/consult_permisconst' id='btnEditaccept' type="submit" class="btn btn-success btn-outline btn-block" name='button' value= 'قبول الرخصة'>
+								<input type="hidden" name="type" value="{{permis_id}}">
+								<input type="hidden" name="name" value="{{name}}">
+								<input type="hidden" name="approved" value="approved">
+							</form>
+							<form action="/update_permisconst/refuse" method="POST">
+								<input id='btnEditrefuse' class="btn btn-red btn-outline btn-block" type='submit' name='button' value='رفض الرخصة'>
+								<input type="hidden" name="type" value="{{permis_id}}">
+								<input type="hidden" name="name" value="{{name}}">
+							</form>
+							{% else %}
+							<form action="/update_permisconst/accept" method="POST"> 
+								<input href='/update_permisconst/accept' id='btnEditaccept' type="submit" class="btn btn-success btn-outline btn-block" name='button' value= 'قبول الرخصة'>
+								<input type="hidden" name="type" value="{{permis_id}}">
+								<input type="hidden" name="name" value="{{name}}">
+							</form>
+							<form action="/update_permisconst/accept_with" method="POST"> 
+								<input href='/update_permisconst/accept' id='btnEditaccept' type="submit" class="btn btn-success btn-outline btn-block" name='button' value= 'قبول الرخصة بتحفظ'>
+								<input type="hidden" name="type" value="{{permis_id}}">
+								<input type="hidden" name="name" value="{{name}}">
+							</form>
 							<form action="/update_permisconst/refuse" method="POST">
 								<input id='btnEditrefuse' class="btn btn-red btn-outline btn-block" type='submit' name='button' value='رفض الرخصة'>
 								<input type="hidden" name="type" value="{{permis_id}}">

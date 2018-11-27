@@ -13,6 +13,7 @@ from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
 from project.util import save_auto_update, push_api, get_auto_update_data
 from project import db
 from project.util import check_role
+from pprint import pprint as pp
 import os
 import datetime
 import csv
@@ -65,7 +66,8 @@ def permisconst():
                                  mont_decision=0,
                                  mont_total=0,
                                  surface=form.surface.data,
-                                 refuse_note=None
+                                 refuse_note=None,
+                                 nom_architect=form.nom_architect.data
                                  )
         db.session.add(permis)
         db.session.commit()
@@ -80,7 +82,14 @@ def permisconst():
 def consult_permisconst():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
+    if 'approved' in request.values:
+        p_id = Permisconstruct.query.get(int(request.values['type']))
+        p_id.reserve_note = None
+        p_id.permis_status = 'approved'
+        db.session.commit()
+        flash(u'تم تغير وضعية الرخصة إلى مقبولة ', 'success')
+        return redirect(url_for('permis_construction.consult_permisconst'))
     if 'delete_row' in request.values:
         p_id = Permisconstruct.query.get(int(request.values['type']))
         db.session.delete(p_id)
@@ -98,7 +107,7 @@ def consult_permisconst():
 def update_permisconst(status=None):
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -121,6 +130,9 @@ def update_permisconst(status=None):
             if not check_float(request.values['surface']):
                 flash(u'صيغة المساحة خاطئة', 'warning')
                 save = False
+            if not request.values['nom_architect'].strip():
+                flash(u'إسم المهندس المعماري إجباري', 'warning')
+                save = False
             if save:
                 permis = Permisconstruct.query.get(int(permis_id))
                 permis.num_cin = request.values['num_cin']
@@ -133,10 +145,17 @@ def update_permisconst(status=None):
                 permis.desc_construct = request.values['desc_construct']
                 permis.surface = request.values['surface']
                 permis.type_construct = request.values['type_construct']
+                permis.nom_architect = request.values['nom_architect']
                 if request.values['permis_status'] in 'refused':
                     permis.date_refuse = request.values['date_refuse']
                     permis.refuse_note = request.values['refuse_note']
                 if request.values['permis_status'] in "approved":
+                    permis.date_attribution = request.values['date_attribution']
+                    permis.date_expiration = request.values['date_expiration']
+                    permis.num_permis = request.values['num_permis']
+                    permis.mont_total = calculer_montant(float(request.values['surface']))
+                if request.values['permis_status'] == "approved_with":
+                    permis.reserve_note = request.values['reserve_note']
                     permis.date_attribution = request.values['date_attribution']
                     permis.date_expiration = request.values['date_expiration']
                     permis.num_permis = request.values['num_permis']
@@ -157,12 +176,17 @@ def update_permisconst(status=None):
                 permis.date_attribution = None
                 permis.date_expiration = None
                 permis.mont_total = None
+                permis.reserve_note = None
                 permis.permis_status = 'refused'
                 db.session.commit()
                 flash(u'تم تحيين الرخصة', 'success')
                 return redirect(url_for('permis_construction.consult_permisconst'))
         return render_template('permis_construction/update_permis.html', permis_id=permis_id, name=name, permis_data=permis_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long], refuse=True)
     elif 'accept' in status:
+        if 'with' in status:
+            approved_with = True
+        else:
+            approved_with = False
         if 'date_attribution' in request.values:
             if not check_date(request.values['date_attribution']):
                 flash(u'تاريخ اسناد الرخصة مفروض', 'danger')
@@ -171,6 +195,7 @@ def update_permisconst(status=None):
                 flash(u'عدد قرار رخصة البناء مفروض', 'danger')
                 save = False
             if save:
+                pp(request.values['reserve_note'])
                 permis = Permisconstruct.query.get(int(permis_id))
                 permis.num_permis = request.values['num_permis']
                 permis.date_attribution = request.values['date_attribution']
@@ -178,12 +203,17 @@ def update_permisconst(status=None):
                 permis.mont_total = request.values['mont_total']
                 permis.date_refuse = None
                 permis.refuse_note = None
-                permis.permis_status = 'approved'
+                if approved_with:
+                    permis.permis_status = 'approved_with'
+                    permis.reserve_note = request.values['reserve_note']
+                else:
+                    permis.permis_status = 'approved'
+                    permis.reserve_note = None
                 db.session.commit()
                 flash(u'تم تحيين الرخصة', 'success')
                 return redirect(url_for('permis_construction.consult_permisconst'))
         montant_total = int(round(calculer_montant(permis_data['surface'])))
-        return render_template('permis_construction/update_permis.html', permis_id=permis_id, name=name, permis_data=permis_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long], accept=True, montant_total=montant_total)
+        return render_template('permis_construction/update_permis.html', permis_id=permis_id, name=name, permis_data=permis_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long], accept=True, montant_total=montant_total, approved_with=approved_with)
     return render_template('permis_construction/update_permis.html', permis_id=permis_id, name=name, permis_data=permis_data, mun_name=mun_name, mun_cord=[mun_lat, mun_long])
 
 
@@ -193,7 +223,7 @@ def update_permisconst(status=None):
 def refuse_permisconst():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat

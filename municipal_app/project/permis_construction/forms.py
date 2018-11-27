@@ -6,7 +6,6 @@ from wtforms import TextField, TextAreaField, FloatField, DateField, IntegerFiel
 from wtforms.validators import DataRequired, Length
 
 
-
 class PermisencourForm(Form):
     num_demande = TextField(u'رقم المطلب', validators=[Length(max=80)])
     date_depot = DateField(u'تاريخ إيداع المطلب', format='%Y/%m/%d')
@@ -19,6 +18,7 @@ class PermisencourForm(Form):
     longitude = FloatField('Longitude', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
     latitude = FloatField('Latitude', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
     surface = FloatField('surface', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
+    nom_architect = TextField('nom_architect', validators=[DataRequired(message=u'هذه الخانة اجباريه')])
 
 
 class PermisrefuseForm(Form):
