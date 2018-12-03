@@ -407,7 +407,7 @@ class Users_Models(db.Model):
 
 
 class Data_Publisher(db.Model):
-    __tablename__ = "data_publicher"
+    __tablename__ = "data_publisher"
     id = db.Column(db.Integer, primary_key=True)
     municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
