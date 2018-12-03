@@ -404,3 +404,21 @@ class Users_Models(db.Model):
 
     def get_id(self):
         return self.id
+
+
+class Data_Publisher(db.Model):
+    __tablename__ = "data_publicher"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    modules_id = db.Column(db.Integer, db.ForeignKey('modules.id'))
+    data_pub = db.Column(JSON)
+
+    def __init__(self, municipal_id, user_id, modules_id, data_pub):
+        self.municipal_id = municipal_id
+        self.user_id = user_id
+        self.modules_id = modules_id
+        self.data_pub = data_pub
+
+    def get_id(self):
+        return self.id
