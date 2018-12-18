@@ -6,6 +6,7 @@ import os
 import unittest
 import coverage
 import csv
+import json
 from pandas import pandas as pd
 from pprint import pprint as pp
 
@@ -13,7 +14,7 @@ from flask_script import Manager, Server
 from flask_migrate import Migrate, MigrateCommand
 
 from project import app, db
-from project.models import User, Municipality, Auto_update, Modules, Users_Models, Permisconstruct, Proprietemunicipal, Fourrier, Budget_parametre, File_log
+from project.models import User, Municipality, Auto_update, Modules, Users_Models, Permisconstruct, Proprietemunicipal, Fourrier, Budget_parametre, File_log, Data_Publisher
 from list_municipality import municipalitys
 from project.config import DevelopmentConfig as APP_SETTINGS
 
@@ -28,6 +29,108 @@ manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 manager.add_command("runserver", Server(use_debugger=True, use_reloader=True))
 # manager.add_command("runserver", Server(use_reloader=True))
+
+data_pub_permis = [{"id": 2, "publisher": [{'type': 'approved', "pub": [{'db_name': 'num_permis', 'pub_name': 'Numero_permis_construction', 'ar_name': u'عدد قرار رخصة البناء', 'status': True},
+                                                                  {'db_name': 'num_demande', 'pub_name': 'Numero_demande', 'ar_name': u'رقم المطلب', 'status': True},
+                                                                  {'db_name': 'date_depot', 'pub_name': 'Date_depot', 'ar_name': u'تاريخ إيداع المطلب', 'status': True},
+                                                                  {'db_name': 'nom_titulaire', 'pub_name': 'nom_titulaire', 'ar_name': u'إسم و لقب صاحب الرخصة', 'status': False},
+                                                                  {'db_name': 'address', 'pub_name': 'Adresse_travaux', 'ar_name': u'العنوان', 'status': True},
+                                                                  {'db_name': 'nom_architect', 'pub_name': 'Nom_architecte', 'ar_name': u'المهندس المعماري', 'status': True},
+                                                                  {'db_name': 'type_construct', 'pub_name': 'Type_construction', 'ar_name': u'نوع البناء', 'status': True},
+                                                                  {'db_name': 'desc_construct', 'pub_name': 'Description_travaux', 'ar_name': u'وصف الأشغال', 'status': True},
+                                                                  {'db_name': 'num_cin', 'pub_name': 'Numero_cin', 'ar_name': u'رقم بطاقة التعريف أو بطاقة الاقامة', 'status': False},
+                                                                  {'db_name': 'date_attribution', 'pub_name': 'Date_attribution', 'ar_name': u'تاريخ اسناد الرخصة', 'status': True},
+                                                                  {'db_name': 'date_expiration', 'pub_name': 'Date_expiration', 'ar_name': u'تاريخ انتهاء الصلوحيّة', 'status': True},
+                                                                  {'db_name': 'surface', 'pub_name': 'Surface', 'ar_name': u'المساحة', 'status': True},
+                                                                  {'db_name': 'mont_total', 'pub_name': 'Montant', 'ar_name': u'المبلغ الجملي بالمليم', 'status': False},
+                                                                  {'db_name': 'longitude', 'pub_name': 'Longitude', 'ar_name': u'Longitude', 'status': True},
+                                                                  {'db_name': 'laltitude', 'pub_name': 'Latitude', 'ar_name': u'Latitude', 'status': True},
+                                                                  {'db_name': 'reserve_note', 'pub_name': 'Reserve_note', 'ar_name': u'ملاحظات التحفظ', 'status': True}]},
+                                     {'type': 'en_cours', "pub": [{'db_name': 'num_demande', 'pub_name': 'Numero_demande', 'ar_name': u'رقم المطلب', 'status': True},
+                                                                  {'db_name': 'date_depot', 'pub_name': 'Date_depot', 'ar_name': u'تاريخ إيداع المطلب', 'status': True},
+                                                                  {'db_name': 'nom_titulaire', 'pub_name': 'nom_titulaire', 'ar_name': u'إسم و لقب صاحب الرخصة', 'status': False},
+                                                                  {'db_name': 'address', 'pub_name': 'Adresse_travaux', 'ar_name': u'العنوان', 'status': True},
+                                                                  {'db_name': 'nom_architect', 'pub_name': 'Nom_architecte', 'ar_name': u'المهندس المعماري', 'status': True},
+                                                                  {'db_name': 'type_construct', 'pub_name': 'Type_construction', 'ar_name': u'نوع البناء', 'status': True},
+                                                                  {'db_name': 'desc_construct', 'pub_name': 'Description_travaux', 'ar_name': u'وصف الأشغال', 'status': True},
+                                                                  {'db_name': 'num_cin', 'pub_name': 'Numero_cin', 'ar_name': u'رقم بطاقة التعريف أو بطاقة الاقامة', 'status': False},
+                                                                  {'db_name': 'surface', 'pub_name': 'Surface', 'ar_name': u'المساحة', 'status': True},
+                                                                  {'db_name': 'longitude', 'pub_name': 'Longitude', 'ar_name': u'Longitude', 'status': True},
+                                                                  {'db_name': 'laltitude', 'pub_name': 'Latitude', 'ar_name': u'Latitude', 'status': True}]},
+                                     {'type': 'refused', "pub":  [{'db_name': 'num_demande', 'pub_name': 'Numero_demande', 'ar_name': u'رقم المطلب', 'status': True},
+                                                                  {'db_name': 'date_depot', 'pub_name': 'Date_depot', 'ar_name': u'تاريخ إيداع المطلب', 'status': True},
+                                                                  {'db_name': 'nom_titulaire', 'pub_name': 'nom_titulaire', 'ar_name': u'إسم و لقب صاحب الرخصة', 'status': False},
+                                                                  {'db_name': 'address', 'pub_name': 'Adresse_travaux', 'ar_name': u'العنوان', 'status': True},
+                                                                  {'db_name': 'nom_architect', 'pub_name': 'Nom_architecte', 'ar_name': u'المهندس المعماري', 'status': True},
+                                                                  {'db_name': 'type_construct', 'pub_name': 'Type_construction', 'ar_name': u'نوع البناء', 'status': True},
+                                                                  {'db_name': 'desc_construct', 'pub_name': 'Description_travaux', 'ar_name': u'وصف الأشغال', 'status': True},
+                                                                  {'db_name': 'num_cin', 'pub_name': 'Numero_cin', 'ar_name': u'رقم بطاقة التعريف أو بطاقة الاقامة', 'status': False},
+                                                                  {'db_name': 'date_refuse', 'pub_name': 'Date_refuse', 'ar_name': u'تاريخ الرفض', 'status': True},
+                                                                  {'db_name': 'surface', 'pub_name': 'Surface', 'ar_name': u'المساحة', 'status': True},
+                                                                  {'db_name': 'longitude', 'pub_name': 'Longitude', 'ar_name': u'Longitude', 'status': True},
+                                                                  {'db_name': 'laltitude', 'pub_name': 'Latitude', 'ar_name': u'Latitude', 'status': True},
+                                                                  {'db_name': 'refuse_note', 'pub_name': 'Refus_note', 'ar_name': u'ملاحظات رفض', 'status': True}]},
+                                    ]
+        }]
+data_pub_prop = [{"id": 4, "publisher": [{'type': 'private', "pub": [{'db_name': 'Titre_Foncier', 'pub_name': 'Titre_Foncier', 'ar_name': u'الترسيم العقاري', 'status': True},
+                                                                     {'db_name': 'Type_Usage', 'pub_name': 'Type_Usage', 'ar_name': u'طريقة الإستغلال', 'status': True},
+                                                                     {'db_name': 'Type_du_Bien', 'pub_name': 'Type_du_Bien', 'ar_name': u'نوع الملك', 'status': True},
+                                                                     {'db_name': 'Adresse_Localisation', 'pub_name': 'Adresse', 'ar_name': u'العنوا', 'status': True},
+                                                                     {'db_name': 'Mode_Octroi', 'pub_name': '', 'ar_name': u'المستغل', 'status': True},
+                                                                     {'db_name': 'Surface', 'pub_name': 'Surface', 'ar_name': u'المساحة', 'status': True},
+                                                                     {'db_name': 'Longitude', 'pub_name': 'Longitude', 'ar_name': u'Longitude', 'status': True},
+                                                                     {'db_name': 'Laltitude', 'pub_name': 'Latitude', 'ar_name': u'Latitude', 'status': True}]},
+                                         {'type': 'public', "pub": [{'db_name': 'Titre_Foncier', 'pub_name': 'Titre_Foncier', 'ar_name': u'الترسيم العقاري', 'status': True},
+                                                                     {'db_name': 'Type_Usage', 'pub_name': 'Type_Usage', 'ar_name': u'طريقة الإستغلال', 'status': True},
+                                                                     {'db_name': 'Type_du_Bien', 'pub_name': 'Type_du_Bien', 'ar_name': u'نوع الملك', 'status': True},
+                                                                     {'db_name': 'Adresse_Localisation', 'pub_name': 'Adresse', 'ar_name': u'العنوا', 'status': True},
+                                                                     {'db_name': 'Mode_Octroi', 'pub_name': '', 'ar_name': u'المستغل', 'status': True},
+                                                                     {'db_name': 'Surface', 'pub_name': 'Surface', 'ar_name': u'المساحة', 'status': True},
+                                                                     {'db_name': 'Longitude', 'pub_name': 'Longitude', 'ar_name': u'Longitude', 'status': True},
+                                                                     {'db_name': 'Laltitude', 'pub_name': 'Latitude', 'ar_name': u'Latitude', 'status': True}]}
+                                    ]
+        }]
+
+data_pub_four = [{"id": 3, "publisher": [{'type': 'detention', "pub": [{'db_name': 'Date_Detention', 'pub_name': 'Date_sanction', 'ar_name': u'مستودع الحجز', 'status': True},
+                                                                     {'db_name': 'Cause_Detention', 'pub_name': 'Motif_sanction', 'ar_name': u'أسباب الحجز', 'status': True},
+                                                                     {'db_name': 'Name_Owner', 'pub_name': 'Nom_proprietaire', 'ar_name': u'اسم واللقب صاحب المحجوز', 'status': False},
+                                                                     {'db_name': 'Descr_Detention', 'pub_name': 'Description', 'ar_name': u'وصف المحجوز', 'status': True},
+                                                                     {'db_name': 'Authority_Detention', 'pub_name': 'Autorite', 'ar_name': u'الجهة التي صدر منها الاذن بالحجز', 'status': True},
+                                                                     {'db_name': 'Name_Fourrier', 'pub_name': 'Fourriere_Municipale', 'ar_name': u'إسم مستودع الحجز', 'status': True},
+                                                                     {'db_name': 'Type_Detention', 'pub_name': 'Type', 'ar_name': u'نوع المحجوز', 'status': True},
+                                                                     {'db_name': 'Registration_Detention', 'pub_name': 'Immatriculation', 'ar_name': u'الترقيم المنجمي', 'status': True}]},
+                                          {'type': 'fourriere', "pub": [{'db_name': 'Name_Fourrier', 'pub_name': 'Fourriere_Municipale', 'ar_name': u'إسم مستودع الحجز', 'status': True},
+                                                                     {'db_name': 'Address_Fourrier', 'pub_name': 'Adresse', 'ar_name': u'عنوان  مستودع الحجز', 'status': True},
+                                                                     {'db_name': 'Longitude', 'pub_name': 'Longitude', 'ar_name': u'Longitude', 'status': True},
+                                                                     {'db_name': 'Laltitude', 'pub_name': 'Latitude', 'ar_name': u'Latitude', 'status': True}]}
+                                    ]
+        }]
+
+
+
+@manager.command
+def save_default_data_pulisher():
+    data = []
+    data.append(data_pub_four)
+    data.append(data_pub_prop)
+    data.append(data_pub_permis)
+    push_data = []
+    # data = json.loads(json.dumps(data_pub_four))
+    for item in data:
+        json_item = json.loads(json.dumps(item))
+        for d in json_item:
+            m_id = d['id']
+            p_data = d['publisher']
+            for m in [_.municipal_id for _ in Municipality.query.all()]:
+                if m != '1':
+                    push_data.append({'municipal_id': m, 'user_id': 1, 'modules_id': m_id, 'data_pub': p_data})
+    for p in push_data:
+        db.session.add(Data_Publisher(
+            municipal_id=p['municipal_id'],
+            modules_id=p['modules_id'],
+            user_id=p['user_id'],
+            data_pub=p['data_pub']))
+        db.session.commit()
 
 
 def read_csv(file):

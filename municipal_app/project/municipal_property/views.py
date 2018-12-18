@@ -6,13 +6,14 @@
 #################
 
 from project.decorators import check_confirmed
-from project.models import Proprietemunicipal, Municipality
+from project.models import Proprietemunicipal, Municipality, Data_Publisher
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import ProprietyForm
 from project import db
 from project.util import save_auto_update, push_api, get_auto_update_data
-from project.util import check_role
+from project.util import check_role, decode_pub_data
+from pprint import pprint as pp
 import csv
 import os
 
@@ -27,13 +28,14 @@ module_id = 4
 #### routes ####
 ################
 
+
 @municipal_property_blueprint.route('/add_municipal_property', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
 def add_municipal_property():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     form = ProprietyForm(request.form)
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
@@ -122,7 +124,7 @@ def update_municipal_property():
 def api():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     push_api(request.values)
     data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
     return render_template('municipal_property/municipal_property.html', data=data)
@@ -135,7 +137,7 @@ def get_property_file():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
         return redirect(url_for('main.home'))
-    private_list, public_list = [], []
+    private_list, private_data, public_list, public_data = [], [], [], []
     if 'project' in url_for('main.home', _external=True) + 'static/files/':
         confirm_url = url_for('main.home', _external=True) + 'static/files/'
         confirm_url = confirm_url.replace('project', '')
@@ -144,20 +146,30 @@ def get_property_file():
     data = [u.__dict__ for u in Proprietemunicipal.query.filter_by(municipal_id=current_user.municipal_id).all()]
     for d in data:
         if u'خاص' in d['Type_Proprety']:
-            private_list.append(get_file_content(d))
+            p_data, fieldnames_pv = get_file_content(d, 'private')
+            private_list.append(p_data)
         else:
-            public_list.append(get_file_content(d))
-    public_ref = 'properte_municipal_public_' + str(current_user.municipal_id)
-    private_ref = 'properte_municipal_private_' + str(current_user.municipal_id)
-    public_file = get_csv_file(public_list, public_ref, [])
-    private_file = get_csv_file(private_list, private_ref, [])
-    save_auto_update(public_file, 'Propriete municipale')
-    save_auto_update(private_file, 'Propriete municipale')
-    public_url = confirm_url + public_file
-    private_url = confirm_url + private_file
-    public_data = get_auto_update_data({'file_name': public_file, 'link': public_url, 'type': 'mp_public'})
-    private_data = get_auto_update_data({'file_name': private_file, 'link': private_url, 'type': 'mp_private'})
-    return render_template('municipal_property/municipal_property.html', data=data, file=True, public_data=public_data, private_data=private_data)
+            p_data, fieldnames_pu = get_file_content(d, 'public')
+            public_list.append(p_data)
+    if public_list:
+        public = True
+        public_ref = 'properte_municipal_public_' + str(current_user.municipal_id)
+        public_file = get_csv_file(public_list, public_ref, fieldnames_pu)
+        save_auto_update(public_file, 'Propriete municipale')
+        public_url = confirm_url + public_file
+        public_data = get_auto_update_data({'file_name': public_file, 'link': public_url, 'type': 'mp_public'})
+    else:
+        public = False
+    if private_list:
+        private = True
+        private_ref = 'properte_municipal_private_' + str(current_user.municipal_id)
+        private_file = get_csv_file(private_list, private_ref, fieldnames_pv)
+        save_auto_update(private_file, 'Propriete municipale')
+        private_url = confirm_url + private_file
+        private_data = get_auto_update_data({'file_name': private_file, 'link': private_url, 'type': 'mp_private'})
+    else:
+        private = False
+    return render_template('municipal_property/municipal_property.html', file=True, data=data, public=public, private=private, public_data=public_data, private_data=private_data)
 
 
 def check_float(value):
@@ -168,9 +180,7 @@ def check_float(value):
         return False
 
 
-def get_csv_file(data, ref, field_list):
-    _ = ['Titre_Foncier', 'Type_du_Bien', 'Mode_Octroi', 'Type_Usage', 'Surface', 'Adresse_Localisation', 'Longitude', 'Latitude']
-    fieldnames = _ + field_list
+def get_csv_file(data, ref, fieldnames):
     filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
@@ -179,17 +189,16 @@ def get_csv_file(data, ref, field_list):
     return ref + '.csv'
 
 
-def get_file_content(d):
-    data_dict = {'Longitude': d['Longitude'],
-                 'Latitude': d['Laltitude'],
-                 'Adresse_Localisation': decode_unicode(d['Adresse_Localisation']),
-                 'Mode_Octroi': decode_unicode(d['Mode_Octroi']),
-                 'Surface': d['Surface'],
-                 'Titre_Foncier': decode_unicode(d['Titre_Foncier']),
-                 'Type_Usage': decode_unicode(d['Type_Usage']),
-                 'Type_du_Bien': decode_unicode(d['Type_du_Bien']),
-                }
-    return data_dict
+def get_file_content(d, types):
+    data_pub = Data_Publisher.query.filter_by(municipal_id=current_user.municipal_id, modules_id=module_id).first().data_pub
+    pub_dict, fieldnames = {}, []
+    for p in data_pub:
+        if p['type'] == types:
+            for e in p['pub']:
+                if e['status']:
+                    fieldnames.append(e['pub_name'])
+                    pub_dict[e['pub_name']] = decode_pub_data(d[e['db_name']])
+    return pub_dict, fieldnames
 
 
 def decode_unicode(v):

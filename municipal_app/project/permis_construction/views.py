@@ -6,14 +6,13 @@
 #################
 
 from project.decorators import check_confirmed
-from project.models import Permisconstruct, Municipality
+from project.models import Permisconstruct, Municipality, Data_Publisher
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
 from project.util import save_auto_update, push_api, get_auto_update_data
 from project import db
-from project.util import check_role
-from pprint import pprint as pp
+from project.util import check_role, decode_pub_data
 import os
 import datetime
 import csv
@@ -37,7 +36,7 @@ module_id = 2
 def permisconst():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -195,7 +194,6 @@ def update_permisconst(status=None):
                 flash(u'عدد قرار رخصة البناء مفروض', 'danger')
                 save = False
             if save:
-                pp(request.values['reserve_note'])
                 permis = Permisconstruct.query.get(int(permis_id))
                 permis.num_permis = request.values['num_permis']
                 permis.date_attribution = request.values['date_attribution']
@@ -249,7 +247,7 @@ def refuse_permisconst():
 def accept_permisconst():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     mun_name = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name
     mun_long = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_long
     mun_lat = Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_lat
@@ -282,7 +280,7 @@ def accept_permisconst():
 def api():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     push_api(request.values)
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
     return render_template('permis_construction/permis_construction.html', data=data)
@@ -294,72 +292,41 @@ def api():
 def get_files():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
+    data_pub = Data_Publisher.query.filter_by(municipal_id=current_user.municipal_id, modules_id=module_id).first().data_pub
     confirm_url = url_for('main.home', _external=True) + 'static/files/'
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
-    encours_list, approved_list, refused_list = [], [], []
-    field_refused_list = ['date_refuse']
-    field_approved_list = ['date_attribution', 'date_expiration']  # , 'montant_charge_fix', 'montant_charge_ascendant', 'montant_cloture', 'montant_decision', 'montant_total']
-    for d in data:
-        numero_demande = decode_unicode(d['num_demande']) if d['num_demande'] != '' else None
-        initial_dict = {'Numero_demande': numero_demande,
-                        'Nom_titulaire': decode_unicode(d['nom_titulaire']),
-                        'Adresse_travaux': decode_unicode(d['address']),
-                        'Description_travaux': decode_unicode(d['desc_construct']),
-                        'Longitude': d['longitude'],
-                        'Latitude': d['laltitude'],
-                        'Date_depot': d['date_depot'].strftime("%Y/%m/%d"),
-                        'Type_construction': decode_unicode(d['type_construct'])}
-        if request.values['type_file'] == 'en_cours' and d['permis_status'] == 'en_cours':
-            ref_encours = 'permis_construction_en_cours' + '_' + current_user.municipal_id
-            encours_list.append(initial_dict)
-        elif request.values['type_file'] == 'approved' and d['permis_status'] == 'approved':
-            ref_approved = 'permis_construction_approuver' + '_' + current_user.municipal_id
-            initial_dict['date_attribution'] = d['date_attribution'].strftime("%Y/%m/%d")
-            initial_dict['date_expiration'] = d['date_expiration'].strftime("%Y/%m/%d")
-            # initial_dict['montant_charge_fix'] = d['mont_charge_fix']
-            # initial_dict['montant_charge_ascendant'] = d['mont_charge_ascend']
-            # initial_dict['montant_cloture'] = d['mont_cloture']
-            # initial_dict['montant_decision'] = d['mont_decision']
-            # initial_dict['montant_total'] = d['mont_total']
-            approved_list.append(initial_dict)
-        elif request.values['type_file'] == 'refused' and d['permis_status'] == 'refused':
-            ref_refused = 'permis_construction_refused' + '_' + current_user.municipal_id
-            initial_dict['date_refuse'] = d['date_refuse'].strftime("%Y/%m/%d")
-            refused_list.append(initial_dict)
-    if request.values['type_file'] == 'en_cours':
-        if encours_list:
-            en_cour_file = get_csv_file(encours_list, ref_encours, [])
-            save_auto_update(en_cour_file, 'Permis du construction')
-            encour_url = confirm_url + en_cour_file
-            encour_data = get_auto_update_data({'file_name': en_cour_file, 'link': encour_url, 'type': 'pc_en_cours'})
-            return render_template('permis_construction/permis_construction.html', data=data, encours=True, encour_data=encour_data)
+    fieldnames, pub_list = [], []
+    if 'type_file' in request.values:
+        for d in data:
+            if request.values['type_file'] in d['permis_status']:
+                pub_dict = {}
+                for item in data_pub:
+                    if request.values['type_file'] == item['type']:
+                        for p in item['pub']:
+                            if p['status']:
+                                fieldnames.append(p['pub_name'])
+                                pub_dict[p['pub_name']] = decode_pub_data(d[p['db_name']])
+                pub_list.append(pub_dict)
+        if pub_list:
+            file_name = 'permis_construction_' + request.values['type_file'] + '_' + current_user.municipal_id
+            file_name = get_csv_file(pub_list, file_name, fieldnames)
+            save_auto_update(file_name, 'Permis du construction')
+            file_url = confirm_url + file_name
+            file_data = get_auto_update_data({'file_name': file_name, 'link': file_url, 'type': 'pc_' + request.values['type_file']})
+            if request.values['type_file'] == 'en_cours':
+                return render_template('permis_construction/permis_construction.html', data=data, encours=True, encour_data=file_data)
+            elif request.values['type_file'] == 'approved':
+                return render_template('permis_construction/permis_construction.html', data=data, approved=True, approved_data=file_data)
+            else:
+                return render_template('permis_construction/permis_construction.html', data=data, refused=True, refused_data=file_data)
+
         else:
-            flash(u'ليست هنالك بيانات حول    التراخيص بصدد الدرس', 'warning')
-    elif request.values['type_file'] == 'approved':
-        if approved_list:
-            approved_file = get_csv_file(approved_list, ref_approved, field_approved_list)
-            save_auto_update(approved_file, 'Permis du construction')
-            approved_url = confirm_url + approved_file
-            approved_data = get_auto_update_data({'file_name': approved_file, 'link': approved_url, 'type': 'pc_approved'})
-            return render_template('permis_construction/permis_construction.html', data=data, approved=True, approved_data=approved_data)
-        else:
-            flash(u'ليست هنالك بيانات حول    التراخيص المقبولة', 'warning')
-    elif request.values['type_file'] == 'refused':
-        if refused_list:
-            refuse_file = get_csv_file(refused_list, ref_refused, field_refused_list)
-            save_auto_update(refuse_file, 'Permis du construction')
-            refused_url = confirm_url + refuse_file
-            refused_data = get_auto_update_data({'file_name': refuse_file, 'link': refused_url, 'type': 'pc_refused'})
-            return render_template('permis_construction/permis_construction.html', data=data, refused=True, refused_data=refused_data)
-        else:
-            flash(u'ليست هنالك بيانات حول     التراخيص المرفوضة', 'warning')
+            flash(u'ليست هنالك بيانات', 'warning')
     return render_template('permis_construction/permis_construction.html', data=data)
 
 
-def get_csv_file(data, ref, field_list):
-    _ = ['Numero_demande', 'Date_depot', 'Nom_titulaire', 'Adresse_travaux', 'Type_construction', 'Description_travaux', 'Longitude', 'Latitude']
-    fieldnames = _ + field_list
+def get_csv_file(data, ref, fieldnames):
     filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)

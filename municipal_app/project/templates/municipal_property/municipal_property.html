@@ -57,6 +57,7 @@
 							<input type='hidden' name='type_file' value='en_cours'>
 						</form>
 						{% if file %}
+						{% if private %}
 						<div class='row'>
 							<div class='col-sm-2'>
 								<label class="control-label">
@@ -91,7 +92,13 @@
 								{% endif %}
 							</div>
 						</div>
+						{% else %}
+						<div class='row'>
+							<p><code>لا يوجد بيانات متعلقة بالملك البلدي الخاص في قاعدة البيانات </code></p>
+						</div>
+						{% endif %}
 						<div class="line-dashed"></div>
+						{% if public %}
 						<div class='row'>
 							<div class='col-sm-2'>
 								<label class="control-label">
@@ -126,6 +133,11 @@
 								{% endif %}
 							</div>
 						</div>
+						{% else %}
+						<div class='row'>
+							<p><code>لا يوجد بيانات متعلقة بالملك البلدي العام في قاعدة البيانات</code></p>
+						</div>
+						{% endif %}
 						{% endif %}
 					</div>
 				</div>

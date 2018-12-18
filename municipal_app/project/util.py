@@ -6,7 +6,17 @@ from project.models import Auto_update, Municipality, Users_Models
 from flask_login import current_user
 from project.ressource_api import update_ressource_api, update_ressource_api_request, package_exists
 from flask import render_template, Blueprint, url_for, redirect, flash, request
+import datetime
 
+
+
+def decode_pub_data(d):
+    if isinstance(d, unicode):
+        return d.encode('utf-8')
+    elif isinstance(d, datetime.datetime):
+        return d.strftime("%Y/%m/%d")
+    else:
+        return d
 
 def check_role(module_id):
     if Users_Models.query.filter_by(user_id=current_user.id, modules_id=module_id).first() or current_user.admin or current_user.municipal_admin:

@@ -62,6 +62,15 @@
 						{% if current_user.admin %}
 						<li><a href="/admin/admin_mun"><span class="title">قائمة البلديات</span></a></li>
 						{% endif %}
+						{% if current_user.municipal_admin %}
+						<li class="has-sub"><a href="#"><span class="title">إختيار البيانات النشر</span></a>
+							<ul class="nav collapse">
+								<li><a href="/admin/data_publisher/permis"><span class="title">تراخيص البناء</span></a></li> 
+								<li><a href="/admin/data_publisher/munproperty"><span class="title">الملك البلدي</span></a></li> 
+								<li><a href="/admin/data_publisher/fourriere"><span class="title">مستودع الحجز</span></a></li> 
+							</ul>
+						</li>
+						{% endif %}
 					</ul>
 				</li>
 				

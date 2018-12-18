@@ -9,9 +9,9 @@ from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import FourrierForm, DetentionForm, ReleaseForm
-from project.models import Fourrier, Detention, Municipality
+from project.models import Fourrier, Detention, Municipality, Data_Publisher
 from project import db
-from project.util import save_auto_update, push_api, get_auto_update_data
+from project.util import save_auto_update, push_api, get_auto_update_data, decode_pub_data
 import datetime
 from project.util import check_role
 import csv
@@ -62,7 +62,7 @@ def add_fourrier():
 def add_detention():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     form = DetentionForm(request.form)
     form.Name_Fourrier2.choices = [(None, '')]
     form.Name_Fourrier2.choices.extend([(str(row.id), row.Name_Fourrier) for row in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()])
@@ -199,7 +199,7 @@ def api():
 def get_fourrier_file():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     confirm_url = url_for('main.home', _external=True) + 'static/files/'
     fourrier_file, detention_file = [], []
     fourrier_data = [u.__dict__ for u in Fourrier.query.filter_by(municipal_id=current_user.municipal_id).all()]
@@ -207,13 +207,10 @@ def get_fourrier_file():
     if 'type_file' in request.values:
         if request.values['type_file'] == 'list_fourrier':
             for f in fourrier_data:
-                fourrier_file.append({'Nom_Fourrierre': decode_unicode(f['Name_Fourrier']),
-                                      'Address_Fourrierre': decode_unicode(f['Address_Fourrier']),
-                                      'Longitude': f['Longitude'],
-                                      'Latitude': f['Laltitude']})
+                f_data, f_fieldnames = get_file_content(f, 'fourriere')
+                fourrier_file.append(f_data)
             ref = 'list_fourrierre_' + str(current_user.municipal_id)
-            field_list = ['Nom_Fourrierre', 'Address_Fourrierre', 'Longitude', 'Latitude']
-            fourrier_f = get_csv_file(fourrier_file, ref, field_list)
+            fourrier_f = get_csv_file(fourrier_file, ref, f_fieldnames)
             save_auto_update(fourrier_f, 'Fourriere')
             fourrier_url = confirm_url + fourrier_f
             f_data = get_auto_update_data({'file_name': fourrier_f, 'link': fourrier_url, 'type': 'fourriere'})
@@ -251,18 +248,14 @@ def get_fourrier_file():
                 if u'محجوز' in d['Status_Detention']:
                     det_lon = Fourrier.query.filter_by(id=d['fourrier_id']).first().Longitude
                     det_lat = Fourrier.query.filter_by(id=d['fourrier_id']).first().Laltitude
-                    detention_file.append({'Longitude': det_lon,
-                                           'Latitude': det_lat,
-                                           'Lieu_fourriere': decode_unicode(d['Name_Fourrier']),
-                                           'Date_enlevement': d['Date_Detention'].strftime("%Y/%m/%d"),
-                                           'Autorite_origine_de_detention': decode_unicode(d['Authority_Detention']),
-                                           'Type_objets_detenues': decode_unicode(d['Type_Detention']),
-                                           'Imatriculation': decode_unicode(d['Registration_Detention']),
-                                           'Desc_objets_detenues': decode_unicode(d['Descr_Detention'])})
+                    d_data, d_fieldnames = get_file_content(d, 'detention')
+                    d_fieldnames.extend(['Longitude', 'Latitude'])
+                    d_data['Longitude'] = det_lon
+                    d_data['Latitude'] = det_lat
+                    detention_file.append(d_data)
             if detention_file:
                 ref = 'list_detention_' + str(current_user.municipal_id)
-                field_list = ['Date_enlevement', 'Autorite_origine_de_detention', 'Type_objets_detenues', 'Imatriculation', 'Desc_objets_detenues', 'Lieu_fourriere', 'Longitude', 'Latitude']
-                detention_f = get_csv_file(detention_file, ref, field_list)
+                detention_f = get_csv_file(detention_file, ref, d_fieldnames)
                 save_auto_update(detention_f, 'Fourriere')
                 detention_url = confirm_url + detention_f
                 d_data = get_auto_update_data({'file_name': detention_f, 'link': detention_url, 'type': 'detention'})
@@ -299,6 +292,18 @@ def get_csv_file(data, ref, field_list):
         dict_writer.writeheader()
         dict_writer.writerows(data)
     return ref + '.csv'
+
+
+def get_file_content(d, types):
+    data_pub = Data_Publisher.query.filter_by(municipal_id=current_user.municipal_id, modules_id=module_id).first().data_pub
+    pub_dict, fieldnames = {}, []
+    for p in data_pub:
+        if p['type'] == types:
+            for e in p['pub']:
+                if e['status']:
+                    fieldnames.append(e['pub_name'])
+                    pub_dict[e['pub_name']] = decode_pub_data(d[e['db_name']])
+    return pub_dict, fieldnames
 
 
 def get_file_path():

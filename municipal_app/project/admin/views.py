@@ -8,7 +8,7 @@
 from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
-from project.models import User, Municipality, Modules, Users_Models
+from project.models import User, Municipality, Modules, Users_Models, Data_Publisher
 from .forms import ChangePwdForm, AddmunForm
 from project import db, bcrypt, app
 from project.email import send_admin_email, send_confirm_email
@@ -274,6 +274,101 @@ def add_admin_mun():
         db.session.commit()
         return redirect(url_for('admin.admin_mun'))
     return render_template('admin/add_mun.html', form=form)
+
+
+@admin_blueprint.route('/admin/data_publisher/<status>', methods=['GET', 'POST'])
+@admin_blueprint.route('/admin/data_publisher/<status>/<types>', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def data_publisher(status, types=None):
+    if status == 'permis':
+        list_item = Data_Publisher.query.filter_by(modules_id=2, municipal_id=current_user.municipal_id).first().__dict__
+        data_id = list_item['id']
+        for t in list_item['data_pub']:
+            if 'approved' == t['type']:
+                list_item_approved = t['pub']
+            elif 'refused' == t['type']:
+                list_item_refused = t['pub']
+            else:
+                list_item_en_cour = t['pub']
+        titre = u'بيانات تراخيص البناء'
+        data = [{'title': u'الرخص بصدد الدرس', 'panel_type': 'panel-info', 'data_id': data_id, 'status': status + '/en_cours', 'list_item': list_item_en_cour}, 
+                {'title': u'الرخص المقبولة', 'panel_type': 'panel-success', 'data_id': data_id, 'status': status + '/approved', 'list_item': list_item_approved}, 
+                {'title': u'الرخص المرفوضة', 'panel_type': 'panel-danger', 'data_id': data_id, 'status': status + '/refused', 'list_item': list_item_refused}]
+        if request.method == 'POST':
+            keys = request.form.keys()
+            keys.remove('data_id')
+            for item in list_item['data_pub']:
+                if item['type'] == types:
+                    for p in item['pub']:
+                        if p['db_name'] in keys:
+                            p['status'] = True
+                        else:
+                            p['status'] = False
+                    break
+            dp = Data_Publisher.query.get(data_id)
+            dp.data_pub = list_item['data_pub']
+            dp.user_id = current_user.id
+            db.session.commit()
+            flash(u'لقد تم تحيين البيانات المنشورة لرخص البناء ', 'success')
+            return redirect(url_for('permis_construction.consult_permisconst'))
+    elif status == 'munproperty':
+        list_item = Data_Publisher.query.filter_by(modules_id=4, municipal_id=current_user.municipal_id).first().__dict__
+        data_id = list_item['id']
+        for t in list_item['data_pub']:
+            if 'public' == t['type']:
+                list_item_public = t['pub']
+            elif 'private' == t['type']:
+                list_item_private = t['pub']
+        titre = u'بيانات الملك البلدي'
+        data = [{'title': u'الملك العام', 'panel_type': 'panel-info', 'data_id': data_id, 'status': status + '/public','list_item': list_item_public}, 
+                {'title': u'الملك الخاص', 'panel_type': 'panel-info', 'data_id': data_id, 'status': status + '/private', 'list_item': list_item_private}]
+        if request.method == 'POST':
+            keys = request.form.keys()
+            keys.remove('data_id')
+            for item in list_item['data_pub']:
+                if item['type'] == types:
+                    for p in item['pub']:
+                        if p['db_name'] in keys:
+                            p['status'] = True
+                        else:
+                            p['status'] = False
+                    break
+            dp = Data_Publisher.query.get(data_id)
+            dp.data_pub = list_item['data_pub']
+            dp.user_id = current_user.id
+            db.session.commit()
+            flash(u'لقد تم تحيين البيانات المنشورة لملك البلدي ', 'success')
+            return redirect(url_for('municipal_property.consult_municipal_property'))
+    else:
+        list_item = Data_Publisher.query.filter_by(modules_id=3, municipal_id=current_user.municipal_id).first().__dict__
+        data_id = list_item['id']
+        for t in list_item['data_pub']:
+            if 'fourriere' == t['type']:
+                list_item_fourriere = t['pub']
+            elif 'detention' == t['type']:
+                list_item_detention = t['pub']
+        titre = u'بيانات مستودع الحجز'
+        data = [{'title': u'المحجوز', 'panel_type': 'panel-info' ,'data_id': data_id, 'status': status + '/detention','list_item': list_item_detention}, 
+                {'title': u'المستودعات', 'panel_type': 'panel-info','data_id': data_id, 'status': status + '/fourriere','list_item': list_item_fourriere}]
+        if request.method == 'POST':
+            keys = request.form.keys()
+            keys.remove('data_id')
+            for item in list_item['data_pub']:
+                if item['type'] == types:
+                    for p in item['pub']:
+                        if p['db_name'] in keys:
+                            p['status'] = True
+                        else:
+                            p['status'] = False
+                    break
+            dp = Data_Publisher.query.get(data_id)
+            dp.data_pub = list_item['data_pub']
+            dp.user_id = current_user.id
+            db.session.commit()
+            flash(u'لقد تم تحيين البيانات المنشورة لمستودع الحجز ', 'success')
+            return redirect(url_for('fourrier.fourrier'))
+    return render_template('admin/data_publisher.html', titre=titre, data=data)
 
 
 def get_role(request, user_id):

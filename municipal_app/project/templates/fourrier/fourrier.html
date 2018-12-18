@@ -46,7 +46,11 @@
 	<div class="panel-body"> 
 		<div class="tab-content">
 
+			{% if fourrier_lancher %}
+			<div id="tab-1" class="tab-pane">
+			{% else %}
 			<div id="tab-1" class="tab-pane active">
+			{% endif %}
 				<div class='row'>
 					
 					<div class='col-lg-4'>
@@ -159,7 +163,11 @@
 					</table>
 				</div>
 			</div>
+			{% if fourrier_lancher %}
+			<div id="tab-2" class="tab-pane active">
+			{% else %}
 			<div id="tab-2" class="tab-pane">
+			{% endif %}
 				<div class='row'>
 					<div class='col-lg-4'>
 						<form method="get" action="/add_fourrier">
