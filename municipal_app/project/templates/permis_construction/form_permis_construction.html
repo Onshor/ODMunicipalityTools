@@ -55,7 +55,7 @@
     <div class="form-group"> 
       <label class="col-sm-3 control-label">رقم بطاقة التعريف أو بطاقة الاقامة للاجانب *</label> 
       <div class="col-sm-5"> 
-        {{ form.num_cin( class="form-control",type="text") }}
+        {{ form.num_cin( class="form-control",type="number")}}
         {% if form.num_cin.errors %}
         {% for error in form.num_cin.errors %}
         <h5>هذه الخانة مطلوبه</h5>
