@@ -310,7 +310,7 @@ def get_files():
                 pub_list.append(pub_dict)
         if pub_list:
             file_name = 'permis_construction_' + request.values['type_file'] + '_' + current_user.municipal_id
-            file_name = get_csv_file(pub_list, file_name, fieldnames)
+            file_name = get_csv_file(pub_list, file_name, list(set(fieldnames)))
             save_auto_update(file_name, 'Permis du construction')
             file_url = confirm_url + file_name
             file_data = get_auto_update_data({'file_name': file_name, 'link': file_url, 'type': 'pc_' + request.values['type_file']})
