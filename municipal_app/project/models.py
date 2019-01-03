@@ -422,3 +422,36 @@ class Data_Publisher(db.Model):
 
     def get_id(self):
         return self.id
+
+
+class Resources(db.Model):
+    __tablename__ = "resources"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    resource_id = db.Column(db.String)
+    package_id = db.Column(db.String)
+
+    def __init__(self, municipal_id, resource_id, package_id):
+        self.municipal_id = municipal_id
+        self.resource_id = resource_id
+        self.package_id = package_id
+
+    def get_id(self):
+        return self.id
+
+
+class Packages(db.Model):
+    __tablename__ = "packages"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    modules_id = db.Column(db.String)
+    package_id = db.Column(db.String)
+
+    def __init__(self, municipal_id, modules_id, package_id):
+        self.municipal_id = municipal_id
+        self.modules_id = modules_id
+        self.package_id = package_id
+
+    def get_id(self):
+        return self.id
+
