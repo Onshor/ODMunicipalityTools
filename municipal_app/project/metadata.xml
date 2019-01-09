@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modules>
+	<module id='1'>
+		<name>budget</name>
+		<packages>
+			<package id='budget-annuel'>
+				<name>budget-annuel-municipalite-mun_name</name>
+				<title>budget annuel - municipalité de mun_name</title>
+				<title_ar> الميزانية السنوية - بلدية mun_name_ar</title_ar>
+				<notes>Evolution du Budget Annuel de la Municipalité de mun_name, depuis YYYY. Les données budgétaires ont été extraites du système "ADEB des Municipalités" via les outils développés dans le cadre du programme ONSHOR.
+				L'unité est en Millime Tunisien.</notes>
+				<notes_ar>تطوّر الميزانيّة السنويّة ببلديّة mun_name_ar. تمّ استخراخ البيانات حول الميزانيّة من منظومة "أدب بلديّات" بإستعمال الوسائل التي تمّ تطويرها في إطار برنامج أنشر.
+				الوحدة هي المليم التونسي.</notes_ar>
+				<keywords_fr>Budget annuel des Recettes, Budget annuel des Dépenses, Municipalité de mun_name</keywords_fr>
+				<keywords_ar>الميزانية السنوية للموارد, الميزانية السنوية للنفقات, بلدية mun_name_ar</keywords_ar>
+				<frequency_update>yearly</frequency_update>
+				<groups>budget</groups>
+				<resources>
+					<resource id='an_rec_h'>
+						<description>Suivi annuel du budget des recettes de la Municipalité mun_name une présentation verticale qui consiste à regrouper les budgets annuel des recettes dans une seule colonne (les montants les uns en dessous des autres selon les années).</description>
+						<description_ar>المتابعة السنويّة لميزانيّة الموارد ببلديّة mun_name_ar حسب تقديم عمودي يعتمد على تجميع ميزانيّات الموارد عموديّا  (الميزانيّة السنويّة الواحدة تحت الأخرى حسب السنوات).</description_ar>
+						<name>Budget annuel des recettes selon une présentation verticale pour les années YYYY</name>
+						<name_ar>الميزانيّة السنويّة للنفقات حسب تقديم أفقي لسنوات YYYY</name_ar>
+						<format>csv</format>
+					</resource>
+					<resource id='an_dep_v'>
+						<description>Suivi annuel du budget des dépenses de la Municipalité de mun_name selon une présentation horizontale qui consiste à aligner le budget annuel des dépenses (les montants les uns à la suite des autres selon les années) sur toute la longueur du fichier contenant les données.</description>
+						<description_ar>المتابعة السنويّة لميزانيّة النفقات ببلديّة mun_name_ar حسب تقديم أفقي يعتمد على تصفيف ميزانيّات النفقات أفقيّا (الميزانيّة السنويّة الواحدة إلى  جانب الأخرى) على امتداد كامل الملّف الذي يحتوي على البيانات.</description_ar>
+						<name>Budget annuel des recettes selon une présentation verticale pour les années YYYY</name>
+						<name_ar>الميزانيّة السنويّة للنفقات حسب تقديم أفقي لسنوات YYYY</name_ar>
+						<format>csv</format>
+					</resource>
+					<resource id='an_rec_v'>
+						<description>Suivi annuel du budget des recettes de la Municipalité de mun_name selon une présentation horizontale qui consiste à aligner le budget annuel des recettes (les montants les uns à la suite des autres selon les années) sur toute la longueur du fichier contenant les données.</description>
+						<description_ar>لمتابعة السنويّة لميزانيّة الموارد ببلديّة mun_name_ar حسب تقديم أفقي يعتمد على تصفيف ميزانيّات الموارد أفقيّا (الميزانيّة السنويّة الواحدة إلى جانب الأخرى) على امتداد كامل الملّف الذي يحتوي على البيانات.</description_ar>
+						<name>Budget annuel des dépenses selon une présentation verticale pour les années YYYY</name>
+						<name_ar>الميزانيّة السنويّة للنفقات حسب تقديم عمودي لسنوات YYYY</name_ar>
+						<format>csv</format>
+					</resource>
+					<resource id='an_dep_h'>
+						<description>Suivi annuel du budget des dépenses de la Municipalité de mun_name selon une présentation verticale qui consiste à regrouper les budgets annuel des dépenses dans une seule colonne (les montants les uns en dessous des autres selon les années).</description>
+						<description_ar>المتابعة السنويّة لميزانيّة النفقات ببلديّة mun_name_ar حسب تقديم عمودي يعتمد على تجميع ميزانيّات النفقات عموديّا  (الميزانيّة السنويّة الواحدة تحت الأخرى حسب السنوات).</description_ar>
+						<name>Budget annuel des dépenses selon une présentation verticale pour les années YYYY</name>
+						<name_ar>الميزانيّة السنويّة للنفقات حسب تقديم عمودي لسنوات YYYY</name_ar>
+						<format>csv</format>
+					</resource>
+				</resources>
+			</package>
+			<package id='budget-mensuelle-dep'>
+				<name>budget-mensuelle-depense-municipalite-mun_name</name>
+				<title>Suivi mensuel du Budget des dépenses - Municipalité de mun_name</title>
+				<title_ar>المتابعة الشهريّة لميزانيّة النفقات -  بلدية mun_name_ar</title_ar>
+				<notes>Suivi mensuel du budget des dépenses de la Municipalité de mun_name selon une présentation horizontale qui consiste à aligner le budget mensuel des dépenses (les montants les uns à la suite des autres selon les années) sur toute la longueur du fichier contenant les données.
+				L'unité est en Millime Tunisien.</notes>
+				<notes_ar>المتابعة الشهريّة لميزانيّة النفقات ببلديّة mun_name_ar حسب تقديم أفقي يعتمد على تصفيف ميزانيّات النفقات أفقيّا (الميزانيّة الشهريّة الواحدة إلى  جانب الأخرى) على امتداد كامل الملّف الذي يحتوي على البيانات.
+				الوحدة هي المليم التونسي.</notes_ar>
+				<keywords_ar>المتابعة الشهرية, النفقات, بلدية </keywords_ar>
+				<keywords_fr>suivi mensuel, Budget des dépenses, dépenses, Municipalité de mun_name</keywords_fr>
+				<frequency_update>monthly</frequency_update>
+				<groups>budget</groups>
+				<resources>
+					<resource id='an_dep_h'>
+						<description>Evolution mensuelle des dépenses à la municipalité de mun_name jusqu’au MMMM YYYY</description>
+						<description_ar>تطوّر النفقات الشهريّة إلى MMMM_ar YYYY ببلديّة mun_name_ar</description_ar>
+						<name>Dépenses mensuelles jusqu’au MMMM YYYY</name>
+						<name_ar>النفقات الشهرية إلى MMMM_ar YYYY</name_ar>
+						<format>csv</format>
+					</resource>
+				</resources>		
+			</package>
+			<package id='budget-mensuelle-rec'>
+				<name>budget-mensuelle-recette-municipalite-mun_name</name>
+				<title>Suivi mensuel du Budget des ressources- Municipalité de mun_name</title>
+				<title_ar>المتابعة الشهريّة لميزانيّة الموارد -  بلدية mun_name_ar</title_ar>
+				<notes>Suivi mensuel du budget des ressources à la Municipalité de mun_name selon une présentation horizontale qui consiste à aligner le budget mensuel des ressources (les montants les uns à la suite des autres selon les années) sur toute la longueur du fichier contenant les données.
+				L'unité est en Millime Tunisien.</notes>
+				<notes_ar>المتابعة الشهريّة لميزانيّة الموارد ببلديّة mun_name_ar حسب تقديم أفقي يعتمد على تصفيف الموارد أفقيّا (الميزانيّة الشهريّة الواحدة إلى  جانب الأخرى) على امتداد كامل الملّف الذي يحتوي على البيانات.
+				الوحدة هي المليم التونسي.</notes_ar>
+				<keywords_ar>الموار, المتابعة الشهرية, بلدية </keywords_ar>
+				<keywords_fr>Budget des ressources, suivi mensuel, recettes, Municipalité de mun_name</keywords_fr>
+				<frequency_update>monthly</frequency_update>
+				<groups>budget</groups>
+				<resources>
+					<resource id='an_rec_h'>
+						<description>Evolution mensuelle des ressources à la municipalité de mun_name jusqu’au MMMM YYYY</description>
+						<description_ar>تطوّر الموارد الشهريّة إلى MMMM_ar YYYY ببلديّة mun_name_ar</description_ar>
+						<name>Recettes mensuelles jusqu’au MMMM YYYY</name>
+						<name_ar>الموارد الشهرية إلى MMMM_ar YYYY</name_ar>
+						<format>csv</format>
+					</resource>
+				</resources>
+			</package>
+		</packages>
+		<resources>
+		</resources>
+	</module>
+	<module id='2'>
+		<name>permis de construction</name>
+		<packages>
+			<package id=''>
+				<name>permis-construire-municipalite-mun_name</name>
+				<title>Permis de construire - Municipalité de mun_name</title>
+				<title_ar>رخص البناء - بلدية mun_name_ar</title_ar>
+				<notes>Les permis de bâtir à la Municipalité de mun_name. Ce jeu de données regroupe les demandes des permis approuvées, refusées et ceux en phase d'étude. Les données ont été extraites depuis les modules développés dans le cadre du programme ONSHOR.</notes>
+				<notes_ar>رخص البناء ببلدية mun_name_ar. يمكن من خلال وحدة البيانات هذه الإطلاّع على قائمات رخص البناء المسلّمة والمرفوضة والتي هي بصدد الدرس. يتّم إستخراج مختلف هذه القوائم بالإعتماد على التطبيقات التي تمّ تطويرها في إطار برنامج أنشر.</notes_ar>
+				<keywords_fr>Permis de construire, Permis de bâtir, Municipalité de mun_name</keywords_fr>
+				<keywords_ar>رخصة بناء, بلديّة</keywords_ar>
+				<frequency_update>never</frequency_update>
+				<groups>autorisations-de-batir</groups>
+				<resources>
+					<resource id='pc_en_cours'>
+						<description>Liste permissions de construction en cours de traitement à la municipalité de mun_name</description>
+						<description_ar>قائمة رخص البناء بصدد الدرس ببلدية mun_name_ar</description_ar>
+						<name>Permis de construire en cours de traitement</name>
+						<name_ar>رخص البناء بصدد الدرس</name_ar>
+						<format>csv</format>
+					</resource>
+					<resource id='pc_refused'>
+						<description>Liste des demandes d'autorisations de bâtir refusées à la municipalité de mun_name</description>
+						<description_ar>قائمة رخص البناء المرفوضة ببلدية mun_name_ar</description_ar>
+						<name>Permis de construire refusés</name>
+						<name_ar>رخص البناء المرفوضة</name_ar>
+						<format>csv</format>
+					</resource>
+					<resource id='pc_approved'>
+						<description>Les permis de construire approuvés par la municipalité de mun_name</description>
+						<description_ar>قائمة رخص البناء المصادق عليها من قبل بلدية mun_name_ar </description_ar>
+						<name>Permis de construire approuvés</name>
+						<name_ar>رخص البناء المصادق عليها</name_ar>
+						<format>csv</format>
+					</resource>			
+				</resources>
+			</package>
+		</packages>		
+	</module>
+	<module id='3'>
+		<name>Fouriere</name>
+		<packages>
+			<package id='fourriere'>
+				<name>fourriere-municipalite-mun_name</name>
+				<title>Registre de mise en fourrière - Municipalité de mun_name</title>
+				<title_ar>سجّل الحجز البلدي - بلدية mun_name_ar</title_ar>
+				<notes>Ce jeu de données permet le suivi de mise en fourrière des objets (véhicules, des marchandises, des animaux, etc….) à la municipalité de mun_name. Les données de mise en fourrière ont été extraites des applications développées dans le cadre du programme ONSHOR.</notes>
+				<notes_ar>هذه البيانات تمكّن من متابعة سجّل الحجز البلدي (منقولات، سلع، حيوانات إلخ...) ببلديّة mun_name_ar. تم استخراج هذه البيانات بإستعمال الأدوات التي تمّ تطويرها في إطار برنامج أنشر.</notes_ar>
+				<keywords_fr>détention municipale, fourrière</keywords_fr>
+				<keywords_ar>محجو, حجز بلدي, مستودع</keywords_ar>
+				<frequency_update>never</frequency_update>
+				<groups>fourriere</groups>
+				<resources>
+					<resource id='fourriere'>
+						<description>Liste complète des fourrières municipales avec les coordonnées géographiques.</description>
+						<description_ar>قائمة مستودعات الحجز البلدي ببلديّة mun_name_ar مع تحديد موقعها الجغرافي</description_ar>
+						<name>Liste des fourrières municipales </name>
+						<name_ar>قائمة مستودعات الحجز البلدي</name_ar>
+						<format>csv</format>
+					</resource>
+					<resource id='detention'>
+						<description>Liste des objets détenus dans la fourrière municipale de la commune de mun_name.</description>
+						<description_ar>قائمة المحجوزات بمستودعات الحجز البلدي mun_name_ar.</description_ar>
+						<name>Registre de mise en fourrière</name>
+						<name_ar>سجّل الحجز البلدي</name_ar>
+						<format>csv</format>
+					</resource>
+				</resources>
+			</package>
+		</packages>
+	</module>
+	<module id='4'>
+		<name>propriété municipal</name>
+		<packages>
+			<package id=''>
+				<name>proprietes-municipales-mun_name</name>
+				<title>Propriétés municipales - Municipalité de mun_name</title>
+				<title_ar>سجّل الملك البلدي - بلديّة mun_name_ar</title_ar>
+				<notes>Registre des propriétés municipales à la commune de mun_name. Ce registre englobe les propriétés municipales publiques et privées. Les données ont été extraites depuis les modules développés dans le cadre du programme ONSHOR.</notes>
+				<notes_ar>سجّل الملك البلدي ببلديّة mun_name_ar. يتكوّن هذا السجّل من الملك البلدي الخاص والعام. يتّم إستخراج مختلف هذه البيانات بالإعتماد على التطبيقات التي تمّ تطويرها في إطار برنامج أنشر.</notes_ar>
+				<keywords_fr>propriété municipale, propriété privée, propriété publique</keywords_fr>
+				<keywords_ar>الملك البلدي, الملك الخاص, الملك العام</keywords_ar>
+				<frequency_update>never</frequency_update>
+				<groups>propriete-municipale</groups>
+				<resources>
+					<resource id='mp_private'>
+						<description>Liste des propriétés municipales privées à la municipalité de mun_name.</description>
+						<description_ar>القائمة كاملة للملك البلدي الخاص ببلديّة mun_name_ar.</description_ar>
+						<name>Propriétés municipales privées</name>
+						<name_ar>الملك البلدي الخاص</name_ar>
+						<format>csv</format>
+					</resource>
+					<resource id='mp_public'>
+						<description>Liste complète des propriétés municipales publiques à la municipalité de mun_name.</description>
+						<description_ar>القائمة كاملة للملك البلدي العام ببلديّة mun_name_ar.</description_ar>
+						<name>Propriétés municipales publiques</name>
+						<name_ar>الملك البلدي العام</name_ar>
+						<format>csv</format>
+					</resource>
+				</resources>
+			</package>
+		</packages>
+	</module>
+</modules>

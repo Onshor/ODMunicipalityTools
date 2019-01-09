@@ -8,7 +8,7 @@ from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from project.models import User, Municipality
 from project.email import send_email
-from project import db, bcrypt
+from project import db, bcrypt, app
 from .forms import LoginForm, RegisterForm, ChangePasswordForm, ContactForm, ApiForm
 from pprint import pprint as pp
 import ckanapi
@@ -196,12 +196,12 @@ def resend_confirmation():
 
 
 def create_user_ckan(name, password, fullname, email):
-    ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey='545dd248-0887-47c5-ae65-248c2772a53b')
+    ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
     user_dict = {'name': name, 'password': password, 'email': email, 'fullname': fullname}
     api_dict = ckan.action.user_create(**user_dict)
     return api_dict
 
 
 def get_list_user():
-    ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey='545dd248-0887-47c5-ae65-248c2772a53b')
+    ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
     return ckan.action.user_list()

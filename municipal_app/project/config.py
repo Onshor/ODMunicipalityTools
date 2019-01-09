@@ -31,7 +31,7 @@ class BaseConfig(object):
 
     # ckan_config
     CKAN_URL = 'http://openbaladiati.tn/'
-    CKAN_API_KEY = '545dd248-0887-47c5-ae65-248c2772a53b'
+    CKAN_API_KEY = '86e646dd-6edc-4aeb-989e-f67246510e9e'
 
 
 class DevelopmentConfig(BaseConfig):

@@ -421,7 +421,7 @@ def mail_exist(mail, user_email):
 
 
 def create_organization_ckan(data):
-    ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey='545dd248-0887-47c5-ae65-248c2772a53b')
+    ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
     b = ckan.action.organization_create(**data)
     return b
 

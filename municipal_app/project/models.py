@@ -430,11 +430,13 @@ class Resources(db.Model):
     municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
     resource_id = db.Column(db.String)
     package_id = db.Column(db.String)
+    link = db.Column(db.String)
 
-    def __init__(self, municipal_id, resource_id, package_id):
+    def __init__(self, municipal_id, resource_id, package_id, link):
         self.municipal_id = municipal_id
         self.resource_id = resource_id
         self.package_id = package_id
+        self.link = link
 
     def get_id(self):
         return self.id
@@ -446,12 +448,13 @@ class Packages(db.Model):
     municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
     modules_id = db.Column(db.String)
     package_id = db.Column(db.String)
+    package_type = db.Column(db.String)
 
-    def __init__(self, municipal_id, modules_id, package_id):
+    def __init__(self, municipal_id, modules_id, package_type, package_id):
         self.municipal_id = municipal_id
         self.modules_id = modules_id
+        self.package_type = package_type
         self.package_id = package_id
 
     def get_id(self):
         return self.id
-

@@ -9,10 +9,11 @@ from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import FourrierForm, DetentionForm, ReleaseForm
-from project.models import Fourrier, Detention, Municipality, Data_Publisher
+from project.models import Fourrier, Detention, Municipality, Data_Publisher, Packages
 from project import db
 from project.util import save_auto_update, push_api, get_auto_update_data, decode_pub_data
 import datetime
+from project.ckan_api import module_publisher
 from project.util import check_role
 import csv
 import os
@@ -47,8 +48,7 @@ def add_fourrier():
             Name_Fourrier=form.Name_Fourrier.data,
             Address_Fourrier=form.Address_Fourrier.data,
             Longitude=form.Longitude.data,
-            Laltitude=form.Laltitude.data
-            )
+            Laltitude=form.Laltitude.data)
         db.session.add(fourrier)
         db.session.commit()
         flash(u'تم حفظها في قاعدة البيانات', 'success')
@@ -253,15 +253,28 @@ def get_fourrier_file():
                     d_data['Longitude'] = det_lon
                     d_data['Latitude'] = det_lat
                     detention_file.append(d_data)
+            for f in fourrier_data:
+                f_data, f_fieldnames = get_file_content(f, 'fourriere')
+                fourrier_file.append(f_data)
+            ref = 'list_fourrierre_' + str(current_user.municipal_id)
+            fourrier_f = get_csv_file(fourrier_file, ref, f_fieldnames)
+            save_auto_update(fourrier_f, 'Fourriere')
+            fourrier_url = confirm_url + fourrier_f
+            f_data = get_auto_update_data({'file_name': fourrier_f, 'link': fourrier_url, 'type': 'fourriere'})
+            ref = 'list_detention_' + str(current_user.municipal_id)
             if detention_file:
-                ref = 'list_detention_' + str(current_user.municipal_id)
                 detention_f = get_csv_file(detention_file, ref, d_fieldnames)
-                save_auto_update(detention_f, 'Fourriere')
-                detention_url = confirm_url + detention_f
-                d_data = get_auto_update_data({'file_name': detention_f, 'link': detention_url, 'type': 'detention'})
-                return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), d_data=d_data, detention_lancher=True)
             else:
-                flash(u'ليس هنالك بيانات ', 'info')
+                detention_f = get_csv_file(detention_file, ref, [])
+            save_auto_update(detention_f, 'Fourriere')
+            detention_url = confirm_url + detention_f
+            d_data = get_auto_update_data({'file_name': detention_f, 'link': detention_url, 'type': 'detention'})
+            create = Packages.query.filter_by(modules_id=str(module_id), package_type='fourriere', municipal_id=current_user.municipal_id).first()
+            if 'open_api' in request.values:
+                pub_data = [d_data] + [f_data]
+                module_publisher(module_id, 'fourriere', pub_data, '', '', '')
+                return redirect(url_for('fourrier.fourrier'))
+            return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data), f_data=f_data, d_data=d_data, detention_lancher=True, create=create)
     return render_template('fourrier/fourrier.html', fourrier_data=fourrier_data, detention_data=reforme_list(detention_data))
 
 
