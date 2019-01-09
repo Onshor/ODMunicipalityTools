@@ -88,7 +88,10 @@ def read_metadata(xml_file, module_id, package_type, year_str, month_str, month_
 
 def create_dataset(module_id, package_type, links_data, year_str, month_str, month_str_ar):
     resource_list = []
-    data = read_metadata("project/metadata.xml", module_id, package_type, year_str, month_str, month_str_ar)
+    try:
+        data = read_metadata("project/metadata.xml", module_id, package_type, year_str, month_str, month_str_ar)
+    except:
+        data = read_metadata("/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/metadata.xml", module_id, package_type, year_str, month_str, month_str_ar)
     ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
     if data['name'] in ckan.action.package_list():
         data['name'] = data['name'] + '-001'
