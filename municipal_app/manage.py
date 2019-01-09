@@ -404,5 +404,20 @@ def update_packages_resources():
     # return app_list, b_annuel_list, b_month_dep, b_month_rec
 
 
+@manager.command
+def update_api_key_user():
+    """update_api_key_user"""
+    ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
+    list_user = User.query.filter_by(confirmed=True, api_key=None, deleted=False).all()
+    user_list = ckan.action.user_list()
+    for p in user_list:
+        for u in list_user:
+            if p['email'] == u.email:
+                use = User.query.get(int(u.id))
+                use.api_key = p['apikey']
+                use.ckan_name = p['name']
+                db.session.commit()
+
+
 if __name__ == '__main__':
     manager.run()
