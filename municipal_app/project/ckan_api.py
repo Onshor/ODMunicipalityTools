@@ -5,6 +5,7 @@
 import ckanapi
 from project import app
 from flask import flash
+import os
 import unidecode
 from project import db
 from project.models import Municipality, Packages, Resources
@@ -45,6 +46,13 @@ def get_resource_dict(data, package_type, module_id):
             if d['url'] == r['url']:
                 d['id'] = r['r_id']
     return data
+
+
+def get_file_path():
+    if os.path.isdir('project/metadata.xml'):
+        return 'project/metadata.xml'
+    else:
+        return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/metadata.xml"
 
 
 def read_metadata(xml_file, module_id, package_type, year_str, month_str, month_str_ar):
@@ -88,10 +96,7 @@ def read_metadata(xml_file, module_id, package_type, year_str, month_str, month_
 
 def create_dataset(module_id, package_type, links_data, year_str, month_str, month_str_ar):
     resource_list = []
-    try:
-        data = read_metadata("project/metadata.xml", module_id, package_type, year_str, month_str, month_str_ar)
-    except:
-        data = read_metadata("/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/metadata.xml", module_id, package_type, year_str, month_str, month_str_ar)
+    data = read_metadata(get_file_path(), module_id, package_type, year_str, month_str, month_str_ar)
     ckan = ckanapi.RemoteCKAN(app.config['CKAN_URL'], apikey=app.config['CKAN_API_KEY'])
     if data['name'] in ckan.action.package_list():
         data['name'] = data['name'] + '-001'
