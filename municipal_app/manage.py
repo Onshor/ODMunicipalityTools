@@ -355,13 +355,15 @@ def save_pack(d, package_type, modules_id):
                                 modules_id=modules_id,
                                 package_id=d['id'],
                                 package_type=package_type))
-        #db.session.commit()
+        db.session.commit()
         for r in d['resources']:
             db.session.add(Resources(municipal_id=mun_id,
                                      resource_id=r['id'],
                                      package_id=d['id'],
                                      link=r['url']))
-            #db.session.commit()
+            db.session.commit()
+    else:
+        pp(d['title'])
     return 0
 
 
@@ -386,20 +388,19 @@ def update_packages_resources():
                         fourriere.append(p)
                     app_list.append(p)
     app_list = {v['id']: v for v in app_list}.values()
-    pp(len(app_list))
     fourriere = {v['id']: v for v in fourriere}.values()
-    b_annuel_list = {v['id']: v for v in b_annuel_list}.values()
-    pp(len(b_month_rec))
-    for d in b_annuel_list:
-        save_pack(d, 'budget-annuel', '1')
-    b_month_dep = {v['id']: v for v in b_month_dep}.values()
-    for d in b_month_dep:
-
-        save_pack(d, 'budget-mensuelle-dep', '1')
-    b_month_rec = {v['id']: v for v in b_month_rec}.values()
-    for d in b_month_rec:
-        pp(d['title'])
-        save_pack(d, 'budget-mensuelle-rec', '1')
+    # b_annuel_list = {v['id']: v for v in b_annuel_list}.values()
+    # for d in b_annuel_list:
+    #     save_pack(d, 'budget-annuel', '1')
+    # b_month_dep = {v['id']: v for v in b_month_dep}.values()
+    # for d in b_month_dep:
+    #     save_pack(d, 'budget-mensuelle-dep', '1')
+    # b_month_rec = {v['id']: v for v in b_month_rec}.values()
+    # for d in b_month_rec:
+    #     save_pack(d, 'budget-mensuelle-rec', '1')
+    pp(len(fourriere))
+    for d in fourriere:
+        save_pack(d, 'fourriere', '3')
     # return app_list, b_annuel_list, b_month_dep, b_month_rec
 
 
