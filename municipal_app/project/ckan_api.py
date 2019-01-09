@@ -110,7 +110,7 @@ def create_dataset(module_id, package_type, links_data, year_str, month_str, mon
 
 def update_resource(module_id, package_type, links_data, year_str, month_str, month_str_ar):
     ckan = ckanapi.RemoteCKAN('http://openbaladiati.tn/', apikey=current_user.api_key)
-    data = read_metadata("project/metadata.xml", module_id, package_type, year_str, month_str, month_str_ar)
+    data = read_metadata(get_file_path(), module_id, package_type, year_str, month_str, month_str_ar)
     data = insert_data(data, links_data)
     resources_list = get_resource_dict(data['resources'], package_type, module_id)
     for resource_dict in resources_list:
