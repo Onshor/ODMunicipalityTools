@@ -34,51 +34,31 @@
             {% for d in data %}
             <div class="row">
               <div class="col-lg-5">
-                <label class="control-label"><strong class="text-success">{{d['text']}}</strong></label>
+                <label class="control-label"><strong class="text">{{d['text']}}</strong></label>
               </div>
             </div>
             <div class='row'>
-              <div class="col-lg-5 has-success">
-                <input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ d['link'] }}", readonly/>
+              <div class="col-lg-5">
+                <input type="text" class="form-control blockquote-reverse" placeholder="{{ d['link'] }}", readonly/>
                 <p id ="{{ d['id'] }}" style="display: none;">{{ d['link'] }}</p>
               </div>
 
               <div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#{{ d['id'] }}')"/></div>
-              {% if d['check_r_id'] and d['api_key'] %}
-              <div class="col-lg-4">
-              <form action = "/budget_recette_mensuelle" method = "POST" enctype = "multipart/form-data">
-                <input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
-                <input type="hidden" name="r_id" value="{{d['id']}}">
-                <input type="hidden" name="file_type" value="{{d['type']}}">
-                <input type="hidden" name="link" value="{{d['link']}}">
-                
-              </form>
-              </div>
-              {% elif d['check_r_id'] %}
-              <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-              {% elif d['api_key'] %}
-              <div class="col-lg-4">
-                <div class='col-md-6'>
-                  <p><code>ليس هنالك معرف الملف </code></p>
-                </div>
-                <div class='col-md-6'>
-              <form action = "/budget_recette_mensuelle" method = "POST" enctype = "multipart/form-data">
-                <input class="btn btn-default btn-outline btn-block" value='تحيين ' type="submit" name='get_r_id'>
-                <input type="hidden" name="add_r_id" value="{{d['id']}}">
-                <input type="hidden" name="r_url" value="{{d['link']}}">                
-              </form>
-            </div>
-            </div>
-              <!-- <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_recette_mensuelle/{{d['id']}}">هنا</a></p> --> 
-              {% else %}
-              <div class="col-lg-4">
-              <p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-              <!-- <p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/budget_recette_mensuelle/{{d['id']}}">هنا</a></p> -->
-            </div>
-              {% endif %}
-            </div>
-            
+              <div class="col-lg-3"><a href="{{ d['link'] }}" type="button" download><button class="btn btn-primary btn-outline btn-block">تحميل الملف</button></a></div>
+            </div>            
             {% endfor %}
+            <br>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-4">
+              <form action = "/budget_recette_mensuelle" method = "POST" enctype = "multipart/form-data">
+                {% if create %}
+                <input class="btn btn-danger btn-outline btn-block" value='تحيين البيانات على المنصة ' type="submit" name='open_api'>
+                {% else %}
+                <input class="btn btn-blue btn-outline btn-block" value='نشر البيانات على المنصة ' type="submit" name='open_api'>
+                {% endif %}
+              </form>
+            </div>
             </div>
             {% else %}
             <div class="container-fluid">

@@ -10,11 +10,10 @@ from project.decorators import check_confirmed
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from parser import parse_budget, parse_recette_file, parse_depence_file
-from project.models import Budget_annuelle, Municipality, Auto_update
+from project.models import Budget_annuelle, Municipality, Auto_update, Packages
 from list_month import decode_month_ar, decode_month_fr
-from project.ressource_api import update_ressource_api, update_ressource_api_request, package_exists
-from pprint import pprint as pp
-from project.ressource_api import package_exists
+from project.ressource_api import update_ressource_api, package_exists
+from project.ckan_api import module_publisher
 from project.util import check_role
 
 
@@ -29,6 +28,7 @@ module_id = 1
 #### routes ####
 ################
 
+
 @budget_blueprint.route('/budget')
 @login_required
 @check_confirmed
@@ -42,7 +42,7 @@ def budget():
 def budget_annuel():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         confirm_url = url_for('main.home', _external=True) + 'static/files/'
         recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year = csv_annuelle_file()
@@ -55,26 +55,16 @@ def budget_annuel():
         year_str = ''
         for y in sorted(list(set(years))):
             year_str = year_str + ', ' + y if year_str else y
-        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'موارد تقديم عمودي لسنوات ' +  year_str, 'type': 'an_rec_h'},
-                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'موارد تقديم أفقي لسنوات ' +  year_str, 'type': 'an_rec_v'},
-                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'نفقات تقديم عمودي لسنوات '+  year_str, 'type': 'an_dep_h'},
-                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'نفقات تقديم أفقي لسنوات ' +  year_str, 'type': 'an_dep_v'}]
+        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'موارد تقديم عمودي لسنوات ' + year_str, 'type': 'an_rec_h'},
+                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'موارد تقديم أفقي لسنوات ' + year_str, 'type': 'an_rec_v'},
+                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'نفقات تقديم عمودي لسنوات ' + year_str, 'type': 'an_dep_h'},
+                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'نفقات تقديم أفقي لسنوات ' + year_str, 'type': 'an_dep_v'}]
         data = get_auto_update_data(auto_list)
+        create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-annuel', municipal_id=current_user.municipal_id).first()
         if 'open_api' in request.values:
-            api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(max(years)), None, None)
-            try:
-                update_ressource_api(current_user.api_key, api_data)
-                flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
-            except:
-                flash(u'الرجاء التثبت في api_key','warning')
-        if 'get_r_id' in request.values:
-            id_list = package_exists(request.values['r_url'], None)
-            if id_list:
-                update_ressource(request.values['add_r_id'], id_list[0])
-                data = get_auto_update_data(auto_list)
-            else:
-                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
-        return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True)
+            module_publisher(module_id, 'budget-annuel', auto_list, year_str, '', '')
+            create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-annuel', municipal_id=current_user.municipal_id).first()
+        return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True, create=create)
     return render_template('budget/budget_annuel.html', mun_name=Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar)
 
 
@@ -84,7 +74,7 @@ def budget_annuel():
 def budget_depence_mensuelle():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         if check_monthly_data("Depence"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
@@ -92,23 +82,13 @@ def budget_depence_mensuelle():
             month_list = decode_mm_ar(months)
             month_list_fr = decode_mm_fr(months)
             dpm = confirm_url + file_name
-            auto_data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
+            auto_data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'an_dep_h'}]
             data = get_auto_update_data(auto_data)
+            create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-dep', municipal_id=current_user.municipal_id).first()
             if 'open_api' in request.values:
-                api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
-                try:
-                    update_ressource_api(current_user.api_key, api_data)
-                    flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
-                except:
-                    flash(u'الرجاء التثبت في api_key','warning')
-            if 'get_r_id' in request.values:
-                id_list = package_exists(request.values['r_url'], None)
-                if id_list:
-                    update_ressource(request.values['add_r_id'], id_list[0])
-                    data = get_auto_update_data(auto_data)
-                else:
-                    flash(u'لايوجد ملف بيانات على منصه ', 'warning')
-            return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True, month_list=month_list, year=year , data=data)
+                module_publisher(module_id, 'budget-mensuelle-dep', auto_data, str(year), month_list_fr.split(',')[-1], month_list.split(',')[-1])
+                create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-dep', municipal_id=current_user.municipal_id).first()
+            return render_template('budget/budget_depence_mensuelle.html', dpm=dpm, parsed_dep=True, month_list=month_list, year=year, data=data, create=create)
     return render_template('budget/budget_depence_mensuelle.html', mun_name=Municipality.query.filter_by(municipal_id=current_user.municipal_id).first().municipal_name_ar)
 
 
@@ -118,7 +98,7 @@ def budget_depence_mensuelle():
 def budget_recette_mensuelle():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         if check_monthly_data("Recette"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
@@ -126,23 +106,13 @@ def budget_recette_mensuelle():
             month_list = decode_mm_ar(months)
             month_list_fr = decode_mm_fr(months)
             rcm = confirm_url + file_name
-            auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'موارد أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
+            auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'موارد أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'an_rec_h'}]
             data = get_auto_update_data(auto_data)
+            create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
             if 'open_api' in request.values:
-                api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
-                try:
-                    update_ressource_api(current_user.api_key, api_data)
-                    flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
-                except:
-                    flash(u'الرجاء التثبت في api_key','warning')
-            if 'get_r_id' in request.values:
-                id_list = package_exists(request.values['r_url'], None)
-                if id_list:
-                    update_ressource(request.values['add_r_id'], id_list[0])
-                    data = get_auto_update_data(auto_data)
-                else:
-                    flash(u'لايوجد ملف بيانات على منصه ', 'warning')
-            return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
+                module_publisher(module_id, 'budget-mensuelle-rec', auto_data, str(year), month_list_fr.split(',')[-1], month_list.split(',')[-1])
+                create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
+            return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data, month_list=month_list, year=year, create=create)
     return render_template('budget/budget_recette_mensuelle.html')
 
 
@@ -152,7 +122,7 @@ def budget_recette_mensuelle():
 def upload_file():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
-        return redirect(url_for('main.home')) 
+        return redirect(url_for('main.home'))
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No selected file')
@@ -184,26 +154,16 @@ def upload_file():
                         year_str = ''
                         for y in sorted(list(set(years))):
                             year_str = year_str + ', ' + y if year_str else y
-                        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'موارد تقديم عمودي لسنوات ' +  year_str, 'type': 'an_rec_h'},
-                                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'موارد تقديم أفقي لسنوات ' +  year_str, 'type': 'an_rec_v'},
-                                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'نفقات تقديم عمودي لسنوات '+  year_str, 'type': 'an_dep_h'},
-                                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'نفقات تقديم أفقي لسنوات ' +  year_str, 'type': 'an_dep_v'}]
+                        auto_list = [{'file_name': recette_link_simple, 'link': rcs, 'text': u'موارد تقديم عمودي لسنوات ' + year_str, 'type': 'an_rec_h'},
+                                     {'file_name': recette_link_per_year, 'link': rcy, 'text': u'موارد تقديم أفقي لسنوات ' + year_str, 'type': 'an_rec_v'},
+                                     {'file_name': depecence_link_simple, 'link': dps, 'text': u'نفقات تقديم عمودي لسنوات ' + year_str, 'type': 'an_dep_h'},
+                                     {'file_name': depecence_link_per_year, 'link': dpy, 'text': u'نفقات تقديم أفقي لسنوات ' + year_str, 'type': 'an_dep_v'}]
                         data = get_auto_update_data(auto_list)
+                        create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-annuel', municipal_id=current_user.municipal_id).first()
                         if 'open_api' in request.values:
-                            api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(max(years)), None, None)
-                            try:
-                                update_ressource_api(current_user.api_key, api_data)
-                                flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
-                            except:
-                                flash(u'الرجاء التثبت في api_key','warning')
-                        if 'get_r_id' in request.values:
-                            id_list = package_exists(request.values['r_url'], None)
-                            if id_list:
-                                update_ressource(request.values['add_r_id'], id_list[0])
-                                data = get_auto_update_data(auto_list)
-                            else:
-                                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
-                        return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True)
+                            module_publisher(module_id, 'budget-annuel', auto_list, year_str, '', '')
+                            create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-annuel', municipal_id=current_user.municipal_id).first()
+                        return render_template('budget/budget_annuel.html', data=data, parsed_annuel=True, create=create)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
                         return redirect(url_for('budget.budget_annuel'))
@@ -218,30 +178,20 @@ def upload_file():
                         save_budget_parametre(b)
                         log = save_budget_fee_monthly(b)
                         flash(u'تم حفظها في قاعدة البيانات', 'success') if log else flash(u'لقد تم تحميل هذا الملف من قبل', 'info')
-                        file_name, months, year = csv_mensuelle_file('Depence')                                                
+                        file_name, months, year = csv_mensuelle_file('Depence')
                         month_list = decode_mm_ar(months)
                         month_list_fr = decode_mm_fr(months)
                         dpm = confirm_url + file_name
                         if log:
                             save_xml_file(f, 'b_depence_mensuelle')
                             save_log([file_name])
-                        auto_data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep' }]
+                        auto_data = [{'link': dpm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_dep'}]
                         data = get_auto_update_data(auto_data)
+                        create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-dep', municipal_id=current_user.municipal_id).first()
                         if 'open_api' in request.values:
-                            api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
-                            try:
-                                update_ressource_api(current_user.api_key, api_data)
-                                flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
-                            except:
-                                flash(u'الرجاء التثبت في api_key','warning')
-                        if 'get_r_id' in request.values:
-                            id_list = package_exists(request.values['r_url'], None)
-                            if id_list:
-                                update_ressource(request.values['add_r_id'], id_list[0])
-                                data = get_auto_update_data(auto_data)
-                            else:
-                                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
-                        return render_template('budget/budget_depence_mensuelle.html', parsed_dep=True, data=data)
+                            module_publisher(module_id, 'budget-mensuelle-dep', auto_data, str(year), month_list_fr.split(',')[-1], month_list.split(',')[-1])
+                            create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-dep', municipal_id=current_user.municipal_id).first()
+                        return render_template('budget/budget_depence_mensuelle.html', parsed_dep=True, data=data, create=create)
                     else:
                         flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
                         return redirect(url_for('budget.budget_depence_mensuelle'))
@@ -263,42 +213,17 @@ def upload_file():
                         if log:
                             save_xml_file(f, 'b_recette_mensuelle')
                             save_log([file_name])
-                        auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec' }]
+                        auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec'}]
                         data = get_auto_update_data(auto_data)
+                        create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
                         if 'open_api' in request.values:
-                            api_data = get_api_data(request.values['r_id'], request.values['file_type'], request.values['link'], str(year), month_list_fr, month_list)
-                            try:
-                                update_ressource_api(current_user.api_key, api_data)
-                                flash(u'تم تحديث منظومة البيانات المفتوحة فالمنصة بنجاح','success')
-                            except:
-                                flash(u'الرجاء التثبت في api_key','warning')
-                        if 'get_r_id' in request.values:
-                            id_list = package_exists(request.values['r_url'], None)
-                            if id_list:
-                                update_ressource(request.values['add_r_id'], id_list[0])
-                                data = get_auto_update_data(auto_data)
-                            else:
-                                flash(u'لايوجد ملف بيانات على منصه ', 'warning')
-                        return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data)
+                            module_publisher(module_id, 'budget-mensuelle-rec', auto_data, str(year), month_list_fr.split(',')[-1], month_list.split(',')[-1])
+                            create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
+                        return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data, create=create)
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')
                     return redirect(url_for('budget.budget_recette_mensuelle'))
     return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
-
-
-# @budget_blueprint.route('/download_file', methods=['GET', 'POST'])
-# @login_required
-# @check_confirmed
-# def download_file():
-#     if request.method == 'GET':
-#         confirm_url = url_for('main.home', _external=True) + 'static/files/'
-#         recette_link_simple, depecence_link_simple, recette_link_per_year, depecence_link_per_year = csv_annuelle_file()
-#         rcs = confirm_url + recette_link_simple
-#         dps = confirm_url + depecence_link_simple
-#         rcy = confirm_url + recette_link_per_year
-#         dpy = confirm_url + depecence_link_per_year
-#         return render_template('budget/budget.html', rcs=rcs, dps=dps, rcy=rcy, dpy=dpy, parsed_annuel=True)
-#     return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
 
 
 def decode_mm_ar(months):
