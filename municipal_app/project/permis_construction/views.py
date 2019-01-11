@@ -6,12 +6,13 @@
 #################
 
 from project.decorators import check_confirmed
-from project.models import Permisconstruct, Municipality, Data_Publisher
+from project.models import Permisconstruct, Municipality, Data_Publisher, Packages
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import PermisencourForm, PermisrefuseForm, PermisupdateForm
 from project.util import save_auto_update, push_api, get_auto_update_data
 from project import db
+from project.ckan_api import module_publisher
 from project.util import check_role, decode_pub_data
 import os
 import datetime
@@ -294,36 +295,42 @@ def get_files():
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
         return redirect(url_for('main.home'))
     data_pub = Data_Publisher.query.filter_by(municipal_id=current_user.municipal_id, modules_id=module_id).first().data_pub
-    confirm_url = url_for('main.home', _external=True) + 'static/files/'
     data = [u.__dict__ for u in Permisconstruct.query.filter_by(municipal_id=current_user.municipal_id).all()]
-    fieldnames, pub_list = [], []
-    if 'type_file' in request.values:
-        for d in data:
-            if request.values['type_file'] in d['permis_status']:
-                pub_dict = {}
-                for item in data_pub:
-                    if request.values['type_file'] == item['type']:
-                        for p in item['pub']:
-                            if p['status']:
-                                fieldnames.append(p['pub_name'])
-                                pub_dict[p['pub_name']] = decode_pub_data(d[p['db_name']])
-                pub_list.append(pub_dict)
-        if pub_list:
-            file_name = 'permis_construction_' + request.values['type_file'] + '_' + current_user.municipal_id
-            file_name = get_csv_file(pub_list, file_name, list(set(fieldnames)))
-            save_auto_update(file_name, 'Permis du construction')
-            file_url = confirm_url + file_name
-            file_data = get_auto_update_data({'file_name': file_name, 'link': file_url, 'type': 'pc_' + request.values['type_file']})
-            if request.values['type_file'] == 'en_cours':
-                return render_template('permis_construction/permis_construction.html', data=data, encours=True, encour_data=file_data)
-            elif request.values['type_file'] == 'approved':
-                return render_template('permis_construction/permis_construction.html', data=data, approved=True, approved_data=file_data)
-            else:
-                return render_template('permis_construction/permis_construction.html', data=data, refused=True, refused_data=file_data)
-
-        else:
-            flash(u'ليست هنالك بيانات', 'warning')
+    if data:
+        files_data = [get_permis_files(data, 'en_cours', data_pub, u'ملف الرخص بصدد الدرس')]
+        files_data.append(get_permis_files(data, 'approved', data_pub, u'ملف الرخص المقبولة'))
+        files_data.append(get_permis_files(data, 'refused', data_pub, u'ملف الرخص المرفوضة'))
+        create = Packages.query.filter_by(modules_id=str(module_id), package_type='permis_de_construction', municipal_id=current_user.municipal_id).first()
+        if 'open_api' in request.values:
+            module_publisher(module_id, 'permis_de_construction', files_data, '', '', '')
+            create = Packages.query.filter_by(modules_id=str(module_id), package_type='permis_de_construction', municipal_id=current_user.municipal_id).first()
+            return redirect(url_for('permis_construction.consult_permisconst'))
+        return render_template('permis_construction/permis_construction.html', data=data, file=True, files_data=files_data, create=create)
+    else:
+        flash(u'ليست هنالك بيانات', 'warning')
     return render_template('permis_construction/permis_construction.html', data=data)
+
+
+def get_permis_files(data, permis_status, data_pub, text_head):
+    pub_list, fieldnames = [], []
+    confirm_url = url_for('main.home', _external=True) + 'static/files/'
+    for d in data:
+        if permis_status in d['permis_status']:
+            pub_dict = {}
+            for item in data_pub:
+                if permis_status == item['type']:
+                    for p in item['pub']:
+                        if p['status']:
+                            fieldnames.append(p['pub_name'])
+                            pub_dict[p['pub_name']] = decode_pub_data(d[p['db_name']])
+            pub_list.append(pub_dict)
+    file_name = 'permis_construction_' + permis_status + '_' + current_user.municipal_id
+    file_name = get_csv_file(pub_list, file_name, list(set(fieldnames)))
+    save_auto_update(file_name, 'Permis du construction')
+    file_url = confirm_url + file_name
+    file_data = get_auto_update_data({'file_name': file_name, 'link': file_url, 'type': 'pc_' + permis_status})
+    file_data['text_head'] = text_head
+    return file_data
 
 
 def get_csv_file(data, ref, fieldnames):

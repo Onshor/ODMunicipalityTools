@@ -50,97 +50,48 @@
 					</div>
 					<div class="col-lg-8">
 						<div class='row'>
-							<h3 class="panel-title text-center">إستخراج الملفات</h3>
+							<div class='col-md-4'>
+								<form action = "/get_files" method = "POST" enctype = "multipart/form-data",>
+									<input class="btn btn-info btn-outline btn-block" type="submit" value='إستخراج الملفات'/>
+									<input type='hidden' name='type_file' value='files'>
+								</form>
+							</div>
+							<div class='col-md-4'></div>
+							<div class='col-md-4'></div>
 						</div>
-						<div class="line-dashed"></div>
+						{% if file %}
+						{% for f in files_data %}
 						<div class='row'>
-							<div class="col-lg-4">
-								<form action = "/get_files" method = "POST" enctype = "multipart/form-data",>
-									<input class="btn btn-primary btn-outline btn-block" type="submit" value='ملف الرخص بصدد الدرس'/>
-									<input type='hidden' name='type_file' value='en_cours'>
-								</form>
-								{% if encours %}
-								<input type="text" class="form-control has-success" placeholder="{{ encour_data['link'] }}", readonly/>
-								<p id ="copy_link_encours" style="display: none;">{{ encour_data['link'] }}</p>
-								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_encours')"/>
-								{% if encour_data['check_r_id'] and encour_data['api_key'] %}
-								<form action = "/get_files/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
-									<input type="hidden" name="r_id" value="{{encour_data['id']}}">
-									<input type="hidden" name="file_type" value="{{encour_data['type']}}">
-									<input type="hidden" name="link" value="{{encour_data['link']}}">
-
-								</form>
-								{% elif encour_data['check_r_id'] %}
-								<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-								{% elif encour_data['api_key'] %}
-								<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_permisconst/{{encour_data['id']}}">هنا</a></p> 
-								{% else %}
-								<div class="col-lg-4">
-									<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-									<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_permisconst/{{encour_data['id']}}">هنا</a></p>
-								</div>
-								{% endif %}
-								{% endif %}
+							<div class='col-md-2'>
+								<label class="control-label"><strong class="text">{{ f['text_head'] }}</strong></label>
 							</div>
-							<div class="col-lg-4">
-								<form action = "/get_files" method = "POST" enctype = "multipart/form-data",>
-									<input class="btn btn-success btn-outline btn-block" type="submit" value='ملف الرخص المقبولة'/>
-									<input type='hidden' name='type_file' value='approved'>
-								</form>
-								{% if approved %}
-								<input type="text" class="form-control has-success" placeholder="{{approved_data['link']}}", readonly/>
-								<p id ="copy_link_approved" style="display: none;">{{approved_data['link']}}</p>
-								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_approved')"/>
-								{% if approved_data['check_r_id'] and approved_data['api_key'] %}
-								<form action = "/get_files/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
-									<input type="hidden" name="r_id" value="{{approved_data['id']}}">
-									<input type="hidden" name="file_type" value="{{approved_data['type']}}">
-									<input type="hidden" name="link" value="{{approved_data['link']}}">
-
-								</form>
-								{% elif approved_data['check_r_id'] %}
-								<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-								{% elif approved_data['api_key'] %}
-								<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_permisconst/{{approved_data['id']}}">هنا</a></p> 
-								{% else %}
-								<div class="col-lg-4">
-									<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-									<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_permisconst/{{approved_data['id']}}">هنا</a></p>
-								</div>
-								{% endif %}
-								{% endif %}
+							<div class='col-md-6'>
+								<input type="text" class="form-control" placeholder="{{ f['link'] }}", readonly/>
+								<p id ="{{ f['type'] }}" style="display: none;">{{ f['link'] }}</p>
 							</div>
-							<div class="col-lg-4">
-								<form action = "/get_files" method = "POST" enctype = "multipart/form-data",>
-									<input class="btn btn-red btn-outline btn-block" type="submit" value='ملف الرخص المرفوضة'/>
-									<input type='hidden' name='type_file' value='refused'>
-								</form>
-								{% if refused %}
-								<input type="text" class="form-control has-success" placeholder="{{ refused_data['link'] }}", readonly/>
-								<p id ="copy_link_refused" style="display: none;">{{ refused_data['link'] }}</p>
-								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#copy_link_refused')"/>
-								{% if refused_data['check_r_id'] and refused_data['api_key'] %}
-								<form action = "/get_files/api" method = "POST" enctype = "multipart/form-data">
-									<input class="btn btn-blue btn-outline btn-block" value='نشر على  المنصة ' type="submit" name='open_api'>
-									<input type="hidden" name="r_id" value="{{refused_data['id']}}">
-									<input type="hidden" name="file_type" value="{{refused_data['type']}}">
-									<input type="hidden" name="link" value="{{refused_data['link']}}">
-								</form>
-								{% elif refused_data['check_r_id'] %}
-								<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-								{% elif refused_data['api_key'] %}
-								<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_permisconst/{{refused_data['id']}}">هنا</a></p> 
-								{% else %}
-								<div class="col-lg-4">
-									<p><code>لا يوجد لديك API key</code> إضافة من <a href="/profile">هنا</a></p>
-									<p><code>ليس هنالك معرف الملف </code> التحيين من <a href="/file_ressources/consult_permisconst/{{refused_data['id']}}">هنا</a></p>
-								</div>
-								{% endif %}
-								{% endif %}
+							<div class='col-md-2'>
+								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#{{ f['type'] }}')"/>
 							</div>
+							<div class='col-md-2'>
+								<div class="col-lg-3"><a href="{{ f['link'] }}" type="button" download><button class="btn btn-link btn-outline btn-block">تحميل الملف</button></a></div>
+							</div>
+							
 						</div>
+						<br>
+						{% endfor %}
+						<br>
+						<div class="col-lg-4"></div>
+						<div class="col-lg-4"></div>
+						<div class="col-lg-4">
+							<form action = "/get_files" method = "POST" enctype = "multipart/form-data">
+								{% if create %}
+								<input class="btn btn-danger btn-outline btn-block" value='تحيين البيانات على المنصة ' type="submit" name='open_api'>
+								{% else %}
+								<input class="btn btn-blue btn-outline btn-block" value='نشر البيانات على المنصة ' type="submit" name='open_api'>
+								{% endif %}
+							</form>
+						</div>
+						{% endif %}
 					</div>
 				</div>
 				<div class="table-responsive">

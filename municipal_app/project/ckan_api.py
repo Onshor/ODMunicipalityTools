@@ -5,7 +5,7 @@
 import ckanapi
 from project import app
 from flask import flash
-import os
+from os.path import exists
 import unidecode
 from project import db
 from project.models import Municipality, Packages, Resources
@@ -49,7 +49,7 @@ def get_resource_dict(data, package_type, module_id):
 
 
 def get_file_path():
-    if os.path.isdir('project/metadata.xml'):
+    if exists('project/metadata.xml'):
         return 'project/metadata.xml'
     else:
         return "/home/appuser/municipality_tools/municipality_tools/ODMunicipalityTools/municipal_app/project/metadata.xml"

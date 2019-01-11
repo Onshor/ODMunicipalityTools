@@ -97,14 +97,14 @@
 	<module id='2'>
 		<name>permis de construction</name>
 		<packages>
-			<package id=''>
+			<package id='permis_de_construction'>
 				<name>permis-construire-municipalite-mun_name</name>
 				<title>Permis de construire - Municipalité de mun_name</title>
 				<title_ar>رخص البناء - بلدية mun_name_ar</title_ar>
 				<notes>Les permis de bâtir à la Municipalité de mun_name. Ce jeu de données regroupe les demandes des permis approuvées, refusées et ceux en phase d'étude. Les données ont été extraites depuis les modules développés dans le cadre du programme ONSHOR.</notes>
 				<notes_ar>رخص البناء ببلدية mun_name_ar. يمكن من خلال وحدة البيانات هذه الإطلاّع على قائمات رخص البناء المسلّمة والمرفوضة والتي هي بصدد الدرس. يتّم إستخراج مختلف هذه القوائم بالإعتماد على التطبيقات التي تمّ تطويرها في إطار برنامج أنشر.</notes_ar>
 				<keywords_fr>Permis de construire, Permis de bâtir, Municipalité de mun_name</keywords_fr>
-				<keywords_ar>رخصة بناء, بلديّة</keywords_ar>
+				<keywords_ar>رخصة بناء</keywords_ar>
 				<frequency_update>never</frequency_update>
 				<groups>autorisations-de-batir</groups>
 				<resources>
