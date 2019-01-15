@@ -168,7 +168,7 @@
 	<module id='4'>
 		<name>propriété municipal</name>
 		<packages>
-			<package id=''>
+			<package id='propriete_municipal'>
 				<name>proprietes-municipales-mun_name</name>
 				<title>Propriétés municipales - Municipalité de mun_name</title>
 				<title_ar>سجّل الملك البلدي - بلديّة mun_name_ar</title_ar>

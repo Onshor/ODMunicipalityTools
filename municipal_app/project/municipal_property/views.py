@@ -6,11 +6,12 @@
 #################
 
 from project.decorators import check_confirmed
-from project.models import Proprietemunicipal, Municipality, Data_Publisher
+from project.models import Proprietemunicipal, Municipality, Data_Publisher, Packages
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from flask_login import login_required, current_user
 from .forms import ProprietyForm
 from project import db
+from project.ckan_api import module_publisher
 from project.util import save_auto_update, push_api, get_auto_update_data
 from project.util import check_role, decode_pub_data
 from pprint import pprint as pp
@@ -138,6 +139,7 @@ def get_property_file():
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
         return redirect(url_for('main.home'))
     private_list, private_data, public_list, public_data = [], [], [], []
+    create = Packages.query.filter_by(modules_id=str(module_id), package_type='propriete_municipal', municipal_id=current_user.municipal_id).first()
     if 'project' in url_for('main.home', _external=True) + 'static/files/':
         confirm_url = url_for('main.home', _external=True) + 'static/files/'
         confirm_url = confirm_url.replace('project', '')
@@ -151,25 +153,29 @@ def get_property_file():
         else:
             p_data, fieldnames_pu = get_file_content(d, 'public')
             public_list.append(p_data)
+    public_ref = 'properte_municipal_public_' + str(current_user.municipal_id)
     if public_list:
-        public = True
-        public_ref = 'properte_municipal_public_' + str(current_user.municipal_id)
         public_file = get_csv_file(public_list, public_ref, fieldnames_pu)
-        save_auto_update(public_file, 'Propriete municipale')
-        public_url = confirm_url + public_file
-        public_data = get_auto_update_data({'file_name': public_file, 'link': public_url, 'type': 'mp_public'})
     else:
-        public = False
+        public_file = get_csv_file([], public_ref, fieldnames_pu)
+    save_auto_update(public_file, 'Propriete municipale')
+    public_url = confirm_url + public_file
+    public_data = get_auto_update_data({'file_name': public_file, 'link': public_url, 'type': 'mp_public'})
+    public_data['text_head'] = u'الملك العام'
+    private_ref = 'properte_municipal_private_' + str(current_user.municipal_id)
     if private_list:
-        private = True
-        private_ref = 'properte_municipal_private_' + str(current_user.municipal_id)
         private_file = get_csv_file(private_list, private_ref, fieldnames_pv)
-        save_auto_update(private_file, 'Propriete municipale')
-        private_url = confirm_url + private_file
-        private_data = get_auto_update_data({'file_name': private_file, 'link': private_url, 'type': 'mp_private'})
     else:
-        private = False
-    return render_template('municipal_property/municipal_property.html', file=True, data=data, public=public, private=private, public_data=public_data, private_data=private_data)
+        private_file = get_csv_file([], private_ref, fieldnames_pv)
+    save_auto_update(private_file, 'Propriete municipale')
+    private_url = confirm_url + private_file
+    private_data = get_auto_update_data({'file_name': private_file, 'link': private_url, 'type': 'mp_private'})
+    private_data['text_head'] = u'الملك الخاص'
+    f_data = [private_data] + [public_data]
+    if 'open_api' in request.values:
+        module_publisher(module_id, 'propriete_municipal', f_data, '', '', '')
+        return redirect(url_for('municipal_property.consult_municipal_property'))
+    return render_template('municipal_property/municipal_property.html', file=True, files_data=f_data, create=create, data=data)
 
 
 def check_float(value):

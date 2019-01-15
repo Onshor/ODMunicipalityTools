@@ -10,48 +10,89 @@
 					<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
 					<li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
 				</ul>
-					<br><br>
-		<div class='row'>
-			<div class='col-lg-4'></div>
-			<div class='col-lg-3'>
-				<div class="panel panel-danger animated fadeInUp go" id='DeleteDetention' style="display: none;">
-					<div class="panel-heading clearfix"> 
-						<div class="panel-title">تأكيد الحذف ؟؟</div> 
-						<ul class="panel-tool-options"> 
-						</ul>  
-					</div>
-					<div class="panel-body">
-						<div class='row'>
-							<div class='col-sm-6'>
-								<form action="/consult_municipal_property" method="POST">
-								<input class="btn btn-outline btn-red btn-block" type="submit" value='نعم'/>
-								<input type="hidden" id='DelId' name="type" value="">
-								<input type="hidden" id='del_row' name="delete_row" value="">
-							</form>
+				<br><br>
+				<div class='row'>
+					<div class='col-lg-4'></div>
+					<div class='col-lg-3'>
+						<div class="panel panel-danger animated fadeInUp go" id='DeleteDetention' style="display: none;">
+							<div class="panel-heading clearfix"> 
+								<div class="panel-title">تأكيد الحذف ؟؟</div> 
+								<ul class="panel-tool-options"> 
+								</ul>  
 							</div>
-							<div class='col-sm-6'>
-								<a href="/consult_municipal_property" class="btn btn-outline btn-primary btn-block" type="submit">لا</a>
+							<div class="panel-body">
+								<div class='row'>
+									<div class='col-sm-6'>
+										<form action="/consult_municipal_property" method="POST">
+											<input class="btn btn-outline btn-red btn-block" type="submit" value='نعم'/>
+											<input type="hidden" id='DelId' name="type" value="">
+											<input type="hidden" id='del_row' name="delete_row" value="">
+										</form>
+									</div>
+									<div class='col-sm-6'>
+										<a href="/consult_municipal_property" class="btn btn-outline btn-primary btn-block" type="submit">لا</a>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
+					<div class='col-lg-5'></div>
 				</div>
-			</div>
-			<div class='col-lg-5'></div>
-		</div>
 			</div>
 			<div class="panel-body">
 				<div class='row'>
 					<div class="col-lg-4">
-				
-				<div>
-					<form method="get" action="/add_municipal_property">
-						<button class="btn btn-blue" type="submit"><i class="fa fa-plus"></i>&nbsp;إضافة ملك بلدي جديد</button>
-					</form>
-				</div>
-			</div>
-			<div class="col-lg-8">
-				<div class='row'>
-					<div class="col">
+
+						<div>
+							<form method="get" action="/add_municipal_property">
+								<button class="btn btn-blue" type="submit"><i class="fa fa-plus"></i>&nbsp;إضافة ملك بلدي جديد</button>
+							</form>
+						</div>
+					</div>
+					<div class="col-lg-8">
+						<div class='row'>
+							<div class='col-md-4'>
+								<form action = "/get_property_file" method = "POST" enctype = "multipart/form-data",>
+									<input class="btn btn-info btn-outline btn-block" type="submit" value='إستخراج الملفات'/>
+									<input type='hidden' name='type_file' value='files'>
+								</form>
+							</div>
+							<div class='col-md-4'></div>
+							<div class='col-md-4'></div>
+						</div>
+						{% if file %}
+						{% for f in files_data %}
+						<div class='row'>
+							<div class='col-md-2'>
+								<label class="control-label"><strong class="text">{{ f['text_head'] }}</strong></label>
+							</div>
+							<div class='col-md-6'>
+								<input type="text" class="form-control" placeholder="{{ f['link'] }}", readonly/>
+								<p id ="{{ f['type'] }}" style="display: none;">{{ f['link'] }}</p>
+							</div>
+							<div class='col-md-2'>
+								<input class="btn btn-link btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#{{ f['type'] }}')"/>
+							</div>
+							<div class='col-md-2'>
+								<div class="col-lg-3"><a href="{{ f['link'] }}" type="button" download><button class="btn btn-link btn-outline btn-block">تحميل الملف</button></a></div>
+							</div>
+							
+						</div>
+						<br>
+						{% endfor %}
+						<div class="col-lg-4"></div>
+						<div class="col-lg-4"></div>
+						<div class="col-lg-4">
+							<form action = "/get_property_file" method = "POST" enctype = "multipart/form-data">
+								{% if create %}
+								<input class="btn btn-danger btn-outline btn-block" value='تحيين البيانات على المنصة ' type="submit" name='open_api'>
+								{% else %}
+								<input class="btn btn-blue btn-outline btn-block" value='نشر البيانات على المنصة ' type="submit" name='open_api'>
+								{% endif %}
+							</form>
+						</div>
+						{% endif %}
+					<!-- <div class="col">
 						<form action = "/get_property_file" method = "POST" enctype = "multipart/form-data",>
 							<input class="btn btn-outline btn-success btn-block" type="submit" value='إستخراج الملفات'/>
 							<input type='hidden' name='type_file' value='en_cours'>
@@ -139,72 +180,70 @@
 						</div>
 						{% endif %}
 						{% endif %}
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="table-responsive">
-		<table class="table table-striped table-bordered table-hover dataTables-example" id="myTable">
-			<thead>
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered table-hover dataTables-example" id="myTable">
+				<thead>
 
-				<tr>
-					<th>صفة الملك</th>
-					<th>الترسيم العقاري</th>
-					<th>نوع الملك</th>
-					<th>طريقة الإستغلال</th>
-					<th>العنوان</th>
-					<th>المستغل</th>
-					<th>المساحة بالمتر ² </th>
-					<th>Longitude</th>
-					<th>Laltitude</th>
-					<th>تحيين</th>
-					<th>حذف</th>
+					<tr>
+						<th>صفة الملك</th>
+						<th>الترسيم العقاري</th>
+						<th>نوع الملك</th>
+						<th>طريقة الإستغلال</th>
+						<th>العنوان</th>
+						<th>المستغل</th>
+						<th>المساحة بالمتر ² </th>
+<!-- 					<th>Longitude</th>
+	<th>Laltitude</th> -->
+	<th>تحيين</th>
+	<th>حذف</th>
 
-				</tr>
-			</thead>
-			<tbody>
-				{% for d in data %}
-				<tr class="gradeA">
-					<td>{{d['Type_Proprety']}}</td>
-					<td>{{d['Titre_Foncier']}}</td>
-					<td>{{d['Type_du_Bien']}}</td>
-					<td>{{d['Type_Usage']}}</td>
-					<td>{{d['Adresse_Localisation']}}</td>
-					<td>{{d['Mode_Octroi']}}</td>
-					<td>{{d['Surface']}}</td>
-					<td>{{d['Longitude']}}</td>
-					<td>{{d['Laltitude']}}</td>
-					<form action="/update_municipal_property" method="POST">
-						<td>
-							<input type="hidden" name="type" value="{{d['id']}}">
-							<button class="btn btn-default" type="submit" value=''><i class="fa fa-edit" data-unicode="f084" style="color:#33ccff"></i></button>
-						</td>
-					</form>
-					<td>
-						<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="DeleteFunction({{d['id']}})"><span class="glyphicon glyphicon-trash"></span></button>
-						<p id="id_input" style='display:none;'>{{d['id']}}</p>
-					</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-		<tfoot>
-			<tr>
-				<th>صفة الملك</th>
-				<th>الترسيم العقاري</th>
-				<th>نوع الملك</th>
-				<th>طريقة الإستغلال</th>
-				<th>العنوان</th>
-				<th>المستغل</th>
-				<th>المساحة بالمتر ² </th>
-				<th>Longitude</th>
-				<th>Laltitude</th>
-				<th>تحيين</th>
-				<th>حذف</th>
-			</tr>
-		</tfoot>
-	</table>
-</div>
+</tr>
+</thead>
+<tbody>
+	{% for d in data %}
+	<tr class="gradeA">
+		<td>{{d['Type_Proprety']}}</td>
+		<td>{{d['Titre_Foncier']}}</td>
+		<td>{{d['Type_du_Bien']}}</td>
+		<td>{{d['Type_Usage']}}</td>
+		<td>{{d['Adresse_Localisation']}}</td>
+		<td>{{d['Mode_Octroi']}}</td>
+		<td>{{d['Surface']}}</td>
+<!-- 					<td>{{d['Longitude']}}</td>
+	<td>{{d['Laltitude']}}</td> -->
+	<form action="/update_municipal_property" method="POST">
+		<td>
+			<input type="hidden" name="type" value="{{d['id']}}">
+			<button class="btn btn-default" type="submit" value=''><i class="fa fa-edit" data-unicode="f084" style="color:#33ccff"></i></button>
+		</td>
+	</form>
+	<td>
+		<button id='btndel' class="btn btn-red" value="{{d['id']}}" type="button" onclick="DeleteFunction({{d['id']}})"><span class="glyphicon glyphicon-trash"></span></button>
+		<p id="id_input" style='display:none;'>{{d['id']}}</p>
+	</td>
+</tr>
+{% endfor %}
+</tbody>
+<tfoot>
+	<tr>
+		<th>صفة الملك</th>
+		<th>الترسيم العقاري</th>
+		<th>نوع الملك</th>
+		<th>طريقة الإستغلال</th>
+		<th>العنوان</th>
+		<th>المستغل</th>
+		<th>المساحة بالمتر ² </th>
+<!-- 				<th>Longitude</th>
+	<th>Laltitude</th> -->
+	<th>تحيين</th>
+	<th>حذف</th>
+</tr>
+</tfoot>
+</table>
 </div>
 </div>
 </div>
@@ -215,33 +254,33 @@
 <script>
 function DeleteFunction(element){
 	$('#DeleteDetention').css({
-			'display': 'block',
-		})
+		'display': 'block',
+	})
 	$('#DelId').val(element)
 	$('#del_row').val(document.getElementById("ref_del").value)
 	document.body.scrollTop = 0;
-  	document.documentElement.scrollTop = 0;
+	document.documentElement.scrollTop = 0;
 }
 
 $(document).ready(function() {
-  $('#myTable').DataTable({
-   "pagingType": "full_numbers",
-   "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "الكل"]],
-   "language": {
-    "lengthMenu": "عرض _MENU_ ملك بلدي لكل صفحة",
-    "zeroRecords": "لا توجد سجلات متاحة",
-    "info": "عرض ملك بلدي  _PAGE_ من _PAGES_",
-    "infoEmpty": "لا توجد سجلات متاحة",
-    "infoFiltered": "(تصفيتها من _MAX_ سجل)",
-    "search": "بحث:",
-    "paginate": {
-      "previous": "السابق",
-      "next":"التالى",
-      "last":"الاخير",
-      "first":"أول"
-    }
-  }
-});
+	$('#myTable').DataTable({
+		"pagingType": "full_numbers",
+		"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "الكل"]],
+		"language": {
+			"lengthMenu": "عرض _MENU_ ملك بلدي لكل صفحة",
+			"zeroRecords": "لا توجد سجلات متاحة",
+			"info": "عرض ملك بلدي  _PAGE_ من _PAGES_",
+			"infoEmpty": "لا توجد سجلات متاحة",
+			"infoFiltered": "(تصفيتها من _MAX_ سجل)",
+			"search": "بحث:",
+			"paginate": {
+				"previous": "السابق",
+				"next":"التالى",
+				"last":"الاخير",
+				"first":"أول"
+			}
+		}
+	});
 } );
 function copyToClipboard(element) {
 	var $temp = $("<input>");
