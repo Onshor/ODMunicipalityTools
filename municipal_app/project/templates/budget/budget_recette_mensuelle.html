@@ -3,34 +3,65 @@
 {% block content %}
 <h1 class="page-title"> الميزانية </h1>
 <div class="row">
-    <div class="col-lg-12 animatedParent animateOnce z-index-50">
-      <div class="panel panel-default animated fadeInUp go">
-        <div class="panel-heading clearfix">
-          <h3 class="panel-title">الموارد الشهرية</h3>
-          <ul class="panel-tool-options"> 
-            <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
-            <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
-            <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
-          </ul>
-        </div>
-        <div class="panel-body">
-          <div class="col-6 col-md-4">
-            <div class="dropzone-previews">
-              <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
-                <input type="hidden" name="file_type" value='rec_month'/>
+  <div class="col-lg-12 animatedParent animateOnce z-index-50">
+    <div class="panel panel-default animated fadeInUp go">
+      <div class="panel-heading clearfix">
+        <h3 class="panel-title">الموارد الشهرية</h3>
+        <ul class="panel-tool-options"> 
+          <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+          <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+          <li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+        </ul>
+      </div>
+      <div class="panel-body">
+        <div class="col-6 col-md-4">
+          <div class="dropzone-previews">
+            <form action = "/uploader" method = "POST" enctype = "multipart/form-data",>
+              <input type="hidden" name="file_type" value='rec_month'/>
+              <div class='row'>
                 <div class="input-group" >
                   <input type="text"  readonly/>
                   <label class="btn btn btn-primary">
                     اختر ملف<input type="file" name = "file" style="display: none;">
                   </label>                      
                 </div>
+              </div>
+              <div class='row'>
+                <div class='col-md-6'>
+                  <select class="form-control js-example-basic-single" name="month" readonly>
+                    <option value="">الشهر</option>
+                    <option value='1'>جانفي</option>
+                    <option value='2'>فيفري</option>
+                    <option value='3'>مارس</option>
+                    <option value='4'>أفريل</option>
+                    <option value='5'>ماي</option>
+                    <option value='6'>جوان</option>
+                    <option value='7'>جويلية</option>
+                    <option value='8'>أوت</option>
+                    <option value='9'>سبتمبر</option>
+                    <option value='10'>أكتوبر</option>
+                    <option value='11'>نوفمبر</option>
+                    <option value='12'>ديسمبر</option>
+                  </select>
+                </div>
+                <div class='col-md-6'>
+                  <select class="form-control js-example-basic-single" name="year">
+                    <option value="">سنة</option>
+                    {% for y in list_years %}
+                    <option value="{{y}}">{{y}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class='row'>
                 <input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
-              </form> 
-            </div>
+              </div>
+            </form> 
           </div>
-          <div class="col-12 col-md-8">
-            {% if parsed_rect %}
-            <div class="container-fluid">
+        </div>
+        <div class="col-12 col-md-8">
+          {% if parsed_rect %}
+          <div class="container-fluid">
             {% for d in data %}
             <div class="row">
               <div class="col-lg-5">
@@ -59,23 +90,26 @@
                 {% endif %}
               </form>
             </div>
-            </div>
-            {% else %}
-            <div class="container-fluid">
-              <p><code>لا توجد بيانات متعلقه باالموارد الشهرية لبلدية {{mun_name}} في قاعدة البيانات </code></p>
-            </div>
-            {% endif %}
           </div>
+          {% else %}
+          <div class="container-fluid">
+            <p><code>لا توجد بيانات متعلقه باالموارد الشهرية لبلدية {{mun_name}} في قاعدة البيانات </code></p>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
-  <div class="panel panel-default animated fadeInUp go">
+</div>
+<div class="panel panel-default animated fadeInUp go">
   <div class="panel-body"><p>‫‫‪‫يتم‬ ‫إستخراج  ملفين ,ملف للعنوان الأول و ملف للعنوان الثاني من‬ منظومة “أدب” ‫في صيغة XML من الخانة " المتابعة الحنيه للاعتمادات و الموارد  " للشهر والسنة الحالية .</p></div>
 </div>
 {% block js %}
-  <script>
-  $(function() {
+<script>
+$(document).ready(function() {
+  $('.js-example-basic-single').select2();
+});
+$(function() {
 
   // We can attach the `fileselect` event to all file inputs on the page
   $(document).on('change', ':file', function() {
@@ -102,14 +136,14 @@
   });
   
 });
-  function copyToClipboard(element) {
-    var $temp = $("<input>");
-    $("body").append($temp);
-    $temp.val($(element).text()).select();
-    document.execCommand("copy");
-    $temp.remove();
-    alert("تم النسخ الرابط");
-  }
-  </script>
-  {% endblock %}
-  {% endblock %}
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+  alert("تم النسخ الرابط");
+}
+</script>
+{% endblock %}
+{% endblock %}

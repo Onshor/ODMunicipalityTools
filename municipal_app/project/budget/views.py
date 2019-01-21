@@ -15,6 +15,7 @@ from list_month import decode_month_ar, decode_month_fr
 from project.ressource_api import update_ressource_api, package_exists
 from project.ckan_api import module_publisher
 from project.util import check_role
+from pprint import pprint as pp
 
 
 ################
@@ -99,6 +100,8 @@ def budget_recette_mensuelle():
     if not check_role(module_id):
         flash(u' ليس لديك إمكانية الولوج لهذه الصفحة', 'warning')
         return redirect(url_for('main.home'))
+    year = datetime.datetime.today().year
+    list_years = [year - i for i in range(25)]
     if Budget_annuelle.query.filter_by(municipal_id=current_user.municipal_id).first():
         if check_monthly_data("Recette"):
             confirm_url = url_for('main.home', _external=True) + 'static/files/'
@@ -112,8 +115,8 @@ def budget_recette_mensuelle():
             if 'open_api' in request.values:
                 module_publisher(module_id, 'budget-mensuelle-rec', auto_data, str(year), month_list_fr.split(',')[-1], month_list.split(',')[-1])
                 create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
-            return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data, month_list=month_list, year=year, create=create)
-    return render_template('budget/budget_recette_mensuelle.html')
+            return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data, month_list=month_list, year=year, create=create, list_years=list_years)
+    return render_template('budget/budget_recette_mensuelle.html', list_years=list_years)
 
 
 @budget_blueprint.route('/uploader', methods=['GET', 'POST'])
@@ -199,31 +202,41 @@ def upload_file():
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSITMNS )', 'danger')
                     return redirect(url_for('budget.budget_depence_mensuelle'))
             else:
+                year = datetime.datetime.today().year
+                list_years = [year - i for i in range(25)]
                 try:
                     b, file_mun_id = parse_recette_file(f)
                     check = check_municipal_id(current_user.municipal_id, file_mun_id)
-                    if check:
-                        save_budget_parametre(b)
-                        log = save_budget_fee_monthly(b)
-                        flash(u'تم حفظها في قاعدة البيانات', 'success') if log else flash(u'لقد تم تحميل هذا الملف من قبل', 'info')
-                        file_name, months, year = csv_mensuelle_file('Recette')
-                        month_list = decode_mm_ar(months)
-                        month_list_fr = decode_mm_fr(months)
-                        rcm = confirm_url + file_name
-                        if log:
-                            save_xml_file(f, 'b_recette_mensuelle')
-                            save_log([file_name])
-                        auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec'}]
-                        data = get_auto_update_data(auto_data)
-                        create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
-                        if 'open_api' in request.values:
-                            module_publisher(module_id, 'budget-mensuelle-rec', auto_data, str(year), month_list_fr.split(',')[-1], month_list.split(',')[-1])
+                    if request.values['month'].isdigit() and request.values['year'].isdigit():
+                        if check:
+                            b = get_new_budget(b, request.values['month'], request.values['year'])
+                            save_budget_parametre(b)
+                            log = save_budget_fee_monthly(b)
+                            flash(u'تم حفظها في قاعدة البيانات', 'success') if log else flash(u'لقد تم تحميل هذا الملف من قبل', 'info')
+                            file_name, months, year = csv_mensuelle_file('Recette')
+                            month_list = decode_mm_ar(months)
+                            month_list_fr = decode_mm_fr(months)
+                            rcm = confirm_url + file_name
+                            if log:
+                                save_xml_file(f, 'b_recette_mensuelle')
+                                save_log([file_name])
+                            auto_data = [{'link': rcm, 'file_name': file_name, 'text': u'نفقات أشهر %s للسنة %s' % (month_list, str(year)), 'type': 'men_rec'}]
+                            data = get_auto_update_data(auto_data)
                             create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
-                        return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data, create=create)
+                            if 'open_api' in request.values:
+                                module_publisher(module_id, 'budget-mensuelle-rec', auto_data, str(year), month_list_fr.split(',')[-1], month_list.split(',')[-1])
+                                create = Packages.query.filter_by(modules_id=str(module_id), package_type='budget-mensuelle-rec', municipal_id=current_user.municipal_id).first()
+                            return render_template('budget/budget_recette_mensuelle.html', parsed_rect=True, data=data, create=create, list_years=list_years)
+                        else:
+                            flash(u'ملف من بلدية أخرى الرجاء التثبت', 'danger')
+                            return redirect(url_for('budget.budget_recette_mensuelle'))
+                    else:
+                        flash(u'إختيار ألسنة وشهر إجباري ', 'danger')
+                        return redirect(url_for('budget.budget_recette_mensuelle'))
                 except:
                     flash(u'ملف خاطئ الرجاء التثبت من إسم الملف( MREPSUIREC )', 'danger')
                     return redirect(url_for('budget.budget_recette_mensuelle'))
-    return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False)
+    return render_template('budget/budget.html', parsed_annuel=False, parsed_rect=False, parsed_dep=False, list_years=list_years)
 
 
 def decode_mm_ar(months):
@@ -237,6 +250,13 @@ def decode_mm_ar(months):
     return month_str
 
 
+def get_new_budget(b, mm, yy):
+    for m in b:
+        m['month'] = mm
+        m['year'] = str(yy)
+    return b
+
+
 def decode_mm_fr(months):
     list_month, month_str = [], []
     for m in months:
@@ -246,6 +266,7 @@ def decode_mm_fr(months):
     for mm in list_month:
         month_str = month_str + ', ' + mm if month_str else mm
     return month_str
+
 
 def save_log(list_file):
     for f in list_file:
