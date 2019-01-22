@@ -71,7 +71,7 @@ def parse_xml(xml_file):
 
 
 def get_csv_file(data, ref):
-    fieldnames = ['Ordre_numero', 'Benificiaire', 'Date_orde', 'Date_paiement', 'Montant_ordre', 'Montant_paiement', 'Annee']
+    fieldnames = ['Ord_numero', 'Benificiaire', 'Date_paiement', 'Montant_paiement', 'Annee']
     filepath = get_file_path() + ref + '.csv'
     with open(filepath, 'wb') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
@@ -111,11 +111,9 @@ def get_link_data():
     def get_data(data):
         new_data, year = [], []
         for d in data:
-            new_data.append({'Ordre_numero': d.ordre_numero,
+            new_data.append({'Ord_numero': d.ordre_numero,
                              'Benificiaire': decode_unicode(d.benificiaire),
-                             'Date_orde': d.date_orde,
                              'Date_paiement': d.date_paiement,
-                             'Montant_ordre': d.montant_ordre,
                              'Montant_paiement': d.montant_paiement,
                              'Annee': d.year})
             year.append(d.year)
