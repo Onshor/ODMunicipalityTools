@@ -44,6 +44,7 @@ db = SQLAlchemy(app)
 ####################
 
 
+from project.subvention.views import subvention_blueprint
 from project.fourrier.views import fourrier_blueprint
 from project.organigramme.views import organigram_blueprint
 from project.passation_marche.views import passmarch_blueprint
@@ -55,6 +56,7 @@ from project.admin.views import admin_blueprint
 from project.municipal_property.views import municipal_property_blueprint
 from project.ressource_manager.views import ressource_blueprint
 app.register_blueprint(main_blueprint)
+app.register_blueprint(subvention_blueprint)
 app.register_blueprint(user_blueprint)
 app.register_blueprint(admin_blueprint)
 app.register_blueprint(budget_blueprint)

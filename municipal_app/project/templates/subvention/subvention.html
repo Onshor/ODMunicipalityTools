@@ -1,0 +1,117 @@
+{% extends "_base.html" %}
+{% block content %}
+<h1 class="page-title">منح جمعيات</h1>
+<div class="col-lg-12 animatedParent animateOnce z-index-50">
+	<div class="panel panel-default animated fadeInUp go">
+		<div class="panel-heading clearfix">
+			<h3 class="panel-title">منح جمعيات</h3>
+			<ul class="panel-tool-options"> 
+				<li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
+				<li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
+				<li><a data-rel="close" href="#"><i class="icon-cancel"></i></a></li>
+			</ul>
+		</div>
+		<div class="panel-body">
+			<div class="panel-body">
+				<div class="col-6 col-md-4">
+					<div class="dropzone-previews">
+						<form action ="/subvention" method = "POST" enctype = "multipart/form-data",>
+							<input type="hidden" name="file_type" value='yo'/>
+							<div class='row'>
+								<div class="input-group" >
+									<input type="text"  readonly/>
+									<label class="btn btn btn-primary">
+										اختر ملف <input type="file" name = "file" style="display: none;">
+									</label>                      
+								</div>
+							</div>
+							<div class='row'>
+								<input type ="submit" name="submit" value='تحميل' class="btn btn-default btn-file" />
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="col-12 col-md-8">
+					{% if link_data %}
+					<div class="container-fluid">
+						{% for d in link_data %}
+						<div class="row">
+							<div class="col-lg-5">
+								<label class="control-label"><strong class="text">{{d['text']}}</strong></label>
+							</div>
+						</div>
+						<div class='row'>
+							<div class="col-lg-6">
+								<input type="text" class="form-control has-success blockquote-reverse" placeholder="{{ d['link'] }}", readonly/>
+								<p id ="{{ d['id'] }}" style="display: none;">{{ d['link'] }}</p>
+							</div>
+							<div class="col-lg-3"><input class="btn btn-primary btn-outline btn-block" type="button" value='نسخ الرابط' onclick="copyToClipboard('#{{ d['id'] }}')"/></div>
+							<div class="col-lg-3"><a href="{{ d['link'] }}" type="button" download><button class="btn btn-primary btn-outline btn-block">تحميل الملف</button></a></div>
+						</div>
+						{% endfor %}
+					</div>
+					<br>
+					<div class="col-lg-4"></div>
+					<div class="col-lg-4"></div>
+					<div class="col-lg-4">
+						<form action = "/subvention" method = "POST" enctype = "multipart/form-data">
+							{% if create %}
+							<input class="btn btn-danger btn-outline btn-block" value='تحيين البيانات على المنصة ' type="submit" name='open_api'>
+							{% else %}
+							<input class="btn btn-blue btn-outline btn-block" value='نشر البيانات على المنصة ' type="submit" name='open_api'>
+							{% endif %}
+						</form>
+					</div>
+					{% else %}		
+					<div class="container-fluid">
+						<p><code>لا توجد بيانات متعلقه باالموارد الشهرية لبلدية  في قاعدة البيانات </code></p>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(document).ready(function() {
+	$('.js-example-basic-single').select2();
+});
+$(function() {
+
+  // We can attach the `fileselect` event to all file inputs on the page
+  $(document).on('change', ':file', function() {
+  	var input = $(this),
+  	numFiles = input.get(0).files ? input.get(0).files.length : 1,
+  	label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+  	input.trigger('fileselect', [numFiles, label]);
+  });
+
+  // We can watch for our custom `fileselect` event like this
+  $(document).ready( function() {
+  	$(':file').on('fileselect', function(event, numFiles, label) {
+
+  		var input = $(this).parents('.input-group').find(':text'),
+  		log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+  		if( input.length ) {
+  			input.val(log);
+  		} else {
+  			if( log ) alert(log);
+  		}
+
+  	});
+  });
+  
+});
+function copyToClipboard(element) {
+	var $temp = $("<input>");
+	$("body").append($temp);
+	$temp.val($(element).text()).select();
+	document.execCommand("copy");
+	$temp.remove();
+	alert("تم النسخ الرابط");
+}
+</script>
+{% endblock %}

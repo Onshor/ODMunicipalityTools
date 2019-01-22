@@ -458,3 +458,50 @@ class Packages(db.Model):
 
     def get_id(self):
         return self.id
+
+
+# class Datasets_log(db.Model):
+#     __tablename__ = "datasets_log"
+#     id = db.Column(db.Integer, primary_key=True)
+#     municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+#     user_id = db.Column(db.String, db.ForeignKey('users.id'))
+#     time_log = db.Column(db.String)
+#     update = db.Column(db.Boolean)
+
+#     def __init__(self, municipal_id, user_id, update):
+#         self.municipal_id = municipal_id
+#         self.user_id = user_id
+#         self.time_log = datetime.datetime.now()
+#         self.update = update
+
+#     def get_id(self):
+#         return self.id
+
+
+
+class Budget_association(db.Model):
+    __tablename__ = "budget_association"
+    id = db.Column(db.Integer, primary_key=True)
+    municipal_id = db.Column(db.String, db.ForeignKey('municipality.municipal_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    year = db.Column(db.String)
+    ordre_numero = db.Column(db.String)
+    benificiaire = db.Column(db.String)
+    date_orde = db.Column(db.DateTime)
+    date_paiement = db.Column(db.DateTime)
+    montant_ordre = db.Column(db.Integer)
+    montant_paiement = db.Column(db.Integer)
+
+    def __init__(self, municipal_id, user_id, year, ordre_numero, benificiaire, date_orde, date_paiement, montant_ordre, montant_paiement):
+        self.municipal_id = municipal_id
+        self.user_id = user_id
+        self.year = year
+        self.ordre_numero = ordre_numero
+        self.benificiaire = benificiaire
+        self.date_orde = date_orde
+        self.date_paiement = date_paiement
+        self.montant_ordre = montant_ordre
+        self.montant_paiement = montant_paiement
+
+    def get_id(self):
+        return self.id

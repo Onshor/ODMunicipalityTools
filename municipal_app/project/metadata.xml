@@ -197,4 +197,29 @@
 			</package>
 		</packages>
 	</module>
+	<module id='5'>
+		<name>Subvention_associations</name>
+		<packages>
+			<package id='budget-association'>
+				<name>subventions-allouees-aux-associations-commune-de-mun_name</name>
+				<title>SUBVENTIONS ALLOUÉES AUX ASSOCIATIONS - COMMUNE DE mun_name</title>
+				<title_ar>المنح المسندة لفائدة الجمعيّات - بلديّة mun_name_ar</title_ar>
+				<notes>Subventions allouées aux associations de la Commune de mun_name. Les données sur les subventions ont été extraites du système "ADEB des Municipalités" via les outils développés dans le cadre du programme ONSHOR. L'unité est en Millime Tunisien.</notes>
+				<notes_ar>المنح المسندة لفائدة الجمعيّات ببلديّة mun_name_ar. البيانات المتعلقّة بالمنح تمّ استخراجها من منظومة أدب بلديّات بإستعمال الأدوات التي تمّ تطويرها في إطار برنامج انشر. وحدة التي تمّ إعتمادها هي المليّم..</notes_ar>
+				<keywords_fr>commune de mun_name, associations, subventions</keywords_fr>
+				<keywords_ar>جمعيات, منح</keywords_ar>
+				<frequency_update>yearly</frequency_update>
+				<groups></groups>
+				<resources>
+					<resource id='b_association'>
+						<description>Subventions allouées aux associations pour les années de YYYY- Commune de mun_name</description>
+						<description_ar>المنح المسندة لفائدة الجمعيّات - بلديّة  mun_name_ar لسنوات YYYY.</description_ar>
+						<name>Subventions allouées aux associations pour les années de YYYY- Commune de mun_name</name>
+						<name_ar>المنح المسندة لفائدة الجمعيّات - بلديّة  mun_name_ar لسنوات YYYY.</name_ar>
+						<format>csv</format>
+					</resource>
+				</resources>
+			</package>
+		</packages>
+	</module>
 </modules>

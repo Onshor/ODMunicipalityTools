@@ -12,10 +12,8 @@ from flask_login import login_required, current_user
 from parser import parse_budget, parse_recette_file, parse_depence_file
 from project.models import Budget_annuelle, Municipality, Auto_update, Packages
 from list_month import decode_month_ar, decode_month_fr
-from project.ressource_api import update_ressource_api, package_exists
 from project.ckan_api import module_publisher
 from project.util import check_role
-from pprint import pprint as pp
 
 
 ################
