@@ -96,7 +96,6 @@ def save_db(data):
     exist = True
     for d in data:
         if d['Ordre_numero'] in ordre_list:
-            pass
             exist = True
         else:
             save(d)
