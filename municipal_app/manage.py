@@ -140,6 +140,30 @@ def read_csv(file):
 
 
 @manager.command
+def fix_data_pub_table():
+    list_mun = [_.municipal_id for _ in Municipality.query.all()]
+    for mun_id in list_mun:
+        if mun_id != '1':
+            list_item = Data_Publisher.query.filter_by(modules_id=4, municipal_id=mun_id).first().__dict__
+            data_id = list_item['id']
+            data_pub = list_item['data_pub']
+            for d in data_pub:
+                for p in d['pub']:
+                    for k, v in p.iteritems():
+                        if v == 'Mode_Octroi':
+                            p["pub_name"] = 'Exploitant'
+                            break
+            dp = Data_Publisher.query.get(data_id)
+            dp.data_pub = data_pub
+            db.session.commit()
+        if mun_id != '1':
+            data_pub = Data_Publisher.query.filter_by(municipal_id=mun_id, modules_id=4).first().data_pub
+            for d in data_pub:
+                pp(d['pub'])
+    return 0
+
+
+@manager.command
 def test():
     """Runs the unit tests without coverage."""
     tests = unittest.TestLoader().discover('tests')
