@@ -63,7 +63,7 @@
 						<description>Evolution mensuelle des dépenses à la municipalité de mun_name jusqu’au MMMM YYYY</description>
 						<description_ar>تطوّر النفقات الشهريّة إلى MMMM_ar YYYY ببلديّة mun_name_ar</description_ar>
 						<name>Dépenses mensuelles jusqu’au MMMM YYYY</name>
-						<name_ar>النفقات الشهرية إلى MMMM_ar YYYY</name_ar>
+						<name_ar>النفقات الشهرية إلى حدود MMMM_ar YYYY</name_ar>
 						<format>csv</format>
 					</resource>
 				</resources>		
@@ -83,7 +83,7 @@
 				<resources>
 					<resource id='an_rec_h'>
 						<description>Evolution mensuelle des ressources à la municipalité de mun_name jusqu’au MMMM YYYY</description>
-						<description_ar>تطوّر الموارد الشهريّة إلى MMMM_ar YYYY ببلديّة mun_name_ar</description_ar>
+						<description_ar>تطوّر الموارد الشهريّة إلى حدود MMMM_ar YYYY ببلديّة mun_name_ar</description_ar>
 						<name>Recettes mensuelles jusqu’au MMMM YYYY</name>
 						<name_ar>الموارد الشهرية إلى MMMM_ar YYYY</name_ar>
 						<format>csv</format>
